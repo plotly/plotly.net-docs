@@ -7,12 +7,33 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make a Mapbox Choropleth Map of US Counties in F# with
+      Plotly.
+    display_as: maps
+    language: fsharp
+    layout: base
+    name: Mapbox Choropleth Maps
+    order: 1
+    page_type: example_index
+    permalink: fsharp/mapbox-county-choropleth/
+    thumbnail: thumbnail/mapbox-choropleth.png
 ---
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET,*-*"
 #r "nuget: Plotly.NET.Interactive,*-*"
 #r "nuget: FSharp.Data"
@@ -34,7 +55,7 @@ A list of values indexed by feature identifier.
 
 Here we load a GeoJSON file containing the geometry information for US counties, where feature.id is a FIPS code.
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open FSharp.Data
 
 type jsonProvider = JsonProvider<"https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json">
@@ -50,7 +71,7 @@ counties.Features.[0].Id
 
 Here we load unemployment data by county, also indexed by FIPS code.
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 type csvProvider = CsvProvider<"https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv">
 
 let fips_data = csvProvider.Load("https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv")
@@ -64,13 +85,13 @@ fips_data.Rows |> Seq.take 5
 
 With choroplethmapbox, each row of the DataFrame is represented as a region of the choropleth.
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 open Newtonsoft.Json
 
-let geoJson = 
+let geoJson =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
-    |> JsonConvert.DeserializeObject 
+    |> JsonConvert.DeserializeObject
 
 type csvProvider = CsvProvider<"https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv">
 
@@ -81,7 +102,7 @@ let locations = fips_data.Rows |> Seq.map (fun row -> row.Fips)
 
 Chart.ChoroplethMapbox(z=z,geoJson=geoJson,locations=locations,FeatureIdKey="id",Colorscale=StyleParam.Colorscale.Viridis,ZMin=0.,ZMax=12.)
 |> Chart.withMapbox(
-        Mapbox.init(Style=StyleParam.MapboxStyle.CartoPositron,Zoom=3.,Center=(-95.7129,37.0902)) 
+        Mapbox.init(Style=StyleParam.MapboxStyle.CartoPositron,Zoom=3.,Center=(-95.7129,37.0902))
     )
 |> Chart.withSize(width=1100.,height=700.)
 ```
@@ -93,26 +114,26 @@ If the GeoJSON you are using either does not have an id field or you wish you us
 
 In the following GeoJSON object/data-file pairing, the values of properties.district match the values of the district column:
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open FSharp.Data
 open Deedle
 open Newtonsoft.Json
 
-let data = 
+let data =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/election.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
 
-let geoJson = 
+let geoJson =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/election.geojson"
-    |> JsonConvert.DeserializeObject 
+    |> JsonConvert.DeserializeObject
 
-let locationsGeoJSON: string [] = 
+let locationsGeoJSON: string [] =
     data
     |> Frame.getCol "district"
     |> Series.values
     |> Array.ofSeq
 
-let zGeoJSON: int [] = 
+let zGeoJSON: int [] =
     data
     |> Frame.getCol "Bergeron"
     |> Series.values
@@ -120,13 +141,13 @@ let zGeoJSON: int [] =
 
 Chart.ChoroplethMapbox(
     locations = locationsGeoJSON,
-    z = zGeoJSON,    
+    z = zGeoJSON,
     geoJson = geoJson,
     Colorscale= StyleParam.Colorscale.Cividis,
     FeatureIdKey="properties.district")
- 
+
 |> Chart.withMapbox(
-        Mapbox.init(Style=StyleParam.MapboxStyle.CartoPositron,Zoom=9.,Center=(-73.7073,45.5517)) 
+        Mapbox.init(Style=StyleParam.MapboxStyle.CartoPositron,Zoom=9.,Center=(-73.7073,45.5517))
     )
 |> Chart.withColorBarStyle(Title.init(Text="Bergeron Votes"))
 |> Chart.withTitle(title="2013 Montreal Election")
@@ -135,14 +156,14 @@ Chart.ChoroplethMapbox(
 
 # Mapbox Light base map: free token needed
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 open Newtonsoft.Json
 
 let token = File.ReadAllText("mapbox_token") //# you will need your own token
-let geoJson = 
+let geoJson =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
-    |> JsonConvert.DeserializeObject 
+    |> JsonConvert.DeserializeObject
 
 type csvProvider = CsvProvider<"https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv">
 
@@ -153,7 +174,7 @@ let locations = fips_data.Rows |> Seq.map (fun row -> row.Fips)
 
 Chart.ChoroplethMapbox(z=z,geoJson=geoJson,locations=locations,FeatureIdKey="id",Colorscale=StyleParam.Colorscale.Viridis,ZMin=0.,ZMax=12.)
 |> Chart.withMapbox(
-        Mapbox.init(Style=StyleParam.MapboxStyle.MapboxLight,Zoom=3.,Center=(-95.7129,37.0902),AccessToken=token) 
+        Mapbox.init(Style=StyleParam.MapboxStyle.MapboxLight,Zoom=3.,Center=(-95.7129,37.0902),AccessToken=token)
     )
 |> Chart.withSize(width=1100.,height=700.)
 ```
