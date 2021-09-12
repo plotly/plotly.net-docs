@@ -7,12 +7,32 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: Visualize regression in scikit-learn with Plotly.
+    display_as: ai_ml
+    language: fsharp
+    layout: base
+    name: ML Regression
+    order: 1
+    page_type: u-guide
+    permalink: fsharp/ml-regression/
+    thumbnail: thumbnail/ml-regression.png
 ---
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, *-*"
 #r "nuget: Plotly.NET.Interactive, *-*"
 #r "nuget: FSharp.Stats"
@@ -22,7 +42,7 @@ jupyter:
 
 # Basic linear regression plots
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Deedle
 open FSharp.Data
 open FSharp.Stats
@@ -32,7 +52,7 @@ open Plotly.NET
 let data=
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/tips.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
-    
+
 
 let getColumnData column=
         data
@@ -64,7 +84,7 @@ let xy = Seq.zip xRange yPredicted
 
 # Model generalization on unseen data
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Deedle
 open FSharp.Data
 open FSharp.Stats
@@ -75,7 +95,7 @@ open Plotly.NET
 let data=
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/tips.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
-    
+
 
 let getColumnData column=
         data
@@ -120,7 +140,7 @@ let xy = Seq.zip xRange yPredicted
 
 # Comparing different models parameters
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Deedle
 open FSharp.Data
 open FSharp.Stats
@@ -130,7 +150,7 @@ open Plotly.NET
 let data=
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/tips.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
-    
+
 
 let getColumnData column=
         data
@@ -171,11 +191,11 @@ let xyWeighted = Seq.zip xRange yPredictedWeighted
 
 # 3D regression surface
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget:libsvm.net"
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open libsvm
 open System.Collections.Generic
 
@@ -194,7 +214,7 @@ type DataPoint={
     PetalWidth : float
 }
 
-let linspace (min,max,n) = 
+let linspace (min,max,n) =
     if n <= 2 then failwithf "n needs to be larger then 2"
     let bw = float (max - min) / (float n - 1.0)
     Array.init n (fun i -> min + (bw * float i))
@@ -234,7 +254,7 @@ let prob = ProblemHelper.ReadProblem(X)
 
 let svm = new Epsilon_SVR(prob, KernelHelper.RadialBasisFunctionKernel(gamma), C, epsilon)
 
-let z = Array.map (fun y -> Array.map (fun x -> svm.Predict([|new svm_node(index=1,value=x);new svm_node(index=2,value=y)|])) xRange) yRange 
+let z = Array.map (fun y -> Array.map (fun x -> svm.Predict([|new svm_node(index=1,value=x);new svm_node(index=2,value=y)|])) xRange) yRange
 
 [
 Chart.Surface(X=xRange,Y=yRange, zData=z);
@@ -251,7 +271,7 @@ Chart.Point3d(xyz=xyz)
 
 # Simple actual vs predicted plot
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Deedle
 open FSharp.Data
 open FSharp.Stats
@@ -259,7 +279,7 @@ open FSharp.Stats.Fitting
 open FSharp.Stats.Fitting.NonLinearRegression
 open Plotly.NET
 
-let linspace (min,max,n) = 
+let linspace (min,max,n) =
     if n <= 2 then failwithf "n needs to be larger then 2"
     let bw = float (max - min) / (float n - 1.0)
     Array.init n (fun i -> min + (bw * float i))
@@ -280,7 +300,7 @@ let sepalLength = getColumnData "SepalLength"
 
 let xData = Array.map2 (fun x y -> [|x;y|]) sepalWidth sepalLength
 let X =  xData |> Matrix.ofJaggedArray
-let Y = vector petalWidth 
+let Y = vector petalWidth
 let coefs = OrdinaryLeastSquares.Linear.Multivariable.coefficients X Y
 let fittinFunc x= OrdinaryLeastSquares.Linear.Multivariable.fit coefs x
 
@@ -300,7 +320,7 @@ Chart.Point(xy,Labels=labels,Color="orange")
 
 # Enhanced prediction error analysis (Not finished)
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 let values = [1; 2; 3;]
 let keys   = ["Product A"; "Product B"; "Product C";]
@@ -322,7 +342,7 @@ Chart.Histogram(x,Orientation=StyleParam.Orientation.Horizontal)
 
 # Residual Plots
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Deedle
 open FSharp.Data
 open FSharp.Stats
@@ -355,14 +375,14 @@ let chunkIndices =
                 |> Array.take m
 
 let xData = Array.map2 (fun x y -> [|x;y|]) sepalWidth sepalLength
-let Y = vector petalWidth 
+let Y = vector petalWidth
 
 let X =  xData |> Matrix.ofJaggedArray
 
 let xTest,xTrain = Matrix.splitRows chunkIndices X
 let yTest,yTrain = (vector Y) |> Vector.splitVector chunkIndices
 
-let fittinFunc X Y x= 
+let fittinFunc X Y x=
     let coefs = OrdinaryLeastSquares.Linear.Multivariable.coefficients X Y
     OrdinaryLeastSquares.Linear.Multivariable.fit coefs x
 
