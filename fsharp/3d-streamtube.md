@@ -10,6 +10,26 @@ jupyter:
     display_name: .NET (F#)
     language: F#
     name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make 3D streamtube plots in F# with Plotly.
+    display_as: 3d_charts
+    language: fsharp
+    layout: base
+    name: 3D Streamtube Plots
+    order: 13
+    page_type: u-guide
+    permalink: fsharp/streamtube-plot/
+    thumbnail: thumbnail/streamtube.jpg
 ---
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -27,7 +47,7 @@ jupyter:
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open System
-open Plotly.NET 
+open Plotly.NET
 open FSharp.Data
 
 let x=[0; 0; 0]
@@ -53,7 +73,7 @@ let streamtube3d  =
             streamtube3d?showscale <- false
             streamtube3d?maxdisplayed <- 3000
             streamtube3d
-            )         
+            )
         |> GenericChart.ofTraceObject
         |> Chart.withLayout layout
 ```
@@ -68,7 +88,7 @@ streamtube3d
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open System
-open Plotly.NET 
+open Plotly.NET
 open FSharp.Data
 
 type DFI = CsvProvider<"https://raw.githubusercontent.com/plotly/datasets/master/streamtube-wind.csv">
@@ -101,7 +121,7 @@ let streamtube3d  =
             streamtube3d?showscale <- false
             streamtube3d?maxdisplayed <- 3000
             streamtube3d
-            )         
+            )
         |> GenericChart.ofTraceObject
         |> Chart.withLayout layout
 ```

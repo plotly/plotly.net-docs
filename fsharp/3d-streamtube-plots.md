@@ -10,6 +10,26 @@ jupyter:
     display_name: .NET (F#)
     language: F#
     name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make 3D streamtube plots in F# with Plotly.
+    display_as: 3d_charts
+    language: fsharp
+    layout: base
+    name: 3D Streamtube Plots
+    order: 9
+    page_type: u-guide
+    permalink: fsharp/streamtube-plot/
+    thumbnail: thumbnail/streamtube.jpg
 ---
 
 // can't yet format YamlFrontmatter (["title: 3D Mesh plots"; "category: 3D Charts"; "categoryindex: 4"; "index: 4"], Some { StartLine = 2 StartColumn = 0 EndLine = 6 EndColumn = 8 }) to pynb markdown
@@ -27,7 +47,7 @@ jupyter:
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open System
-open Plotly.NET 
+open Plotly.NET
 open FSharp.Data
 
 let x=[0, 0, 0]
@@ -53,7 +73,7 @@ let mesh3d  =
             mesh3d?showscale <- false
             mesh3d?maxdisplayed <- 3000
             mesh3d
-            )         
+            )
         |> GenericChart.ofTraceObject
         |> Chart.withLayout layout
 ```
@@ -67,7 +87,7 @@ mesh3d
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open System
-open Plotly.NET 
+open Plotly.NET
 open FSharp.Data
 
 type DFI = CsvProvider<"https://raw.githubusercontent.com/plotly/datasets/master/streamtube-wind.csv">
@@ -96,7 +116,7 @@ let mesh3d  =
             mesh3d?showscale <- false
             mesh3d?maxdisplayed <- 3000
             mesh3d
-            )         
+            )
         |> GenericChart.ofTraceObject
         |> Chart.withLayout layout
 ```

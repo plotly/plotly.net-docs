@@ -10,6 +10,26 @@ jupyter:
     display_name: .NET (F#)
     language: F#
     name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make 3D Volume plots in F# with Plotly.
+    display_as: 3d_charts
+    language: fsharp
+    layout: base
+    name: 3D Volume Plots
+    order: 11
+    page_type: u-guide
+    permalink: fsharp/3d-volume-plots/
+    thumbnail: thumbnail/3d-volume-plots.jpg
 ---
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -24,9 +44,9 @@ jupyter:
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open System
-open Plotly.NET 
+open Plotly.NET
 
-             
+
 let N = 50
 let rnd = System.Random()
 
@@ -37,7 +57,7 @@ let mirroredXAxis =
         Showbackground=true
     )
 
-let mirroredLogYAxis = 
+let mirroredLogYAxis =
     Axis.LinearAxis.init(
         Showspikes = false,
         Backgroundcolor ="rgb(229, 236, 246)",
@@ -63,7 +83,7 @@ let findAllIndices predicate =
     >> Array.filter (snd >> predicate)
     >> Array.map fst
 
-       
+
 let volume3d =
         Trace3d.initVolume (fun volume3d ->
             volume3d?x <- x
@@ -75,7 +95,7 @@ let volume3d =
             volume3d?opacity<-0.5
             volume3d?color <- "lightpink"
             volume3d
-            )     
+            )
         |> GenericChart.ofTraceObject
         |> Chart.withLayout layout
 ```

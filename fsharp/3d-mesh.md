@@ -10,13 +10,33 @@ jupyter:
     display_name: .NET (F#)
     language: F#
     name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to format axes of 3D Mesh plots in F# with Plotly.
+    display_as: 3d_charts
+    language: fsharp
+    layout: base
+    name: 3D Mesh Plots
+    order: 9
+    page_type: u-guide
+    permalink: fsharp/3d-mesh/
+    thumbnail: thumbnail/3d-mesh.jpg
 ---
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open System
-open Plotly.NET 
+open Plotly.NET
 ```
 
 # Simple 3D Mesh example
@@ -24,9 +44,9 @@ open Plotly.NET
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open System
-open Plotly.NET 
+open Plotly.NET
 
-             
+
 let N = 50
 let rnd = System.Random()
 
@@ -37,7 +57,7 @@ let mirroredXAxis =
         Showbackground=true
     )
 
-let mirroredLogYAxis = 
+let mirroredLogYAxis =
     Axis.LinearAxis.init(
         Showspikes = false,
         Backgroundcolor ="rgb(229, 236, 246)",
@@ -62,7 +82,7 @@ let mesh3d =
             mesh3d?opacity<-0.5
             mesh3d?color <- "lightpink"
             mesh3d
-            )         
+            )
         |> GenericChart.ofTraceObject
         |> Chart.withX_Axis  mirroredXAxis
         |> Chart.withY_Axis  mirroredLogYAxis
@@ -78,9 +98,9 @@ mesh3d
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open System
-open Plotly.NET 
+open Plotly.NET
 
-             
+
 let N = 50
 let rnd = System.Random()
 
@@ -91,7 +111,7 @@ let mirroredXAxis =
         Showbackground=true
     )
 
-let mirroredLogYAxis = 
+let mirroredLogYAxis =
     Axis.LinearAxis.init(
         Showspikes = false,
         Backgroundcolor ="rgb(229, 236, 246)",
@@ -117,7 +137,7 @@ let mesh3d =
             mesh3d?alphahull <- 5
             mesh3d?color <- "cyan"
             mesh3d
-            )         
+            )
         |> GenericChart.ofTraceObject
         |> Chart.withX_Axis  mirroredXAxis
         |> Chart.withY_Axis  mirroredLogYAxis
@@ -135,9 +155,9 @@ mesh3d
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open System
-open Plotly.NET 
+open Plotly.NET
 
-             
+
 let N = 50
 let rnd = System.Random()
 
@@ -148,7 +168,7 @@ let mirroredXAxis =
         Showbackground=true
     )
 
-let mirroredLogYAxis = 
+let mirroredLogYAxis =
     Axis.LinearAxis.init(
         Showspikes = false,
         Backgroundcolor ="rgb(229, 236, 246)",
@@ -164,8 +184,8 @@ let mirroredZAxis =
 let margin =Margin.init(Left =10.0, Bottom=10.0,Top =10.0, Right  = 20.0 )
 let layout = Layout.init(Width= 700.,  Margin=margin)
 let customColorscale = StyleParam.Colorscale.Custom [(0.0,"gold");(0.5,"mediumturquoise");(1.0,"magenta")]
-// let marker = Marker.init(Colorscale=StyleParam.Colorscale.Viridis, Showscale=true);
-// marker?color <-customColorscale; 
+let marker = Marker.init(Colorscale=StyleParam.Colorscale.Viridis, Showscale=true);
+marker?color <-customColorscale;
 
 
 let mesh3d =
@@ -182,14 +202,14 @@ let mesh3d =
             mesh3d?intensity<-seq{0.; 0.33; 0.66; 1.}
             mesh3d?showscale  <- true
             mesh3d
-            )         
-        |> GenericChart.ofTraceObject 
+            )
+        |> GenericChart.ofTraceObject
         |> Chart.withX_Axis  mirroredXAxis
         |> Chart.withY_Axis  mirroredLogYAxis
         |> Chart.withZ_Axis  mirroredZAxis
         |> Chart.withLayout layout
         |> Chart.withMarker marker
-        
+
 ```
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -204,7 +224,7 @@ mesh3d
 let size = 100
 let rnd = System.Random()
 
-let linspace (min,max,n) = 
+let linspace (min,max,n) =
     if n <= 2 then failwithf "n needs to be larger then 2"
     let bw = float (max - min) / (float n - 1.)
     Array.init n (fun i -> min + (bw * float i))
@@ -214,10 +234,10 @@ let y = linspace(-2. * Math.PI, 2. * Math.PI, size)
 
 let f x y = - (5. * x / (x**2. + y**2. + 1.) )
 
-let z = 
-    Array.init size (fun i -> 
-        Array.init size (fun j -> 
-            f x.[j] y.[i] 
+let z =
+    Array.init size (fun i ->
+        Array.init size (fun j ->
+            f x.[j] y.[i]
         )
     )
 
@@ -228,7 +248,7 @@ let mirroredXAxis =
         Showbackground=true
     )
 
-let mirroredLogYAxis = 
+let mirroredLogYAxis =
     Axis.LinearAxis.init(
         Showspikes = false,
         Backgroundcolor ="rgb(229, 236, 246)",
@@ -258,7 +278,7 @@ let meshcube3d =
             mesh3d?showscale  <- true
             //mesh3d?Intensityscr <-"cell"
             mesh3d
-            )         
+            )
         |> GenericChart.ofTraceObject
         |> Chart.withX_Axis  mirroredXAxis
         |> Chart.withY_Axis  mirroredLogYAxis
@@ -277,7 +297,7 @@ meshcube3d
 let size = 100
 let rnd = System.Random()
 
-let linspace (min,max,n) = 
+let linspace (min,max,n) =
     if n <= 2 then failwithf "n needs to be larger then 2"
     let bw = float (max - min) / (float n - 1.)
     Array.init n (fun i -> min + (bw * float i))
@@ -287,10 +307,10 @@ let y = linspace(-2. * Math.PI, 2. * Math.PI, size)
 
 let f x y = - (5. * x / (x**2. + y**2. + 1.) )
 
-let z = 
-    Array.init size (fun i -> 
-        Array.init size (fun j -> 
-            f x.[j] y.[i] 
+let z =
+    Array.init size (fun i ->
+        Array.init size (fun j ->
+            f x.[j] y.[i]
         )
     )
 
@@ -301,7 +321,7 @@ let mirroredXAxis =
         Showbackground=true
     )
 
-let mirroredLogYAxis = 
+let mirroredLogYAxis =
     Axis.LinearAxis.init(
         Showspikes = false,
         Backgroundcolor ="rgb(229, 236, 246)",
@@ -332,7 +352,7 @@ let meshcube3d =
            // mesh3d?Intensityscr <-"cell"
             mesh3d?intensitymode <-"cell"
             mesh3d
-            )         
+            )
         |> GenericChart.ofTraceObject
         |> Chart.withX_Axis  mirroredXAxis
         |> Chart.withY_Axis  mirroredLogYAxis

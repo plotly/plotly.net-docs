@@ -10,6 +10,26 @@ jupyter:
     display_name: .NET (F#)
     language: F#
     name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to format axes of 3D Bubble Charts in F# with Plotly.
+    display_as: 3d_charts
+    language: fsharp
+    layout: base
+    name: 3D Bubble Charts
+    order: 9
+    page_type: u-guide
+    permalink: fsharp/3d-bubble-charts/
+    thumbnail: thumbnail/3dbubble.jpg
 ---
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -22,11 +42,11 @@ jupyter:
 
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-open Plotly.NET 
+open Plotly.NET
 open System
 open FSharp.Data
- 
- 
+
+
 type DFI = CsvProvider<"https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv">
 let df1 = DFI.Load("https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv")
 
@@ -39,7 +59,7 @@ let marker = Marker.init(Size =30,Opacity=0.8, Colorscale = StyleParam.Colorscal
 let margin =Margin.init(Left =0., Bottom=0.,Top =20., Right  = 0. )
 let layout = Layout.init(Height=800., Width=800., Margin=margin)
 
-let bubble3d = 
+let bubble3d =
     Chart.Scatter3d(x,y,z,mode = StyleParam.Mode.Markers     , Labels=[for row in df1.Rows do row.Country])
     |> Chart.withMarker marker
     |> Chart.withLayout layout
@@ -55,8 +75,8 @@ bubble3d
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open System
-open Plotly.NET 
-      
+open Plotly.NET
+
 let N = 50
 let rnd = System.Random()
 
@@ -68,7 +88,7 @@ let mirroredXAxis =
         Showbackground=true
     )
 
-let mirroredLogYAxis = 
+let mirroredLogYAxis =
     Axis.LinearAxis.init(
         Title ="Density",
         Showspikes = false,
@@ -95,7 +115,7 @@ let gravity = [3.7; 8.9; 9.8; 3.7; 23.1; 9.0; 8.7; 11.0; 0.7]
 let planet_diameter = [4879; 12104; 12756; 6792; 142984; 120536; 51118; 49528; 2370]
 let planets = ["Mercury"; "Venus"; "Earth"; "Mars"; "Jupiter";"Saturn"; "Uranus"; "Neptune"; "Pluto"]
 
-let bubblechart = 
+let bubblechart =
         Chart.Scatter3d(distance_from_sun,density,gravity,mode = StyleParam.Mode.Markers  , Labels=planets )
         |>  Chart.withTitle("Planets")
         |> Chart.withX_Axis  mirroredXAxis

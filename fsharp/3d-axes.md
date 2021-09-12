@@ -10,6 +10,26 @@ jupyter:
     display_name: .NET (F#)
     language: F#
     name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to format axes of 3d plots in F# with Plotly.
+    display_as: 3d_charts
+    language: fsharp
+    layout: base
+    name: 3D Axes
+    order: 9
+    page_type: u-guide
+    permalink: fsharp/3d-axes/
+    thumbnail: thumbnail/3d-axes.png
 ---
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -22,8 +42,8 @@ jupyter:
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open System
-open Plotly.NET 
-             
+open Plotly.NET
+
 let N = 70
 let rnd = System.Random()
 let x = Array.init N (fun _ -> rnd.Next(-70, 100))
@@ -33,7 +53,7 @@ let color = "rgba(244,22,100,0.6)"
 
 let mirroredXAxis =
     Axis.LinearAxis.init(
-       
+
         Showline = true,
         Mirror = StyleParam.Mirror.AllTicks,
         Showgrid = true,
@@ -41,12 +61,12 @@ let mirroredXAxis =
         Gridcolor="white",
         Showbackground=true,
         Zerolinecolor="white"
-        
+
     )
 
-let mirroredLogYAxis = 
+let mirroredLogYAxis =
     Axis.LinearAxis.init(
-      
+
         Showline = true,
         Mirror = StyleParam.Mirror.AllTicks,
         Showgrid = true,
@@ -54,11 +74,11 @@ let mirroredLogYAxis =
         Gridcolor="white",
         Showbackground=true,
         Zerolinecolor="white"
-       
+
     )
 let mirroredZAxis =
     Axis.LinearAxis.init(
-       
+
         Showline = true,
         Mirror = StyleParam.Mirror.AllTicks,
         Showgrid = true,
@@ -81,7 +101,7 @@ let mesh3d =
             mesh3d?color <- "rgba(244,22,100,0.6)"
             mesh3d?opacity<-0.5
             mesh3d
-            )         
+            )
         |> GenericChart.ofTraceObject
         |> Chart.withX_Axis  mirroredXAxis
         |> Chart.withY_Axis  mirroredLogYAxis
@@ -101,9 +121,9 @@ mesh3d
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open System
-open Plotly.NET 
+open Plotly.NET
 
-                   
+
 let N = 50
 let rnd = System.Random()
 let x = Array.init N (fun _ -> rnd.Next(-60, 100))
@@ -121,10 +141,10 @@ let mirroredXAxis =
         Gridcolor="white",
         Showbackground=true,
         Zerolinecolor="white"
-        
+
     )
 
-let mirroredLogYAxis = 
+let mirroredLogYAxis =
     Axis.LinearAxis.init(
        Title="Y AXIS TITLE",
         Showline = true,
@@ -134,7 +154,7 @@ let mirroredLogYAxis =
         Gridcolor="white",
         Showbackground=true,
         Zerolinecolor="white"
-       
+
     )
 let mirroredZAxis =
     Axis.LinearAxis.init(
@@ -146,7 +166,7 @@ let mirroredZAxis =
         Gridcolor="white",
         Showbackground=true,
         Zerolinecolor="white"
-       
+
     )
 
 let margin =Margin.init(Left =10.0, Bottom=10.0,Top =10.0, Right  = 20.0 )
@@ -164,7 +184,7 @@ let mesh3d1 =
             mesh3d
             )
             |> GenericChart.ofTraceObject
-        
+
 mesh3d1
 ```
 
@@ -181,7 +201,7 @@ let mesh3d2 =
             mesh3d
             )
             |> GenericChart.ofTraceObject
-     
+
 mesh3d2
 
 ```
@@ -189,14 +209,14 @@ mesh3d2
 ```fsharp dotnet_interactive={"language": "fsharp"}
 let mesh3d =
         [
-            mesh3d1 
+            mesh3d1
             mesh3d2
         ]
-        |> Chart.Combine    
+        |> Chart.Combine
         |> Chart.withX_Axis  mirroredXAxis
         |> Chart.withY_Axis  mirroredLogYAxis
         |> Chart.withZ_Axis  mirroredZAxis
-        |> Chart.withLayout layout 
+        |> Chart.withLayout layout
 ```
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -208,10 +228,10 @@ mesh3d
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open System
-open Plotly.NET 
+open Plotly.NET
 
-     
-                   
+
+
 let N = 50
 let rnd = System.Random()
 
@@ -226,7 +246,7 @@ let mirroredXAxis =
         Tickvals=tickvals
     )
 let font = Font.init( StyleParam.FontFamily.Droid_Serif, 12.0,"green" )
-let mirroredLogYAxis = 
+let mirroredLogYAxis =
     Axis.LinearAxis.init(
         Showspikes = false,
         Backgroundcolor ="rgb(229, 236, 246)",
@@ -240,7 +260,7 @@ let mirroredZAxis =
         Showbackground=true,
         nTicks=4,
         Ticks=StyleParam.TickOptions.Outside ,
-        Tick0=0, 
+        Tick0=0,
         Tickwidth=4.0
     )
 
@@ -254,7 +274,7 @@ let mesh3d =
             mesh3d?z <-  Array.init N (fun _ -> rnd.Next(-50, 100))
             mesh3d?opacity<-0.5
             mesh3d
-            )         
+            )
         |> GenericChart.ofTraceObject
         |> Chart.withX_Axis  mirroredXAxis
         |> Chart.withY_Axis  mirroredLogYAxis
@@ -271,10 +291,10 @@ mesh3d
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open System
-open Plotly.NET 
+open Plotly.NET
 
-     
-                   
+
+
 let N = 50
 let rnd = System.Random()
 let x = Array.init N (fun _ -> rnd.Next(-30, 100))
@@ -291,10 +311,10 @@ let mirroredXAxis =
         Gridcolor="white",
         Showbackground=true,
         Zerolinecolor="white"
-        
+
     )
 
-let mirroredLogYAxis = 
+let mirroredLogYAxis =
     Axis.LinearAxis.init(
         Showline = true,
         Mirror = StyleParam.Mirror.AllTicks,
@@ -303,7 +323,7 @@ let mirroredLogYAxis =
         Gridcolor="white",
         Showbackground=true,
         Zerolinecolor="white"
-       
+
     )
 let mirroredZAxis =
     Axis.LinearAxis.init(
@@ -314,13 +334,13 @@ let mirroredZAxis =
         Gridcolor="white",
         Showbackground=true,
         Zerolinecolor="white"
-       
+
     )
 
 let margin =Margin.init(Left =10.0, Bottom=10.0,Top =10.0, Right  = 20.0 )
 let layout = Layout.init(Width= 700.,  Margin=margin)
 
-     
+
 let mesh3d =
         Trace3d.initMesh3d (fun mesh3d ->
             mesh3d?x <- x
@@ -330,7 +350,7 @@ let mesh3d =
             mesh3d?contour <- Contours.initXyz(Show=true)
             mesh3d?opacity<-0.5
             mesh3d
-            )         
+            )
         |> GenericChart.ofTraceObject
         |> Chart.withX_Axis  mirroredXAxis
         |> Chart.withY_Axis  mirroredLogYAxis
@@ -349,10 +369,10 @@ By default, guidelines originating from the tooltip point are drawn. It is possi
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open System
-open Plotly.NET 
+open Plotly.NET
 
-     
-                   
+
+
 let N = 50
 let rnd = System.Random()
 
@@ -363,7 +383,7 @@ let mirroredXAxis =
         Showbackground=true
     )
 
-let mirroredLogYAxis = 
+let mirroredLogYAxis =
     Axis.LinearAxis.init(
         Showspikes = false,
         Backgroundcolor ="rgb(229, 236, 246)",
@@ -386,7 +406,7 @@ let mesh3d =
             mesh3d?z <-  Array.init N (fun _ -> rnd.Next(-30, 30))
             mesh3d?opacity<-0.5
             mesh3d
-            )         
+            )
         |> GenericChart.ofTraceObject
         |> Chart.withX_Axis  mirroredXAxis
         |> Chart.withY_Axis  mirroredLogYAxis
