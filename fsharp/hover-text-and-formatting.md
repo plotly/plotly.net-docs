@@ -7,19 +7,39 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to use hover text and formatting in F# with Plotly.
+    display_as: file_settings
+    language: fsharp
+    layout: base
+    name: Hover Text and Formatting
+    order: 23
+    page_type: example_index
+    permalink: fsharp/hover-text-and-formatting/
+    thumbnail: thumbnail/hover-text.png
 ---
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, *-*"
 #r "nuget: Plotly.NET.Interactive, *-*"
 ```
 
 # Hover Labels
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x = [for i in 0..10 -> i]
@@ -31,7 +51,7 @@ Chart.Point(x,y,Labels=labels)
 
 # Customizing Hover Mode
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x = [for i in 0..10 -> i]

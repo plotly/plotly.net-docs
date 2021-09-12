@@ -7,12 +7,32 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to create charts from csv files with Plotly and F#
+    display_as: advanced_opt
+    language: fsharp
+    layout: base
+    name: Plot CSV Data
+    order: 1
+    page_type: example_index
+    permalink: fsharp/plot-data-from-csv/
+    thumbnail: thumbnail/csv.jpg
 ---
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET,*-*"
 #r "nuget: Plotly.NET.Interactive,*-*"
 #r "nuget: FSharp.Data"
@@ -21,13 +41,13 @@ jupyter:
 
 # Plot from CSV with Plotly
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open FSharp.Data
 open Deedle
 open Plotly.NET
 open Plotly.NET.Axis
 
-let dataset = 
+let dataset =
   Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/2014_apple_stock.csv"
    |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
 
@@ -35,8 +55,8 @@ let getColumn column=
         dataset
         |> Frame.getCol column
         |> Series.values
-         
-let xy = Seq.zip  (getColumn "AAPL_x" :> seq<DateTime>) (getColumn "AAPL_y" :> seq<float>) 
+
+let xy = Seq.zip  (getColumn "AAPL_x" :> seq<DateTime>) (getColumn "AAPL_y" :> seq<float>)
 Chart.Line(xy,Name="Share Prices (in USD)")
 |>Chart.withLayout(Layout.init(Title.init("Apple Share Prices over time (2014)"),Plot_bgcolor="#e5ecf6",Showlegend=true,Width=1100.))
 |>Chart.withXAxis(LinearAxis.init(Title=Title.init("AAPL_x"),ZeroLineColor="#ffff",ZeroLineWidth=2.,GridColor="#ffff" ))

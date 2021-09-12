@@ -7,19 +7,40 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make SVG shapes in python. Examples of lines, circle, rectangle,
+      and path.
+    display_as: file_settings
+    language: fsharp
+    layout: base
+    name: Shapes
+    order: 25
+    page_type: example_index
+    permalink: fsharp/shapes/
+    thumbnail: thumbnail/shape.jpg
 ---
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, *-*"
 #r "nuget: Plotly.NET.Interactive, *-*"
 ```
 
 # Lines
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open System
 open Plotly.NET
 
@@ -41,7 +62,7 @@ Chart.Line(x,y)
 
 # Rectangles
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Deedle"
 #r "nuget: FSharp.Data"
 
@@ -49,7 +70,7 @@ open Deedle
 open FSharp.Data
 open Plotly.NET
 
-let data = 
+let data =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/2014_apple_stock.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
 
@@ -57,7 +78,7 @@ let getColumnData column=
         data
         |> Frame.getCol column
         |> Series.values
-        |> Array.ofSeq 
+        |> Array.ofSeq
 
 let rects = [
     Shape.init(StyleParam.ShapeType.Rectangle,X0 = "2014-05-01", X1 = "2014-06-01", Xref = "x", Y0 = 70, Y1 = 90, Yref = "y",Fillcolor="blue",Opacity=0.2, Line=Line.init(Color="red"));
@@ -73,13 +94,13 @@ Chart.Point(x=getColumnData "AAPL_x",y=getColumnData "AAPL_y")
 
 Circles are centered around ((x0+x1)/2, (y0+y1)/2))
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let data=
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/tips.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
-    
+
 
 let getColumnData column=
         data
@@ -99,13 +120,13 @@ Chart.Point(x=getColumnData "total_bill",y=getColumnData "tip")
 
 # Drawing Shapes on Cartesian Plots
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let data=
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/tips.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
-    
+
 
 let getColumnData column=
         data
@@ -116,6 +137,6 @@ let getColumnData column=
 
 Chart.Point(x=getColumnData "total_bill",y=getColumnData "tip")
 |> Chart.withTitle(title="Click and drag inside the figure to draw a rectangle or select another shape in the modebar")
-//|> Chart.withConfig (Config.init()) //modeBarButtonsToAdd 
+//|> Chart.withConfig (Config.init()) //modeBarButtonsToAdd
 //|> Chart.withLayout (Layout.init(Dragmode=StyleParam.DragMode.Rotate)) //dragmode="drawrect",
 ```

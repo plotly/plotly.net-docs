@@ -7,12 +7,32 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to style markers in F# with Plotly.
+    display_as: file_settings
+    language: fsharp
+    layout: base
+    name: Styling Markers
+    order: 20
+    page_type: u-guide
+    permalink: fsharp/marker-style/
+    thumbnail: thumbnail/marker-style.gif
 ---
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, *-*"
 #r "nuget: Plotly.NET.Interactive, *-*"
 
@@ -23,7 +43,7 @@ jupyter:
 
 In order to make markers distinct, you can add a border to the markers
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 
 open Plotly.NET
 
@@ -43,7 +63,7 @@ let y2 = [1.; 2.5; 4.; 2.5; 4.; 6.5; 3.5; 5.5; 4.5; 6.]
 
 To maximise visibility of density, it is recommended to set the opacity inside the marker marker:{opacity:0.5}. If mulitple traces exist with high density, consider using marker opacity in conjunction with trace opacity.
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 open System
 
@@ -66,7 +86,7 @@ let y2 = [for i in 0..100 -> rand.NextDouble()]
 
 To maximise visibility of each point, set the color opacity by using alpha: marker:{color: 'rgba(0,0,0,0.5)'}. Here, the marker line will remain opaque.
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 open System
 

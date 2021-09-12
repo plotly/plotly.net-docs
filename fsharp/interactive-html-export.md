@@ -7,12 +7,33 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: Plotly allows you to save interactive HTML versions of your figures
+      to your local disk.
+    display_as: file_settings
+    language: fsharp
+    layout: base
+    name: Interactive HTML Export
+    order: 31
+    page_type: u-guide
+    permalink: fsharp/interactive-html-export/
+    thumbnail: thumbnail/static-image-export.png
 ---
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, *-*"
 #r "nuget: Plotly.NET.Interactive, *-*"
 ```
@@ -25,7 +46,7 @@ Plotly figures are interactive when viewed in a web browser: you can hover over 
 
 # Saving to an HTML file
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x = [for i in 0..10 -> i]

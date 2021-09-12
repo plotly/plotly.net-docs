@@ -10,6 +10,28 @@ jupyter:
     display_name: .NET (F#)
     language: F#
     name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: Plotly allows you to save static images of your plots. Save the image
+      to your local computer, or embed it inside your Jupyter notebooks as a static
+      image.
+    display_as: file_settings
+    language: fsharp
+    layout: base
+    name: Static Image Export
+    order: 6
+    page_type: u-guide
+    permalink: fsharp/static-image-export/
+    thumbnail: thumbnail/static-image-export.png
 ---
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -49,7 +71,7 @@ open System.IO
 let srcPath="static/images/"
 
 if not <| Directory.Exists(srcPath) then
-        Directory.CreateDirectory(srcPath) |> ignore    
+        Directory.CreateDirectory(srcPath) |> ignore
 ```
 
 # Raster Formats: PNG, JPEG, SVG and PDF
@@ -109,5 +131,3 @@ let scatter =
 ```fsharp dotnet_interactive={"language": "fsharp"}
 scatter
 ```
-
-

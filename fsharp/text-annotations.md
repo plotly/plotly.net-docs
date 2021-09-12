@@ -10,6 +10,26 @@ jupyter:
     display_name: .NET (F#)
     language: F#
     name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to add text labels and annotations to plots in F#.
+    display_as: file_settings
+    language: fsharp
+    layout: base
+    name: Text and Annotations
+    order: 22
+    page_type: u-guide
+    permalink: fsharp/text-and-annotations/
+    thumbnail: thumbnail/text-and-annotations.png
 ---
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -26,12 +46,12 @@ open Plotly.NET
 let x=[|0; 1; 2;|]
 [
 Chart.Scatter(x,[|1; 1; 1|], StyleParam.Mode.Lines, Name="Lines, Markers and Text")
-// |> GenericChart.mapTrace(fun x -> 
+// |> GenericChart.mapTrace(fun x ->
 //         x.SetValue("text",[
 //              "Text A";
 //              "Text B";
 //              "Text C";
-//              ])   
+//              ])
 //         x)
 Chart.Scatter(x,[|2; 2; 2; 1|], StyleParam.Mode.Lines,Name="Markers and Text")
  ]
@@ -72,7 +92,7 @@ let layout =
     temp?annotations <- [{|text = "Point 1";
                          x = "2017-01-01";
                          y = "A";
-                         z = 0; 
+                         z = 0;
                         showarrow = false;
                         arrowcolor="";
                         arrowsize=0;
@@ -83,24 +103,24 @@ let layout =
                         xshift=10;
                         opacity=0.7|};
 
-                        {|text = "Point 2"; 
-                        x = "2017-02-10"; 
+                        {|text = "Point 2";
+                        x = "2017-02-10";
                         y = "B";
-                        z = 4; 
+                        z = 4;
                         showarrow = true;
                         arrowcolor="black";
                         arrowsize=3;
                         arrowwidth=1;
                         arrowhead=1;
                         xanchor="";
-                        yanchor=""; 
+                        yanchor="";
                         xshift=0;
                         opacity=0.7 |};
-                        
+
                         {|text = "Point 3";
                         x = "2017-03-20";
                         y = "C";
-                        z = 5;  
+                        z = 5;
                         showarrow = true;
                         arrowcolor="black";
                         arrowsize=3;
@@ -125,7 +145,7 @@ Chart.Scatter3d(x,y,z,StyleParam.Mode.Lines,Name="z")
 let labels = ["Wages"; "Operating expenses"; "Cost of sales"; "Insurance"]
 let values = [40000000; 20000000; 30000000; 10000000]
 
-let layout = 
+let layout =
     let temp = Layout()
     temp?hoverinfo <- "label+percent"
     temp?textinfo <- "value"
@@ -162,12 +182,12 @@ let marker = Marker.init();
 marker?color <- colors
 marker?size <- 20
 
-let layout =  
+let layout =
     let temp = Layout()   // Some circumvent
     temp?textposition <- textposition   //  Issue with lataxis and lonaxis
-    temp?lataxis <- lataxis 
-    temp?lonaxis <- lonaxis 
-    temp?textposition <- textposition 
+    temp?lataxis <- lataxis
+    temp?lonaxis <- lonaxis
+    temp?textposition <- textposition
     temp
 
 Chart.ScatterGeo(lat,lon,StyleParam.Mode.Markers_Text,Labels=states)
@@ -189,7 +209,7 @@ let x0 = [100; 60; 40; 20]
 let x1 =[90; 70; 50; 10]
 let y = ["2018-01-01"; "2018-07-01"; "2019-01-01"; "2020-01-01"]
 
-[   
+[
 Chart.Funnel(x0,y,Name="Montreal",Orientation=StyleParam.Orientation.Horizontal,Color="rgba(103, 102, 255,1)" )
 Chart.Funnel(x1,y,Name="Vancouver",Orientation=StyleParam.Orientation.Horizontal,Color="rgba(255, 70, 51, 1)" )
 ]

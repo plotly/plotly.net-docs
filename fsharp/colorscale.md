@@ -10,6 +10,27 @@ jupyter:
     display_name: .NET (F#)
     language: F#
     name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to set, create and control continuous color scales and color bars
+      in scatter, bar, map and heatmap figures.
+    display_as: file_settings
+    language: fsharp
+    layout: base
+    name: Continuous Color Scales and Color Bars
+    order: 21
+    page_type: example_index
+    permalink: fsharp/logarithmic-color-scale/
+    thumbnail: thumbnail/heatmap_colorscale.jpg
 ---
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -45,15 +66,15 @@ let N = 40
 let rnd = System.Random()
 let values = Array.init N (fun _ -> rnd.Next(0, 40))
 let marker = Marker.init(Size= 16,Colorscale=StyleParam.Colorscale.Viridis, Showscale=true);
-marker?color <-values; 
+marker?color <-values;
 
 ```
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 let scatter =
-  Chart.Scatter(values,values,StyleParam.Mode.Markers) 
+  Chart.Scatter(values,values,StyleParam.Mode.Markers)
   |> Chart.withMarker(marker)
-   
+
 ```
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -78,7 +99,7 @@ let contour =
 ```
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-contour 
+contour
 ```
 
 # Custom Heatmap Color scale with Graph Objects
@@ -113,15 +134,15 @@ let N = 20
 let rnd = System.Random()
 let values = Array.init N (fun _ -> rnd.Next(-5, 15))
 let marker = Marker.init(Size= 25,Colorscale=StyleParam.Colorscale.Viridis, Showscale=true);
-marker?color <-values; 
+marker?color <-values;
 marker?cmid<-0;
 ```
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 let scatter =
-  Chart.Scatter(values,values,StyleParam.Mode.Markers) 
+  Chart.Scatter(values,values,StyleParam.Mode.Markers)
   |> Chart.withMarker(marker)
-   
+
 ```
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -153,7 +174,7 @@ let contour =
 contour
 ```
 
-# Custom Color bar Title, Labels, and Ticks with Graph Objects 
+# Custom Color bar Title, Labels, and Ticks with Graph Objects
 #### (Work well on scatter and othe plots but issue on heat map)
 
 
@@ -211,7 +232,7 @@ let headmap1=
            Chart.Heatmap(data=seq1)
            |>Chart.withMarker(marker)
            |>Chart.withLayout(layout)
-           
+
 headmap1
 
 ```
@@ -221,7 +242,7 @@ let headmap2=
            Chart.Heatmap(seq2)
            |>Chart.withMarker(marker)
            |>Chart.withLayout(layout)
-           
+
 headmap2
 ```
 
