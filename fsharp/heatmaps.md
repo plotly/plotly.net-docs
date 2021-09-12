@@ -7,12 +7,32 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make Heatmaps in F# with Plotly.
+    display_as: scientific
+    language: fsharp
+    layout: base
+    name: Heatmaps
+    order: 2
+    page_type: example_index
+    permalink: fsharp/heatmaps/
+    thumbnail: thumbnail/heatmap.jpg
 ---
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, *-*"
 #r "nuget: Plotly.NET.Interactive, *-*"
 
@@ -22,8 +42,8 @@ jupyter:
 
 # Basic Heatmap
 
-```csharp dotnet_interactive={"language": "fsharp"}
-open Plotly.NET 
+```fsharp dotnet_interactive={"language": "fsharp"}
+open Plotly.NET
 
 let matrix =
     [[1.;1.5;0.7;2.7];
@@ -33,7 +53,7 @@ let matrix =
 let rownames = ["p3";"p2";"p1"]
 let colnames = ["Tp0";"Tp30";"Tp60";"Tp160"]
 
-let colorscaleValue = 
+let colorscaleValue =
     StyleParam.Colorscale.Custom [(0.0,"#3D9970");(1.0,"#001f3f")]
 
 Chart.Heatmap(
@@ -45,11 +65,11 @@ Chart.Heatmap(
 |> Chart.withMarginSize(Left=200.)
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Deedle
 open FSharp.Data
 
-let volcano = 
+let volcano =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/volcano.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
 
@@ -58,11 +78,11 @@ Chart.Heatmap(data=Frame.toJaggedArray(volcano))
 
 # Sequential Colorscales: Greys
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Deedle
 open FSharp.Data
 
-let volcano = 
+let volcano =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/volcano.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
 
@@ -71,11 +91,11 @@ Chart.Heatmap(data=Frame.toJaggedArray(volcano),Colorscale=StyleParam.Colorscale
 
 # Custom colorscales
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Deedle
 open FSharp.Data
 
-let volcano = 
+let volcano =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/volcano.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
 
