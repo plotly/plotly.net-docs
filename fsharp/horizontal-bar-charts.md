@@ -7,12 +7,32 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make horizontal bar charts in F# with Plotly.
+    display_as: basic
+    language: fsharp
+    layout: base
+    name: Horizontal Bar Charts
+    order: 5
+    page_type: u-guide
+    permalink: fsharp/horizontal-bar-charts/
+    thumbnail: thumbnail/horizontal-bar.jpg
 ---
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: newtonsoft.json"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
@@ -22,17 +42,17 @@ open Plotly.NET
 ## Horizontal Bar Chart with go.Bar
 ### Basic Horizontal Bar Chart
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 
 [
     Chart.Bar(["giraffes"; "orangutans"; "monkeys"], [20;14;23])
-    |> GenericChart.mapTrace(fun x -> 
+    |> GenericChart.mapTrace(fun x ->
         x.SetValue("orientation", "h")
         x.SetValue("name", "SF Zoo")
         x.SetValue("marker", {| color = "rgba(246, 78, 139, 0.6)"; line = {| color = "rgba(246, 78, 139, 1.0)"; width = 3 |} |})
         x)
     Chart.Bar(["giraffes"; "orangutans"; "monkeys"], [12;18;29])
-    |> GenericChart.mapTrace(fun x -> 
+    |> GenericChart.mapTrace(fun x ->
         x.SetValue("orientation", "h")
         x.SetValue("name", "LA Zoo")
         x.SetValue("marker", {| color = "rgba(58, 71, 80, 0.6)"; line = {| color = "rgba(58, 71, 80, 1.0)"; width = 3 |} |})
@@ -45,7 +65,7 @@ open Plotly.NET
 
 ## Color Palette for Bar Chart
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let topLabels = ["Strongly<br>agree"; "Agree"; "Neutral"; "Disagree"; "Strongly<br>disagree"]
 let colors = [|"rgba(38, 24, 74, 0.8)"; "rgba(71, 58, 131, 0.8)"; "rgba(122, 120, 168, 0.8)"; "rgba(164, 163, 204, 0.85)"; "rgba(190, 192, 213, 1)"|]
 let xData = [[21; 30; 21; 16; 12;];
@@ -58,7 +78,7 @@ let yData = ["The course was effectively<br>organized";
              "my<br>ability to think critically about<br>the subject";
              "I would recommend this<br>course to a friend"]
 
-let annotations = 
+let annotations =
     Seq.map3
         (fun label x y ->
             Annotation.init(
@@ -87,7 +107,7 @@ List.mapi2
 
 ## Bar Chart with Line Plot
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let ySaving = [1.3586; 2.2623000000000002; 4.9821999999999997; 6.5096999999999996; 7.4812000000000003; 7.5133000000000001;15.2148;17.520499999999998]
 let yNetWorth = [93453.919999999998; 81666.570000000007; 69889.619999999995; 78381.529999999999; 141395.29999999999; 92969.020000000004; 66090.179999999993; 122379.3]
 let x = ["Japan"; "United Kingdom"; "Canada"; "Netherlands"; "United States"; "Belgium"; "Sweden"; "Switzerland"]

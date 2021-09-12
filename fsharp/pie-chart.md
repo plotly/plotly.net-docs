@@ -7,14 +7,34 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make Pie charts in F# with Plotly.
+    display_as: basic
+    language: fsharp
+    layout: base
+    name: Pie Charts
+    order: 5
+    page_type: u-guide
+    permalink: fsharp/pie-charts/
+    thumbnail: thumbnail/pie-chart.jpg
 ---
 
 ## Basic Pie Chart with go.Pie
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -27,7 +47,7 @@ Chart.Pie(Labels=labels, values=values)
 
 ## Styled Pie Chart
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -36,7 +56,7 @@ let colors = ["gold"; "mediumturquoise"; "darkorange"; "lightgreen"]
 let labels = ["Oxygen"; "Hydrogen"; "Carbon_Dioxide"; "Nitrogen"]
 let values = [4500; 2500; 1053; 500]
 
-let layout = 
+let layout =
     let obj = Layout()
     obj?hoverinfo <- "label+percent"
     obj?textinfo <- "value"
@@ -49,7 +69,7 @@ Chart.Pie(Labels=labels, values=values, Colors = colors)
 
 ## Controlling text orientation inside pie sectors
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -58,7 +78,7 @@ let colors = ["gold"; "mediumturquoise"; "darkorange"; "lightgreen"]
 let labels = ["Oxygen"; "Hydrogen"; "Carbon_Dioxide"; "Nitrogen"]
 let values = [4500; 2500; 1053; 500]
 
-let layout = 
+let layout =
     let obj = Layout()
     obj?insidetextorientation <- "radial"
     obj
@@ -69,7 +89,7 @@ Chart.Pie(Labels=labels, values=values, Textinfo="label+percent")
 
 ## Donut Chart
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -83,7 +103,7 @@ Chart.Doughnut(Labels=labels, values=values, Hole=0.3)
 
 ## Pulling sectors out from the center
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
@@ -93,7 +113,7 @@ let labels = ["Oxygen"; "Hydrogen"; "Carbon_Dioxide"; "Nitrogen"]
 let values = [4500.; 2500.; 1053.; 500.]
 
 
-let trace = 
+let trace =
     let tmp = Trace("pie")
     tmp?labels <- labels
     tmp?values <- values
@@ -105,7 +125,7 @@ GenericChart.ofTraceObject(trace)
 
 ## Pie Charts in subplots
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -118,8 +138,8 @@ let layout =
     tmp?title_text <- "Global Emissions 1990-2011"
     tmp?annotations <- [{|text = "CHG"; x = 0.18; y = 0.5; font_size = 20; showarrow = false|};{|text = "CO2"; x = 0.82; y = 0.5; font_size = 20; showarrow = false|}]
     tmp
-    
-let chg = 
+
+let chg =
     let tmp = Trace("pie")
     tmp?labels <- labels
     tmp?domain <- {|x = [0.; 0.5]|}
@@ -129,7 +149,7 @@ let chg =
     tmp?values <- [16; 15; 12; 6; 5; 4; 42]
     tmp
 
-let co2 = 
+let co2 =
     let tmp = Trace("pie")
     tmp?labels <- labels
     tmp?domain <- {|x = [0.5; 1.0]|}
@@ -146,7 +166,7 @@ Chart.Grid(
 ) |> Chart.withLayout(layout)
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -164,8 +184,8 @@ let layout =
     tmp?width <- 1000.
     tmp?height <- 500.
     tmp
-    
-let starryNight = 
+
+let starryNight =
     let tmp = Trace("pie")
     tmp?labels <- labels
     tmp?domain <- {|x = [0.; 0.5]; y = [0.5; 1.0]|}
@@ -174,7 +194,7 @@ let starryNight =
     tmp?values <- [38; 27; 18; 10; 7]
     tmp
 
-let sunflowers = 
+let sunflowers =
     let tmp = Trace("pie")
     tmp?labels <- labels
     tmp?domain <- {|x = [0.5; 1.0]; y = [0.5; 1.0]|}
@@ -183,7 +203,7 @@ let sunflowers =
     tmp?values <- [28; 26; 21; 15; 10]
     tmp
 
-let irises = 
+let irises =
     let tmp = Trace("pie")
     tmp?labels <- labels
     tmp?domain <- {|x = [0.0; 0.5]; y = [0.0; 0.5]|}
@@ -192,7 +212,7 @@ let irises =
     tmp?values <- [38; 19; 16; 14; 13]
     tmp
 
-let nightCafe = 
+let nightCafe =
     let tmp = Trace("pie")
     tmp?labels <- labels
     tmp?domain <- {|x = [0.5; 1.0]; y = [0.0; 0.5]|}
@@ -213,7 +233,7 @@ Chart.Grid(
 
 ## Plot chart with area proportional to total count
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -225,8 +245,8 @@ let layout =
     tmp?title <- "World GDP"
     tmp?width <- 1700.
     tmp
-    
-let gdp1980 = 
+
+let gdp1980 =
     let tmp = Trace("pie")
     tmp?labels <- labels
     tmp?domain <- Domain.init(Row = 1, Column = 2)
@@ -235,7 +255,7 @@ let gdp1980 =
     tmp?values <- [4.;7.;1.;7.;0.5]
     tmp
 
-let gdp2007 = 
+let gdp2007 =
     let tmp = Trace("pie")
     tmp?labels <- labels
     tmp?domain <- Domain.init(Row = 1, Column = 1)
@@ -255,7 +275,7 @@ let gdp2007 =
 
 ## Sunburst charts
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET

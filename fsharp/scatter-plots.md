@@ -7,12 +7,32 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make scatter plots in F# with Plotly.
+    display_as: basic
+    language: fsharp
+    layout: base
+    name: Scatter Plots
+    order: 5
+    page_type: u-guide
+    permalink: fsharp/scatter-plots/
+    thumbnail: thumbnail/line-and-scatter.jpg
 ---
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: newtonsoft.json"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
@@ -31,7 +51,7 @@ let nextFloat (min, max) = (random.NextDouble() * (max - min) + min);
 
 ## Simple Scatter Plot
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -43,7 +63,7 @@ Chart.Scatter(ts, ys, StyleParam.Mode.Markers)
 
 ## Line and Scatter Plots
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -66,7 +86,7 @@ let random_y2 = generate () |> Seq.map(fun x-> x - 5.)
 
 ## Bubble Scatter Plots
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -75,7 +95,7 @@ let xs =[1; 2; 3; 4]
 let ys =[10;11; 12; 13]
 
 let marker = Marker.init(MultiSizes=[40; 60; 80; 100]);
-marker?color <- ["#4287f5";"#cb23fa";"#23fabd";"#ff7b00"]; 
+marker?color <- ["#4287f5";"#cb23fa";"#23fabd";"#ff7b00"];
 
 Chart.Scatter(xs, ys, StyleParam.Mode.Markers, Name="Markers")
         |> Chart.withMarker(marker)
@@ -83,7 +103,7 @@ Chart.Scatter(xs, ys, StyleParam.Mode.Markers, Name="Markers")
 
 ## Style Scatter Plots
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -96,7 +116,7 @@ let coss = ts |> Seq.map (Math.Cos)
 [
     Chart.Scatter(ts, sins, StyleParam.Mode.Markers, Name ="sin", Color = "rgba(152, 0, 0, .8)");
     Chart.Scatter(ts, coss, StyleParam.Mode.Markers, Name ="cos", Color = "rgba(255, 182, 193, .9)")
-] |> Chart.Combine 
+] |> Chart.Combine
   |> Chart.withMarker(Marker.init(10, Line = Line.init(Width=2.)))
   |> Chart.withX_AxisStyle("", Zeroline=false)
   |> Chart.withY_AxisStyle("", Zeroline=false)
@@ -105,7 +125,7 @@ let coss = ts |> Seq.map (Math.Cos)
 
 ## Data Labels on Hover
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 #r "nuget: FSharp.Data, 4.2.2"
@@ -123,45 +143,45 @@ let population = datasetItems.Rows |> Seq.map(fun x -> x.Population)
 let states = datasetItems.Rows |> Seq.map(fun x -> x.State)
 
 let marker = Marker.init()
-marker?color <- population 
+marker?color <- population
 
-Chart.Point(postalCodes, population, Labels = states) 
+Chart.Point(postalCodes, population, Labels = states)
   |> Chart.withMarker(marker)
   |> Chart.withTitle("Population of USA States")
 ```
 
 ## Scatter with a Color Dimension
 
-```csharp dotnet_interactive={"language": "fsharp"}
-let xs = [0. .. 1. .. 500.] 
+```fsharp dotnet_interactive={"language": "fsharp"}
+let xs = [0. .. 1. .. 500.]
 let ys = xs |> Seq.map (fun _ -> nextFloat(-3., 4.))
 
 let marker = Marker.init(Size = 16, Colorscale=StyleParam.Colorscale.Viridis, Showscale=true);
 marker?color <- ys
-Chart.Point(xs, ys) 
+Chart.Point(xs, ys)
   |> Chart.withMarker(marker)
 ```
 
 ## Large Data Sets
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
 
 let series = [0. .. 1. .. 100000.]
-let xs = series |> Seq.map (fun x-> nextFloat(-x, x)) 
+let xs = series |> Seq.map (fun x-> nextFloat(-x, x))
 let ys = series |> Seq.map (fun x-> nextFloat(-x, x))
 
 let marker = Marker.init(Colorscale=StyleParam.Colorscale.Viridis, Line=Line.init(Width=1.))
 marker?color <-ys
 
-Chart.Scatter(xs, ys, StyleParam.Mode.Markers, UseWebGL= true) 
+Chart.Scatter(xs, ys, StyleParam.Mode.Markers, UseWebGL= true)
   |> Chart.withMarker(marker)
 
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -174,13 +194,14 @@ let xs = thetas |> Seq.zip rs |> Seq.map(fun (t,r)-> Math.Cos(r*t) )
 let ys = thetas |> Seq.zip rs |> Seq.map(fun (t,r)-> Math.Sin(r*t))
 
 let marker = Marker.init(Colorscale=StyleParam.Colorscale.Viridis, Line=Line.init(Width=01.))
-                      marker?color<-series |> Seq.map (fun _ -> nextFloat(0. ,1.))
 
-Chart.Scatter(xs, ys, StyleParam.Mode.Markers, UseWebGL= true) 
+marker?color<-series |> Seq.map (fun _ -> nextFloat(0. ,1.))
+
+Chart.Scatter(xs, ys, StyleParam.Mode.Markers, UseWebGL= true)
   |> Chart.withMarker(marker)
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -194,7 +215,7 @@ Chart.Scatter(x, y , StyleParam.Mode.Markers_Text)
 
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 #r "nuget: FSharp.Data, 4.2.2"
@@ -202,7 +223,7 @@ open Plotly.NET
 open FSharp.Data
 
 [<Literal>]
-let IrisDatasetUrl = 
+let IrisDatasetUrl =
     "https://gist.githubusercontent.com/netj/8836201/raw/6f9306ad21398ea43cba4f7d537619d0e07d5ae3/iris.csv"
 
 type IrisDataset = CsvProvider<IrisDatasetUrl>
@@ -224,7 +245,7 @@ Chart.Scatter(iris.speal_width, iris.sepal_length,StyleParam.Mode.Markers)
 ## Setting size and color with column names
 <!-- #endregion -->
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 
 let marker = Marker.init(MultiSizes=iris.petal_length);
 marker?color <- iris.species;
@@ -237,7 +258,7 @@ Chart.Scatter(iris.speal_width, iris.sepal_length, StyleParam.Mode.Markers, Labe
 
 ##Line plot with Plotly.NET
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let marker = Marker.init()
 marker?color <- iris.species
 marker?symbol <- iris.species
@@ -248,7 +269,7 @@ Chart.Scatter(iris.speal_width, iris.sepal_length,StyleParam.Mode.Markers, Label
     |> Chart.withMarker(marker)
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let marker = Marker.init(Showscale = true);
 marker?color <- iris.petal_length
 
@@ -262,7 +283,7 @@ Chart.Scatter(iris.speal_width, iris.sepal_length,StyleParam.Mode.Markers, Label
 ## Scatter plots and Categorical Axes
 <!-- #endregion -->
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let nation = ["South Korea";"China";"Canada"]
 let matel = ["gold";"silver";"bronze"]
 let gold = [24;10;9]
@@ -270,7 +291,7 @@ let silver = [13;15;12]
 let bronze = [11;8;12]
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let marker = Marker.init(Size=10);
 marker?color <- matel
 marker?symbol <- matel
@@ -281,9 +302,9 @@ Chart.Scatter([1 .. 25], nation,StyleParam.Mode.Markers, Labels=iris.petal_width
     |> Chart.withMarker(marker)
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let marker = Marker.init(MultiSizes=iris.petal_length);
-marker?color <- iris.petal_length; 
+marker?color <- iris.petal_length;
 
 Chart.Scatter(iris.speal_width, iris.sepal_length,StyleParam.Mode.Markers)
     |> Chart.withMarker(marker)
@@ -291,9 +312,9 @@ Chart.Scatter(iris.speal_width, iris.sepal_length,StyleParam.Mode.Markers)
     |> Chart.withY_AxisStyle ("sepal_length")
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let marker = Marker.init(MultiSizes=iris.petal_length);
-marker?color <- iris.petal_length; 
+marker?color <- iris.petal_length;
 
 Chart.Scatter(iris.speal_width, iris.sepal_length,StyleParam.Mode.Markers)
     |> Chart.withMarker(marker)
@@ -303,7 +324,7 @@ Chart.Scatter(iris.speal_width, iris.sepal_length,StyleParam.Mode.Markers)
 
 ### Some random data generators
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 
 open Plotly.NET
 open System
@@ -314,31 +335,31 @@ let nextFloat (min, max) = (random.NextDouble() * (max - min) + min);
 let size = nextFloat(10.,15.)
 let series = [1. .. size]
 let generateRangedRandomData minValue maxValue  = series |> Seq.map (fun _ -> nextFloat(minValue, maxValue))
-let generateRandomData ()  = 
+let generateRandomData ()  =
     let max = nextFloat(1.,100.)
-    generateRangedRandomData 1. max  
+    generateRangedRandomData 1. max
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
-let yellowXs = generateRandomData() 
+```fsharp dotnet_interactive={"language": "fsharp"}
+let yellowXs = generateRandomData()
 let yellowYs = generateRandomData()
 let yellowSizes = generateRangedRandomData 10. 20.
 
-let yellowChart = 
+let yellowChart =
     Chart.Bubble(yellowXs,yellowYs,yellowSizes, Name = "Yellow", Color="#ebcc34")
-    
 
-let blueXs = generateRandomData() 
+
+let blueXs = generateRandomData()
 let blueYs = generateRandomData()
 let blueSizes = generateRangedRandomData 10. 20.
-let blueChart = 
+let blueChart =
     Chart.Bubble(blueXs,blueYs,blueSizes, Name = "Blue", Color = "#3471eb")
 
 
 [
     yellowChart;
     blueChart
-    
+
 ] |> Chart.Combine
   |> Chart.withX_AxisStyle ("X axis title")
   |> Chart.withY_AxisStyle ("Y axis title")
@@ -347,9 +368,9 @@ let blueChart =
 
 
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let marker = Marker.init(Showscale=true, Colorbar= Colorbar.init(Title="petal_length"));
-marker?color <- iris.petal_length; 
+marker?color <- iris.petal_length;
 
 Chart.Scatter(iris.speal_width, iris.sepal_length,StyleParam.Mode.Markers)
     |> Chart.withMarker(marker)
@@ -357,9 +378,9 @@ Chart.Scatter(iris.speal_width, iris.sepal_length,StyleParam.Mode.Markers)
     |> Chart.withY_AxisStyle ("sepal_length")
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let marker = Marker.init(Showscale=true);
-marker?color <- iris.petal_length; 
+marker?color <- iris.petal_length;
 
 Chart.Scatter(iris.speal_width, iris.sepal_length, StyleParam.Mode.Markers)
     |> Chart.withMarker(marker)
@@ -367,7 +388,7 @@ Chart.Scatter(iris.speal_width, iris.sepal_length, StyleParam.Mode.Markers)
     |> Chart.withY_AxisStyle ("sepal_length")
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 
 let degreesToRadians degrees = degrees * Math.PI / 180.
 
@@ -381,7 +402,7 @@ Chart.Line(xs, ys)
     |> Chart.withLayout(Layout.init(Hovermode = StyleParam.Hovermode.Closest))
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 
 let yellowXs = [1960 ..10 .. 2000]
 let yellowYs = [70 .. 2 .. 80]
@@ -389,16 +410,16 @@ let yellowYs = [70 .. 2 .. 80]
 let blueXs = [1960 .. 10 .. 2000]
 let blueYs = [65 .. 2 .. 80]
 
-let yellowChart = 
+let yellowChart =
     Chart.Line(yellowXs, yellowYs, Name = "Yellow", Color="#ebcc34")
-let blueChart = 
+let blueChart =
     Chart.Line(blueXs,blueYs, Name = "Blue", Color = "#3471eb")
 
 
 [
     yellowChart;
     blueChart
-    
+
 ] |> Chart.Combine
   |> Chart.withX_AxisStyle ("X axis title")
   |> Chart.withY_AxisStyle ("Y axis title")

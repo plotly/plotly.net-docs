@@ -7,14 +7,34 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make WebGL Charts in F# with Plotly.
+    display_as: basic
+    language: fsharp
+    layout: base
+    name: WebGL Charts
+    order: 5
+    page_type: u-guide
+    permalink: fsharp/webgl/
+    thumbnail: thumbnail/webgl.png
 ---
 
 ## WebGL with 100,000 points with Graph Objects
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -40,7 +60,7 @@ Chart.Scatter(x, y, StyleParam.Mode.Markers, UseWebGL= true)
 
 ## WebGL Rendering with 1 Million Points
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -66,7 +86,7 @@ Chart.Scatter(x, y, StyleParam.Mode.Markers, UseWebGL= true)
 
 ## WebGL Rendering with 1 Million Points
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -83,7 +103,7 @@ let y = genRandomNumbers N
 
 Chart.Grid(
     [
-        for _ in 0..10 do 
+        for _ in 0..10 do
             [Chart.Scatter(x, y, StyleParam.Mode.Markers, UseWebGL= true)]
     ],
     sharedAxes=true

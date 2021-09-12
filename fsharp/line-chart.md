@@ -7,14 +7,34 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make line charts in F# with Plotly.
+    display_as: basic
+    language: fsharp
+    layout: base
+    name: Line Charts
+    order: 5
+    page_type: u-guide
+    permalink: fsharp/line-charts/
+    thumbnail: thumbnail/line-plot.jpg
 ---
 
 ## Libraries
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: newtonsoft.json"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
@@ -28,7 +48,7 @@ let nextFloat (min, max) = (random.NextDouble() * (max - min) + min);
 
 ## Line Plots with
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x = [1952; 1957; 1962; 1967; 1972; 1977; 1982; 1987; 1992; 1997; 2002; 2007]
@@ -44,7 +64,7 @@ Chart.Spline(x, y)
 ## MultiLine Chart
 ## Line Plots with column encoding color
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x  = [1952; 1957; 1962; 1967; 1972; 1977; 1982; 1987; 1992; 1997; 2002; 2007]
@@ -61,8 +81,8 @@ let y2 = [69.39; 70.26; 71.24; 71.52; 71.89; 72.22; 73.84; 74.32; 76.33; 77.55; 
 
         Chart.Line(x, y2)
         |> Chart.withTraceName(Name="New Zealand")
-        |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid) 
-] 
+        |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid)
+]
 |> Chart.Combine
 |> Chart.withX_AxisStyle("year")
 |> Chart.withY_AxisStyle("lifeExp")
@@ -71,7 +91,7 @@ let y2 = [69.39; 70.26; 71.24; 71.52; 71.89; 72.22; 73.84; 74.32; 76.33; 77.55; 
 ## Data Order in Line Charts
 Unsorted Input
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x  = [1.0; 3.0; 2.0; 4.0]
@@ -89,7 +109,7 @@ Chart.Line(x, y)
 Sorted Input
 <!-- #endregion -->
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let y = [1.0; 3.0; 2.0; 4.0]
@@ -100,12 +120,12 @@ Chart.Line(x, y)
 |> Chart.withTitle("Sorted Input")
 |> Chart.withX_AxisStyle("X")
 |> Chart.withY_AxisStyle("Y")
-|> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid) 
+|> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid)
 ```
 
 ## Connected Scatterplots
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let labels = ["1952"; "1957"; "1962"; "1967"; "1972"; "1977"; "1982"; "1987"; "1992"; "1997"; "2002"; "2007"]
@@ -146,7 +166,7 @@ let y2 = [11367.86; 12489.95; 13462.49; 16076.59; 18970.57; 22090.88; 22898.79; 
 
 The markers argument can be set to True to show markers on lines.
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x  = [1952; 1957; 1962; 1967; 1972; 1977; 1982; 1987; 1992; 1997; 2002; 2007]
@@ -163,8 +183,8 @@ let y2 = [69.39; 70.26; 71.24; 71.52; 71.89; 72.22; 73.84; 74.32; 76.33; 77.55; 
 
         Chart.Line(x, y2, ShowMarkers=true, MarkerSymbol=StyleParam.Symbol.Circle)
         |> Chart.withTraceName(Name="New Zealand")
-        |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid) 
-] 
+        |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid)
+]
 |> Chart.Combine
 |> Chart.withX_AxisStyle("year")
 |> Chart.withY_AxisStyle("lifeExp")
@@ -172,7 +192,7 @@ let y2 = [69.39; 70.26; 71.24; 71.52; 71.89; 72.22; 73.84; 74.32; 76.33; 77.55; 
 
 The symbol argument can be used to map a data field to the marker symbol.
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x  = [1952; 1957; 1962; 1967; 1972; 1977; 1982; 1987; 1992; 1997; 2002; 2007]
@@ -190,7 +210,7 @@ let y2 = [69.39; 70.26; 71.24; 71.52; 71.89; 72.22; 73.84; 74.32; 76.33; 77.55; 
         Chart.Line(x, y2, ShowMarkers=true, MarkerSymbol=StyleParam.Symbol.Diamond)
         |> Chart.withTraceName(Name="New Zealand")
         |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid)
-] 
+]
 |> Chart.Combine
 |> Chart.withX_AxisStyle("year")
 |> Chart.withY_AxisStyle("lifeExp")
@@ -199,7 +219,7 @@ let y2 = [69.39; 70.26; 71.24; 71.52; 71.89; 72.22; 73.84; 74.32; 76.33; 77.55; 
 ## Line Plot with go.Scatter
 Simple Line Plot
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let xs = [0.0 .. 9.0]
 let ys = xs |> Seq.map (fun x -> x ** 2.0)
 
@@ -208,7 +228,7 @@ Chart.Scatter(xs, ys, StyleParam.Mode.Lines_Markers)
 
 Line Plot Modes
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let n = 100
 let series = [0..n]
 
@@ -236,7 +256,7 @@ let random_ys2 = generate () |> Seq.map(fun x -> x - 5.0)
 
 ## Style Line Plots
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 
 //  Add data
 let month = ["January";"February";"March";"April";"May";"June";"July";"August";"September";"October";"November";"December"]
@@ -256,18 +276,18 @@ let low2014Chart = Chart.Scatter(month, low_2014, StyleParam.Mode.Lines_Markers,
                         |> Chart.withLineStyle(Color = "royalblue", Width=4.)
 
 let high2007Chart = Chart.Scatter(month, high_2007, StyleParam.Mode.Lines_Markers,  Name="High 2007")
-                        |> Chart.withLineStyle(Color = "firebrick", Width=4., Dash=StyleParam.DrawingStyle.Dash)  
+                        |> Chart.withLineStyle(Color = "firebrick", Width=4., Dash=StyleParam.DrawingStyle.Dash)
                         //dash options include 'dash', 'dot', and 'dashdot'
 
 let low2007Chart = Chart.Scatter(month, low_2007, StyleParam.Mode.Lines_Markers,  Name="Low 2007")
-                        |> Chart.withLineStyle(Color = "royalblue", Width=4., Dash=StyleParam.DrawingStyle.Dash)  
+                        |> Chart.withLineStyle(Color = "royalblue", Width=4., Dash=StyleParam.DrawingStyle.Dash)
 
 
 let high2000Chart = Chart.Scatter(month, high_2000, StyleParam.Mode.Lines_Markers,  Name="High 2000")
                         |> Chart.withLineStyle(Color = "firebrick", Width=4., Dash=StyleParam.DrawingStyle.Dot)
 
 let low2000Chart = Chart.Scatter(month, low_2000, StyleParam.Mode.Lines_Markers,  Name="Low 2000")
-                        |> Chart.withLineStyle(Color = "royalblue", Width=4., Dash=StyleParam.DrawingStyle.Dot)  
+                        |> Chart.withLineStyle(Color = "royalblue", Width=4., Dash=StyleParam.DrawingStyle.Dot)
 
 
 [
@@ -278,7 +298,7 @@ let low2000Chart = Chart.Scatter(month, low_2000, StyleParam.Mode.Lines_Markers,
     high2000Chart;
     low2000Chart
 
-] 
+]
     |> Chart.Combine
     |> Chart.withTitle("Average High and Low Temperatures in New York")
     |> Chart.withX_AxisStyle ("Month")
@@ -287,47 +307,47 @@ let low2000Chart = Chart.Scatter(month, low_2000, StyleParam.Mode.Lines_Markers,
 
 ## Connect Data Gaps
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 
 let xs = [1; 2; 3; 4; 5; 6; 7; 8; 9; 10; 11; 12; 13; 14; 15]
 
 let chart = Chart.Scatter(xs,
-             [10.; 20.; nan; 15.; 10.; 5.; 15.;nan; 20.; 10.; 10.; 15.; 25.; 20.; 10.], 
+             [10.; 20.; nan; 15.; 10.; 5.; 15.;nan; 20.; 10.; 10.; 15.; 25.; 20.; 10.],
              StyleParam.Mode.Lines_Markers, Name="<b>No</b> Gaps")
-             |> GenericChart.mapTrace(fun t -> 
+             |> GenericChart.mapTrace(fun t ->
                                                 t?connectgaps <- true
                                                 t)
 [
-    
+
     chart;
     Chart.Scatter(xs,
-             [5.; 15.; nan; 10.; 5.; 0.; 10.; nan; 15.; 5.; 5.; 10.; 20.; 15.; 5.], 
+             [5.; 15.; nan; 10.; 5.; 0.; 10.; nan; 15.; 5.; 5.; 10.; 20.; 15.; 5.],
              StyleParam.Mode.Lines_Markers, Name="Gaps")
 ] |> Chart.Combine
 ```
 
 ## Interpolation with Line Plots
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let xs = [1; 2; 3; 4; 5]
 let ys = [1; 3; 2; 3; 1]
 
-let linear = Chart.Scatter(xs, ys, StyleParam.Mode.Lines_Markers,Name="linear") 
+let linear = Chart.Scatter(xs, ys, StyleParam.Mode.Lines_Markers,Name="linear")
             |> Chart.withLineStyle(Shape =StyleParam.Shape.Linear)
 
-let spline = Chart.Scatter(xs, ys |> Seq.map(fun y->y+5) ,StyleParam.Mode.Lines_Markers,Labels=["tweak line smoothness<br>with 'smoothing' in line object"],Name="spline") 
+let spline = Chart.Scatter(xs, ys |> Seq.map(fun y->y+5) ,StyleParam.Mode.Lines_Markers,Labels=["tweak line smoothness<br>with 'smoothing' in line object"],Name="spline")
             |> Chart.withLineStyle(Shape =StyleParam.Shape.Spline)
 
-let vhv = Chart.Scatter(xs, ys |> Seq.map(fun y->y+10), StyleParam.Mode.Lines_Markers,Name="vhv") 
+let vhv = Chart.Scatter(xs, ys |> Seq.map(fun y->y+10), StyleParam.Mode.Lines_Markers,Name="vhv")
             |> Chart.withLineStyle(Shape =StyleParam.Shape.Vhv)
 
-let hvh = Chart.Scatter(xs, ys |> Seq.map(fun y->y+15), StyleParam.Mode.Lines_Markers,Name="hvh") 
+let hvh = Chart.Scatter(xs, ys |> Seq.map(fun y->y+15), StyleParam.Mode.Lines_Markers,Name="hvh")
             |> Chart.withLineStyle(Shape =StyleParam.Shape.Hvh)
 
-let vh = Chart.Scatter(xs, ys |> Seq.map(fun y->y+20), StyleParam.Mode.Lines_Markers,Name="vh") 
+let vh = Chart.Scatter(xs, ys |> Seq.map(fun y->y+20), StyleParam.Mode.Lines_Markers,Name="vh")
             |> Chart.withLineStyle(Shape =StyleParam.Shape.Vh)
 
-let hv = Chart.Scatter(xs,  ys |> Seq.map(fun y->y+25), StyleParam.Mode.Lines_Markers,Name="hv") 
+let hv = Chart.Scatter(xs,  ys |> Seq.map(fun y->y+25), StyleParam.Mode.Lines_Markers,Name="hv")
             |> Chart.withLineStyle(Shape =StyleParam.Shape.Hv)
 
 [
@@ -344,7 +364,7 @@ let hv = Chart.Scatter(xs,  ys |> Seq.map(fun y->y+25), StyleParam.Mode.Lines_Ma
 
 ## Label Lines with Annotations
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let title = "Main Source for News"
 let labels = ["Television"; "Newspaper"; "Internet"; "Radio"]
 let colors = ["rgb(67,67,67)"; "rgb(115,115,115)"; "rgb(49,130,189)"; "rgb(189,189,189)"]
@@ -373,7 +393,7 @@ seq {
                               [y_data.[i].[0]; y_data.[i].[^0]],
                               mode=StyleParam.Mode.Markers)
                     |> Chart.withMarkerStyle(Size=mode_size.[i], Color=colors.[i])
-        ]        
+        ]
 } |> Chart.Combine
   |> Chart.withLayout(Layout.init(Autosize=false, Showlegend=false, Plot_bgcolor="white"))
   |> Chart.withX_Axis(Axis.LinearAxis.init(Showline=true,
@@ -395,13 +415,13 @@ seq {
     |> Chart.withAnnotations(seq {
         for (y_trace, label, color) in Seq.zip3 y_data labels colors do
 
-        // labeling the left_side of the plot     
+        // labeling the left_side of the plot
         let a1 = Annotation.init(XRef="paper", X=0.05, Y=y_trace.[0],
                                   Text=  $"{label} {y_trace.[0]}%%",
                                   ShowArrow=false,
                                   Font=Font.init(Family=StyleParam.FontFamily.Arial, Size=16.))
 
-        a1?xanchor <-"right"  //workaround 
+        a1?xanchor <-"right"  //workaround
         a1?yanchor <-"middle" //workaround
 
         //labeling the right_side of the plot
@@ -410,41 +430,41 @@ seq {
                                   ShowArrow=false,
                                   Font=Font.init(Family=StyleParam.FontFamily.Arial, Size=16.));
 
-        a2?xanchor <-"left"  //workaround 
+        a2?xanchor <-"left"  //workaround
         a2?yanchor <-"middle" //workaround
 
         // Title
         let a3 =  Annotation.init(XRef="paper",YRef="paper", X=0., Y=1.05,
                                   Text=  "Main Source for News",
                                   ShowArrow=false,
-                                  Font=Font.init(Family=StyleParam.FontFamily.Arial, 
+                                  Font=Font.init(Family=StyleParam.FontFamily.Arial,
                                                  Size=30.,
                                                  Color="rgb(37,37,37)"));
-        a3?xanchor <-"left"  //workaround 
+        a3?xanchor <-"left"  //workaround
         a3?yanchor <-"bottom" //workaround
-        
+
 
         // Source
         let a4 = Annotation.init(XRef="paper",YRef="paper", X=0.5, Y= -0.1,
                                   Text=  "Source: PewResearch Center & Storytelling with data",
                                   ShowArrow=false,
-                                  Font=Font.init(Family=StyleParam.FontFamily.Arial, 
+                                  Font=Font.init(Family=StyleParam.FontFamily.Arial,
                                                  Size=12.,
                                                  Color="rgb(150,150,150)"))
 
-        a4?xanchor <-"center"  //workaround 
+        a4?xanchor <-"center"  //workaround
         a4?yanchor <-"top" //workaround
-        
-        
 
-                                  
+
+
+
         yield! [a1;a2;a3;a4]
     })
 ```
 
 ## Filled Lines
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let x = [1.; 2.; 3.; 4.; 5.; 6.; 7.; 8.; 9.; 10.]
 let x_rev = x |> Seq.rev
 
@@ -469,9 +489,9 @@ let y3_lower = [9.; 7.; 5.; 3.; 1.; -5.; 1.; 3.; 1.; -1.]|> Seq.rev
                   (Seq.append y1_upper y1_lower),
                   StyleParam.Mode.Lines,
                    Showlegend=false,
-                   Name="Fair") 
+                   Name="Fair")
         |> Chart.withLineStyle(Color="rgba(255,255,255,0)")
-        |> GenericChart.mapTrace(fun t->  
+        |> GenericChart.mapTrace(fun t->
                                         t?fill<-StyleParam.Fill.toString(StyleParam.Fill.ToSelf)
                                         t?fillcolor<-"rgba(0,100,80,0.2)"
                                         t)
@@ -482,7 +502,7 @@ let y3_lower = [9.; 7.; 5.; 3.; 1.; -5.; 1.; 3.; 1.; -1.]|> Seq.rev
                    Showlegend=false,
                    Name="Premium")
         |> Chart.withLineStyle(Color="rgba(255,255,255,0)")
-        |> GenericChart.mapTrace(fun t->  
+        |> GenericChart.mapTrace(fun t->
                                         t?fill<-StyleParam.Fill.toString(StyleParam.Fill.ToSelf)
                                         t?fillcolor<-"rgba(0,176,246,0.2)"
                                         t)
@@ -495,18 +515,18 @@ let y3_lower = [9.; 7.; 5.; 3.; 1.; -5.; 1.; 3.; 1.; -1.]|> Seq.rev
                    Showlegend=false,
                    Name="Ideal")
         |> Chart.withLineStyle(Color="rgba(255,255,255,0)")
-        |> GenericChart.mapTrace(fun t->  
+        |> GenericChart.mapTrace(fun t->
                                         t?fill<-StyleParam.Fill.toString(StyleParam.Fill.ToSelf)
                                         t?fillcolor<-"rgba(231,107,243,0.2)"
                                         t)
 
-    ;Chart.Scatter(x,y1,StyleParam.Mode.Lines,Name="Fair") 
+    ;Chart.Scatter(x,y1,StyleParam.Mode.Lines,Name="Fair")
         |> Chart.withLineStyle(Color="rgb(0,100,80)")
 
-    ;Chart.Scatter(x,y2,StyleParam.Mode.Lines,Name="Premium") 
+    ;Chart.Scatter(x,y2,StyleParam.Mode.Lines,Name="Premium")
         |> Chart.withLineStyle(Color="rgb(0,176,246)")
 
-    ;Chart.Scatter(x,y3,StyleParam.Mode.Lines,Name="Ideal") 
+    ;Chart.Scatter(x,y3,StyleParam.Mode.Lines,Name="Ideal")
         |> Chart.withLineStyle(Color="rgb(231,107,243)")
 
 ] |> Chart.Combine

@@ -10,6 +10,26 @@ jupyter:
     display_name: .NET (F#)
     language: F#
     name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make filled area charts in F# with Plotly.
+    display_as: basic
+    language: fsharp
+    layout: base
+    name: Filled Area Charts
+    order: 5
+    page_type: u-guide
+    permalink: fsharp/filled-area-charts/
+    thumbnail: thumbnail/area.jpg
 ---
 
 # Filled Area Charts
@@ -33,9 +53,9 @@ let y0 = [0; 2; 3; 5]
 let y1 = [3; 5; 1; 7]
 
 [
-    Chart.Area(x, y0) 
+    Chart.Area(x, y0)
     Chart.Area(x, y1)
-] 
+]
 |> Chart.Combine
 ```
 
@@ -49,9 +69,9 @@ let y0 = [0; 2; 3; 5]
 let y1 = [3; 5; 1; 7]
 
 [
-    Chart.Area(x, y0) 
+    Chart.Area(x, y0)
     Chart.Area(x, y1)
-] 
+]
 |> Chart.Combine
 |> Chart.withLineStyle(Width=0.0)
 ```
@@ -87,10 +107,10 @@ let y1 = [20; 10; 10; 60]
 let y2 = [40; 30; 50; 30]
 
 [
-    Chart.StackedArea(x, y0, Color="#B4A3F4") 
+    Chart.StackedArea(x, y0, Color="#B4A3F4")
     Chart.StackedArea(x, y1, Color="#AAE9E8")
     Chart.StackedArea(x, y2, Color="#CEF2E5")
-] 
+]
 |> Chart.Combine
 |> Chart.withLineStyle(Width=0.0)
 ```
@@ -113,28 +133,28 @@ let yAxis = Axis.LinearAxis.init(AxisType = StyleParam.AxisType.Linear,
                                  Ticksuffix = "%")
 
 [
-    Chart.Scatter(x, 
-                  y0, 
+    Chart.Scatter(x,
+                  y0,
                   StyleParam.Mode.Lines,
                   StackGroup = stackGroup,
                   GroupNorm = StyleParam.GroupNorm.Percent,
                   Color="#B4A3F4")
-    Chart.Scatter(x, 
-                  y1, 
+    Chart.Scatter(x,
+                  y1,
                   StyleParam.Mode.Lines,
                   StackGroup = stackGroup,
                   Color="#B2C9F2")
-    Chart.Scatter(x, 
-                  y2, 
+    Chart.Scatter(x,
+                  y2,
                   StyleParam.Mode.Lines,
                   StackGroup = stackGroup,
                   Color="#AAE9E8")
-    Chart.Scatter(x, 
-                  y3, 
+    Chart.Scatter(x,
+                  y3,
                   StyleParam.Mode.Lines,
                   StackGroup = stackGroup,
                   Color="#CEF2E5")
-] 
+]
 |> Chart.Combine
 |> Chart.withLineStyle(Width=0.0)
 |> Chart.withX_Axis xAxis
@@ -155,15 +175,15 @@ let yAxis = Axis.LinearAxis.init(AxisType = StyleParam.AxisType.Linear,
                                  Range = StyleParam.Range.MinMax(0.0, 3.0))
 
 [
-    Chart.Area(x0, 
-               y, 
+    Chart.Area(x0,
+               y,
                Color="#9400D3")
                |> GenericChart.mapTrace(fun x -> x.SetValue("hoveron", "points+fills"); x.SetValue("text", "Points + Fills"); x.SetValue("hoverinfo", "text+x+y"); x)
-    Chart.Area(x1, 
-               y, 
+    Chart.Area(x1,
+               y,
                Color="#EE82EE")
                |> GenericChart.mapTrace(fun x -> x.SetValue("hoveron", "points"); x.SetValue("text", "Points only"); x.SetValue("hoverinfo", "text+x+y"); x)
-] 
+]
 |> Chart.Combine
 |> Chart.withX_Axis xAxis
 |> Chart.withY_Axis yAxis

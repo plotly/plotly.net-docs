@@ -10,6 +10,26 @@ jupyter:
     display_name: .NET (F#)
     language: F#
     name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make tables in F# with Plotly.
+    display_as: basic
+    language: fsharp
+    layout: base
+    name: Tables
+    order: 5
+    page_type: u-guide
+    permalink: fsharp/table/
+    thumbnail: thumbnail/table.gif
 ---
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -26,7 +46,7 @@ open Plotly.NET
 open Plotly.NET
 
 let header = ["A Scores";"B Scores"]
-let rows = 
+let rows =
     [
         [100; 95]
         [90; 85]
@@ -41,7 +61,7 @@ Chart.Table(header, rows)
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 let header = ["A Scores";"B Scores"]
-let rows = 
+let rows =
     [
         [100; 95]
         [90; 85]
@@ -49,19 +69,19 @@ let rows =
         [90; 95]
     ]
 
-let headerLineStyle = Line.init(Color="#2f4f4f")    
-let cellLineStyle = Line.init(Color="#2f4f4f")    
+let headerLineStyle = Line.init(Color="#2f4f4f")
+let cellLineStyle = Line.init(Color="#2f4f4f")
 let width = 500.0
 let height = 300.0
 
-Chart.Table(header, 
+Chart.Table(header,
             rows,
             AlignHeader = [StyleParam.HorizontalAlign.Left],
             AlignCells = [StyleParam.HorizontalAlign.Left],
             ColorHeader = "#87CEFA",
             ColorCells = "#E0FFFF",
             LineHeader = headerLineStyle,
-            LineCells = cellLineStyle) 
+            LineCells = cellLineStyle)
     |> Chart.withSize (width, height)
 ```
 
@@ -74,8 +94,8 @@ open Plotly.NET
 type UsaStatesDataset = CsvProvider<"https://raw.githubusercontent.com/plotly/datasets/master/2014_usa_states.csv">
 
 let data = UsaStatesDataset.GetSample()
-let headers = match data.Headers with 
-              | Some h -> h 
+let headers = match data.Headers with
+              | Some h -> h
               | None -> [||]
 
 let rows = data.Rows |> Seq.map(fun r -> [r.Rank.ToString()
@@ -83,12 +103,12 @@ let rows = data.Rows |> Seq.map(fun r -> [r.Rank.ToString()
                                           r.Postal
                                           r.Population.ToString("0")])
 
-Chart.Table(headers, 
+Chart.Table(headers,
             rows,
             AlignHeader = [StyleParam.HorizontalAlign.Left],
             AlignCells = [StyleParam.HorizontalAlign.Left],
             ColorHeader = "#AFEEEE",
-            ColorCells = "#E6E6FA")        
+            ColorCells = "#E6E6FA")
 ```
 
 ## Changing Row and Column Size
@@ -107,16 +127,16 @@ let rows = [
      ["<b>TOTAL<br>EXPENSES</b>"; loremIpsum]
 ]
 
-Chart.Table(headers, 
+Chart.Table(headers,
             rows,
             AlignHeader = [StyleParam.HorizontalAlign.Left],
             AlignCells = [StyleParam.HorizontalAlign.Left],
             ColumnWidth = [80; 400],
             ColumnOrder = [1;2],
             ColorHeader = "#4169E1",
-            FontHeader = Font.init(Color="#FFFFFF"),            
-            ColorCells = ["#AFEEEE"; "#FFFFFF"])  
-    |> Chart.withSize (800.0, 500.0)  
+            FontHeader = Font.init(Color="#FFFFFF"),
+            ColorCells = ["#AFEEEE"; "#FFFFFF"])
+    |> Chart.withSize (800.0, 500.0)
 ```
 
 ## Alternating Row Colors
@@ -128,11 +148,11 @@ open System
 let headers = ["<b>EXPENSES</b>";"<b>Q1</b>";"<b>Q2</b>";"<b>Q3</b>";"<b>Q4</b>"]
 
 type CellValue = | Subtitle of string | Amount of int
-let renderCellValue value = match value with 
-                            | Subtitle v -> v 
+let renderCellValue value = match value with
+                            | Subtitle v -> v
                             | Amount v -> v.ToString()
 
-let rows = [ ["Salaries"; "1200000" ;  "1300000" ;  "1300000" ;  "1400000" ];    
+let rows = [ ["Salaries"; "1200000" ;  "1300000" ;  "1300000" ;  "1400000" ];
              [ "Office"; "20000"; "20000"; "20000"; "20000"];
              [ "Merchandise"; "80000"; "70000"; "120000"; "90000"];
              ["Legal"; "2000"; "2000"; "2000"; "2000" ];
@@ -142,15 +162,15 @@ let headerColor = "grey"
 let rowEvenColor = "lightgrey"
 let rowOddColor = "white"
 
-Chart.Table(headers, 
+Chart.Table(headers,
             rows,
             AlignHeader = [StyleParam.HorizontalAlign.Left],
             AlignCells = [StyleParam.HorizontalAlign.Left; StyleParam.HorizontalAlign.Center],
             ColorHeader = headerColor,
-            FontHeader = Font.init(Color="#FFFFFF"),            
+            FontHeader = Font.init(Color="#FFFFFF"),
             ColorCells = [
                             [rowOddColor; rowEvenColor; rowOddColor; rowEvenColor; rowOddColor]
-                         ])  
+                         ])
 ```
 
 ## Row Color Based on Variable
@@ -166,9 +186,9 @@ let rows = [
                 ["#08519C"; "2014"]
             ];
 
-Chart.Table(headers, 
+Chart.Table(headers,
             rows,
-            ColorCells = [["#EFF3FF"; "#BDD7E7"; "#6BAED6"; "#3182BD"; "#08519C"]] )  
+            ColorCells = [["#EFF3FF"; "#BDD7E7"; "#6BAED6"; "#3182BD"; "#08519C"]] )
 ```
 
 ## Cell Color Based on Variable
@@ -189,10 +209,10 @@ let rows = [
                 ["4"; "0"; "8"]
             ];
 
-Chart.Table(headers, 
+Chart.Table(headers,
             rows,
             ColorCells = [["#FFC8C8"; "#FFC8C8"; "#D63232"]
                           ["#FFC8C8";"#F19696"; "#F8AFAF"]
                           ["#D63232"; "#E46464"; "#D63232"]],
-            FontCells = Font.init(Color="#FFFFFF"))  
+            FontCells = Font.init(Color="#FFFFFF"))
 ```

@@ -7,12 +7,32 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make bubble charts in F# with Plotly.
+    display_as: basic
+    language: fsharp
+    layout: base
+    name: Bubble Charts
+    order: 5
+    page_type: u-guide
+    permalink: fsharp/bubble-charts/
+    thumbnail: thumbnail/bubble.jpg
 ---
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: newtonsoft.json"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
@@ -21,7 +41,7 @@ open Plotly.NET
 
 ## Simple Bubble Chart
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -31,7 +51,7 @@ Chart.Bubble([1;2;3;4], [10;11;12;13], [40;60;80;100])
 
 ## Setting Marker Size and Color
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -44,7 +64,7 @@ Chart.Bubble([1;2;3;4], [10;11;12;13], [40;60;80;100])
 
 ## Scaling the size of bubble charts
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, 2.0.0-preview.6"
 #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 open Plotly.NET
@@ -60,19 +80,19 @@ Chart.Bubble(x, y, sizes)
                                 Sizemode = StyleParam.SizeMode.Area,
                                 Sizemin = 4.0
                                 ))*)
-                                
-|> GenericChart.mapTrace(fun x -> x.SetValue("mode", "markers"); 
-                                  x.SetValue("marker", {|opacity = [1.; 0.8; 0.6; 0.4]; 
-                                                         size = sizes; 
-                                                         sizemode = "area"; 
-                                                         sizeref=(2.*(Seq.max sizes)/System.Math.Pow(40., 2.)); 
-                                                         sizemin = 4|}); 
+
+|> GenericChart.mapTrace(fun x -> x.SetValue("mode", "markers");
+                                  x.SetValue("marker", {|opacity = [1.; 0.8; 0.6; 0.4];
+                                                         size = sizes;
+                                                         sizemode = "area";
+                                                         sizeref=(2.*(Seq.max sizes)/System.Math.Pow(40., 2.));
+                                                         sizemin = 4|});
                                   x)
 ```
 
 ## Hover Text with Bubble Charts
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let x=[1; 2; 3; 4]
 let y=[10; 11; 12; 13]
 
@@ -87,7 +107,7 @@ Chart.Scatter(x,y,StyleParam.Mode.Markers, Labels=labels)
 
 ## Bubble Charts with Colorscale
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 let x=[1.; 3.2; 5.4; 7.6; 9.8; 12.5;]
 let y=[1.; 3.2; 5.4; 7.6; 9.8; 12.5;]
 

@@ -7,20 +7,40 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make sankey charts in F# with Plotly.
+    display_as: basic
+    language: fsharp
+    layout: base
+    name: Sankey Charts
+    order: 5
+    page_type: u-guide
+    permalink: fsharp/sankey-charts/
+    thumbnail: thumbnail/sankey.jpg
 ---
 
 # Basic Sankey Diagram
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET,*-*"
 #r "nuget: Plotly.NET.Interactive,*-*"
 #r "nuget: FSharp.Data"
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 
 open Plotly.NET
 
@@ -34,7 +54,7 @@ let nodes = [|
 |]
 
 Chart.Sankey(
-    nodePadding = 15.,    
+    nodePadding = 15.,
     nodeColor = "blue",
     nodeThickness = 20.0,
     nodeLineWidth = 0.5,
@@ -52,7 +72,7 @@ Chart.Sankey(
 
 # More complex Sankey diagram with colored links
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 
 open FSharp.Data
 
@@ -82,7 +102,7 @@ Chart.Sankey(nodes=nodes,links=links,
 
 # Style Sankey Diagram
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open FSharp.Data
 
 type remoteData = JsonProvider<"https://raw.githubusercontent.com/plotly/plotly.js/master/test/image/mocks/sankey_energy.json">

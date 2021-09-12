@@ -8,7 +8,7 @@ HTML_DIR ?= build/html
 FAIL_DIR ?= build/failures
 REDIR_DIR ?= build/html/redir
 
-$(shell rm -rf build)
+# $(shell rm -rf build)
 
 MD_FILES := $(shell ls $(MD_DIR)/*.md)
 UNCONV_FILES := $(shell ls $(UNCONV_DIR)/*.md)
