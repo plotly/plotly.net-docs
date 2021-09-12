@@ -10,6 +10,26 @@ jupyter:
     display_name: .NET (F#)
     language: F#
     name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to plot date and time in F#.
+    display_as: financial
+    language: fsharp
+    layout: base
+    name: Time Series and Date Axes
+    order: 1
+    page_type: example_index
+    permalink: fsharp/time-series/
+    thumbnail: thumbnail/time-series.jpg
 ---
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -28,7 +48,7 @@ open Plotly.NET
 open FSharp.Data
 open Deedle
 
-let dataset = 
+let dataset =
   Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv"
    |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
 
@@ -64,22 +84,22 @@ let layout =
 [
 Chart.Scatter(date,value,mode = StyleParam.Mode.Lines_Markers, Name="Raw Data",MarkerSymbol=StyleParam.Symbol.Asterisk)
 Chart.Scatter(date,value,mode = StyleParam.Mode.Lines_Markers, Name="Start-aligned")
-|> GenericChart.mapTrace(fun x -> 
+|> GenericChart.mapTrace(fun x ->
         x.SetValue("xperiod", "M1")
         x.SetValue("xperiodalignment", "start")
         x)
 Chart.Scatter(date,value,mode = StyleParam.Mode.Lines_Markers, Name="Middle-aligned")
-|> GenericChart.mapTrace(fun x -> 
+|> GenericChart.mapTrace(fun x ->
         x.SetValue("xperiod", "M1")
         x.SetValue("xperiodalignment", "middle")
         x)
 Chart.Scatter(date,value,mode = StyleParam.Mode.Lines_Markers, Name="End-aligned")
-|> GenericChart.mapTrace(fun x -> 
+|> GenericChart.mapTrace(fun x ->
         x.SetValue("xperiod", "M1")
         x.SetValue("xperiodalignment", "end")
         x)
 Chart.Column(date,value, Name="Bar-Middle-aligned",Color="rgba(247, 156, 83, 0.86)")
-|> GenericChart.mapTrace(fun x -> 
+|> GenericChart.mapTrace(fun x ->
         x.SetValue("xperiod", "M1")
         x.SetValue("xperiodalignment", "middle")
         x)
@@ -103,12 +123,12 @@ let y1=[1100;1050;1200;1300;1400;1700;1500;1400;1600]
 
 [
 Chart.Column(x0,y0,Color="rgba(103, 102, 255,1)")
-|> GenericChart.mapTrace(fun x -> 
+|> GenericChart.mapTrace(fun x ->
         x.SetValue("xperiod", "M1")
         x.SetValue("xperiodalignment", "middle")
         x)
 Chart.Scatter(x1,y1,mode = StyleParam.Mode.Lines_Markers)
-|> GenericChart.mapTrace(fun x -> 
+|> GenericChart.mapTrace(fun x ->
         x.SetValue("xperiod", "M1")
         x.SetValue("xperiodalignment", "middle")
         x)
