@@ -7,12 +7,32 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make choropleth maps in F# with Plotly.
+    display_as: maps
+    language: fsharp
+    layout: base
+    name: Choropleth Maps
+    order: 7
+    page_type: u-guide
+    permalink: fsharp/choropleth-maps/
+    thumbnail: thumbnail/choropleth.jpg
 ---
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, *-*"
 #r "nuget: Plotly.NET.Interactive, *-*"
 ```
@@ -39,33 +59,33 @@ The GeoJSON data is passed to the geojson argument, and the data is passed into 
 
 # Choropleth Map Using GeoJSON
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: FSharp.Data"
 #r "nuget: Newtonsoft.Json"
 open FSharp.Data
 open Newtonsoft.Json
-    
+
 #r "nuget: Deedle"
 open Deedle
 open System.IO
 open System.Text
 
-open Plotly.NET 
+open Plotly.NET
 
-let data = 
+let data =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",",schema="fips=string,unemp=float")
 
-let geoJson = 
+let geoJson =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
-    |> JsonConvert.DeserializeObject 
+    |> JsonConvert.DeserializeObject
 
-let locationsGeoJSON: string [] = 
+let locationsGeoJSON: string [] =
     data
     |> Frame.getCol "fips"
     |> Series.values
     |> Array.ofSeq
-let zGeoJSON: int [] = 
+let zGeoJSON: int [] =
     data
     |> Frame.getCol "unemp"
     |> Series.values
@@ -79,12 +99,12 @@ Chart.ChoroplethMap(
     FeatureIdKey="id"
 )
 
-|> Chart.withMap(
+|> Chart.withGeo(
     Geo.init(
-        Scope=StyleParam.GeoScope.NorthAmerica, 
+        Scope=StyleParam.GeoScope.NorthAmerica,
         Projection=GeoProjection.init(StyleParam.GeoProjectionType.AzimuthalEqualArea),
         ShowLand=true,
-        
+
         LandColor = "lightgrey"
     )
 )
@@ -101,43 +121,42 @@ If the GeoJSON you are using either does not have an id field or you wish you us
 
 In the following GeoJSON object/data-file pairing, the values of properties.district match the values of the district column:
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: FSharp.Data"
 
 open FSharp.Data
 
 open Newtonsoft.Json
 
-let data = 
+let data =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/election.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
 
-let geoJson = 
+let geoJson =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/election.geojson"
-    |> JsonConvert.DeserializeObject 
+    |> JsonConvert.DeserializeObject
 
-let locationsGeoJSON: string [] = 
+let locationsGeoJSON: string [] =
     data
     |> Frame.getCol "district"
     |> Series.values
     |> Array.ofSeq
 
-let zGeoJSON: int [] = 
+let zGeoJSON: int [] =
     data
     |> Frame.getCol "Bergeron"
     |> Series.values
     |> Array.ofSeq
 
 
-Chart.ChoroplethMap(
-    locations = locationsGeoJSON,
-    z = zGeoJSON,    
+Chart.ChoroplethMap(locations = locationsGeoJSON,
+    z = zGeoJSON,
     GeoJson = geoJson,
     Colorscale= StyleParam.Colorscale.Viridis,
     FeatureIdKey="properties.district")
- 
-|> Chart.withMapStyle(FitBounds=StyleParam.GeoFitBounds.Locations,Visible=false)
-|> Chart.withColorBarStyle(title="Bergeron Votes")
+
+|> Chart.withGeoStyle(FitBounds=StyleParam.GeoFitBounds.Locations,Visible=false)
+|> Chart.withColorBarStyle(Title.init("Bergeron Votes"))
 |> Chart.withTitle(title="2013 Montreal Election")
 |> Chart.withSize (800.,800.)
 ```
@@ -157,15 +176,15 @@ Note and disclaimer: cultural (as opposed to physical) features are by definitio
 
 To use the built-in countries geometry, provide locations as three-letter ISO country codes.
 
-```csharp dotnet_interactive={"language": "fsharp"}
-let data = 
+```fsharp dotnet_interactive={"language": "fsharp"}
+let data =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/2014_world_gdp_with_codes.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
 
 data.Print()
 ```
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 
 let getColumnData column=
         data
@@ -178,8 +197,8 @@ Chart.ChoroplethMap(locations=(getColumnData "CODE"),z=getColumnData "GDP (BILLI
 
 To use the USA States geometry, set locationmode='USA-states' and provide locations as two-letter state abbreviations
 
-```csharp dotnet_interactive={"language": "fsharp"}
-let data = 
+```fsharp dotnet_interactive={"language": "fsharp"}
+let data =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/2011_us_ag_exports.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
 
@@ -189,9 +208,9 @@ let getColumnData column=
         |> Series.values
         |> Array.ofSeq
 
-data?hover <- [ for k in data.RowKeys -> 
+data?hover <- [ for k in data.RowKeys ->
                     let dataRow = (data.GetRowAt(k))
-                    let state = string (dataRow |> Series.get "state") 
+                    let state = string (dataRow |> Series.get "state")
                     let beef = string (dataRow |> Series.get "beef")
                     let dairy = string (dataRow |> Series.get "dairy")
                     let fruits = string (dataRow |> Series.get "total fruits")
@@ -207,13 +226,13 @@ Chart.ChoroplethMap(locations=(getColumnData "code"),z=getColumnData "total expo
 
 **Note** In this example we set layout.geo.scope to usa to automatically configure the map to display USA-centric data in an appropriate projection.
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 
 Chart.ChoroplethMap(locations=(getColumnData "code"),z=getColumnData "total exports",Locationmode=StyleParam.LocationFormat.USA_states,Text=getColumnData "hover", Colorscale=StyleParam.Colorscale.Bluered)
-|> Chart.withMap(
+|> Chart.withGeo(
     Geo.init(
-        Scope=StyleParam.GeoScope.Usa, 
-        Projection=GeoProjection.init(StyleParam.GeoProjectionType.AlbersUSA),        
+        Scope=StyleParam.GeoScope.Usa,
+        Projection=GeoProjection.init(StyleParam.GeoProjectionType.AlbersUSA),
         ShowLakes=true,
         LakeColor = "white"
     )
@@ -222,8 +241,8 @@ Chart.ChoroplethMap(locations=(getColumnData "code"),z=getColumnData "total expo
 
 # World Choropleth Map
 
-```csharp dotnet_interactive={"language": "fsharp"}
-let data = 
+```fsharp dotnet_interactive={"language": "fsharp"}
+let data =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/2014_world_gdp_with_codes.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
 
@@ -234,11 +253,11 @@ let getColumnData column=
         |> Array.ofSeq
 
 Chart.ChoroplethMap(locations=(getColumnData "CODE"),z=getColumnData "GDP (BILLIONS)",Text=getColumnData "COUNTRY",Colorscale=StyleParam.Colorscale.Greens,Marker=Marker.init(Line=Line.init(Color="grey",Width=0.5)))
-|> Chart.withColorBarStyle(title="GDP Billions US$")
+|> Chart.withColorBarStyle(title=Title.init("GDP Billions US$"))
 |> Chart.withTitle(title="2014 Global GDP<br>Source:<a href=\"https://www.cia.gov/library/publications/the-world-factbook/fields/2195.html\">CIA World Factbook</a>")
-|> Chart.withMap(
+|> Chart.withGeo(
     Geo.init(
-        Projection=GeoProjection.init(StyleParam.GeoProjectionType.Mercator),        
+        Projection=GeoProjection.init(StyleParam.GeoProjectionType.Mercator),
         ShowCoastLines=false,
         ShowFrame=false
     )
