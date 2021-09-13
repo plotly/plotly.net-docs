@@ -99,7 +99,7 @@ Chart.ChoroplethMap(
     FeatureIdKey="id"
 )
 
-|> Chart.withMap(
+|> Chart.withGeo(
     Geo.init(
         Scope=StyleParam.GeoScope.NorthAmerica,
         Projection=GeoProjection.init(StyleParam.GeoProjectionType.AzimuthalEqualArea),
@@ -149,15 +149,14 @@ let zGeoJSON: int [] =
     |> Array.ofSeq
 
 
-Chart.ChoroplethMap(
-    locations = locationsGeoJSON,
+Chart.ChoroplethMap(locations = locationsGeoJSON,
     z = zGeoJSON,
     GeoJson = geoJson,
     Colorscale= StyleParam.Colorscale.Viridis,
     FeatureIdKey="properties.district")
 
-|> Chart.withMapStyle(FitBounds=StyleParam.GeoFitBounds.Locations,Visible=false)
-|> Chart.withColorBarStyle(title="Bergeron Votes")
+|> Chart.withGeoStyle(FitBounds=StyleParam.GeoFitBounds.Locations,Visible=false)
+|> Chart.withColorBarStyle(Title.init("Bergeron Votes"))
 |> Chart.withTitle(title="2013 Montreal Election")
 |> Chart.withSize (800.,800.)
 ```
@@ -230,7 +229,7 @@ Chart.ChoroplethMap(locations=(getColumnData "code"),z=getColumnData "total expo
 ```fsharp dotnet_interactive={"language": "fsharp"}
 
 Chart.ChoroplethMap(locations=(getColumnData "code"),z=getColumnData "total exports",Locationmode=StyleParam.LocationFormat.USA_states,Text=getColumnData "hover", Colorscale=StyleParam.Colorscale.Bluered)
-|> Chart.withMap(
+|> Chart.withGeo(
     Geo.init(
         Scope=StyleParam.GeoScope.Usa,
         Projection=GeoProjection.init(StyleParam.GeoProjectionType.AlbersUSA),
@@ -254,9 +253,9 @@ let getColumnData column=
         |> Array.ofSeq
 
 Chart.ChoroplethMap(locations=(getColumnData "CODE"),z=getColumnData "GDP (BILLIONS)",Text=getColumnData "COUNTRY",Colorscale=StyleParam.Colorscale.Greens,Marker=Marker.init(Line=Line.init(Color="grey",Width=0.5)))
-|> Chart.withColorBarStyle(title="GDP Billions US$")
+|> Chart.withColorBarStyle(title=Title.init("GDP Billions US$"))
 |> Chart.withTitle(title="2014 Global GDP<br>Source:<a href=\"https://www.cia.gov/library/publications/the-world-factbook/fields/2195.html\">CIA World Factbook</a>")
-|> Chart.withMap(
+|> Chart.withGeo(
     Geo.init(
         Projection=GeoProjection.init(StyleParam.GeoProjectionType.Mercator),
         ShowCoastLines=false,

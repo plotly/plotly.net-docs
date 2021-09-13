@@ -88,17 +88,24 @@ With choroplethmapbox, each row of the DataFrame is represented as a region of t
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 open Newtonsoft.Json
+open FSharp.Data
+open Deedle
 
-let geoJson =
-    Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
-    |> JsonConvert.DeserializeObject
+let data =
+    Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv"
+    |> fun csv -> Frame.ReadCsvString(csv,true,separators=",",schema="fips=string,unemp=float")
 
-type csvProvider = CsvProvider<"https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv">
+let locations: string [] =
+    data
+    |> Frame.getCol "fips"
+    |> Series.values
+    |> Array.ofSeq
 
-let fips_data = csvProvider.Load("https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv")
-
-let z = fips_data.Rows |> Seq.map (fun row -> float row.Unemp)
-let locations = fips_data.Rows |> Seq.map (fun row -> row.Fips)
+let z: int [] =
+    data
+    |> Frame.getCol "unemp"
+    |> Series.values
+    |> Array.ofSeq
 
 Chart.ChoroplethMapbox(z=z,geoJson=geoJson,locations=locations,FeatureIdKey="id",Colorscale=StyleParam.Colorscale.Viridis,ZMin=0.,ZMax=12.)
 |> Chart.withMapbox(
@@ -161,16 +168,22 @@ open Plotly.NET
 open Newtonsoft.Json
 
 let token = File.ReadAllText("mapbox_token") //# you will need your own token
-let geoJson =
-    Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
-    |> JsonConvert.DeserializeObject
 
-type csvProvider = CsvProvider<"https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv">
+let data =
+    Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv"
+    |> fun csv -> Frame.ReadCsvString(csv,true,separators=",",schema="fips=string,unemp=float")
 
-let fips_data = csvProvider.Load("https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv")
+let locations: string [] =
+    data
+    |> Frame.getCol "fips"
+    |> Series.values
+    |> Array.ofSeq
 
-let z = fips_data.Rows |> Seq.map (fun row -> float row.Unemp)
-let locations = fips_data.Rows |> Seq.map (fun row -> row.Fips)
+let z: int [] =
+    data
+    |> Frame.getCol "unemp"
+    |> Series.values
+    |> Array.ofSeq
 
 Chart.ChoroplethMapbox(z=z,geoJson=geoJson,locations=locations,FeatureIdKey="id",Colorscale=StyleParam.Colorscale.Viridis,ZMin=0.,ZMax=12.)
 |> Chart.withMapbox(
