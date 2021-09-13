@@ -7,19 +7,40 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (C#)
-    language: C#
-    name: .net-csharp
+    display_name: .NET (F#)
+    language: F#
+    name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make Network Graphs in Python with Plotly. One examples of
+      a network graph with NetworkX
+    display_as: scientific
+    language: fsharp
+    layout: base
+    name: Network Graphs
+    order: 12
+    page_type: u-guide
+    permalink: fsharp/network-graphs/
+    thumbnail: thumbnail/net.jpg
 ---
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, *-*"
 #r "nuget: Plotly.NET.Interactive, *-*"
 ```
 
 # Create Nodes
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 //open QuickGraph
 open Plotly.NET
 open Plotly.NET.Axis
@@ -37,7 +58,7 @@ Chart.Point(x,y)
 
 # Create Edges
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 
 open System
 
@@ -47,7 +68,7 @@ let x = [for i in 0..100 -> rand.Next(0,100) ]
 let y = [for i in x -> rand.Next(0,100) ]
 
 let edges = [for i in x ->  let i = rand.Next(0,100)
-                            let j = rand.Next(0,100)                            
+                            let j = rand.Next(0,100)
                             Shape.init(StyleParam.ShapeType.Line,X0=x.[i],X1=x.[j],Y0=y.[i],Y1=y.[j],Line=Line.init(Color="#888",Width=0.5))]
 
 
