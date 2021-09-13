@@ -72,12 +72,23 @@ counties.Features.[0].Id
 Here we load unemployment data by county, also indexed by FIPS code.
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-type csvProvider = CsvProvider<"https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv">
+open Deedle
+open FSharp.Data
 
-let fips_data = csvProvider.Load("https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv")
+let data =
+    Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv"
+    |> fun csv -> Frame.ReadCsvString(csv,true,separators=",",schema="fips=string,unemp=float")
 
-printf "%A" fips_data.Headers
-fips_data.Rows |> Seq.take 5
+let getColumnData col=
+        data
+        |> Frame.getCol col
+        |> Series.values
+        |> Array.ofSeq
+
+let fips:string[] = getColumnData "fips" |> Array.take 5
+let unemp:float[] = getColumnData "unemp" |> Array.take 5
+
+Array.zip fips unemp
 ```
 
 # Mapbox Choropleth Map Using GeoJSON
@@ -94,6 +105,10 @@ open Deedle
 let data =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",",schema="fips=string,unemp=float")
+
+let geoJson =
+    Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
+    |> JsonConvert.DeserializeObject
 
 let locations: string [] =
     data
