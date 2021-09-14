@@ -8,8 +8,6 @@ HTML_DIR ?= build/html
 FAIL_DIR ?= build/failures
 REDIR_DIR ?= build/html/redir
 
-# $(shell rm -rf build)
-
 MD_FILES := $(shell ls $(MD_DIR)/*.md)
 UNCONV_FILES := $(shell ls $(UNCONV_DIR)/*.md)
 
@@ -39,7 +37,7 @@ $(HTML_DIR)/2019-07-03-%.html: $(IPYNB_DIR)/%.ipynb
 	@mkdir -p $(HTML_DIR)
 	@mkdir -p $(FAIL_DIR)
 	@echo "[nbconvert]  $<"
-	@jupyter nbconvert $< --to html \
+	@jupyter nbconvert $< --to html --template nb.tpl \
 			--ExecutePreprocessor.timeout=600\
 	  	--output-dir $(HTML_DIR) --output 2019-07-03-$*.html \
 	  	--execute > $(FAIL_DIR)/$* 2>&1  && rm -f $(FAIL_DIR)/$*
@@ -48,7 +46,7 @@ $(HTML_DIR)/2019-07-03-%.html: $(IPYNB_DIR)/%.ipynb
 $(REDIR_DIR)/2019-07-03-redirect-next-%.html: $(IPYNB_DIR)/%.ipynb
 	@mkdir -p $(REDIR_DIR)
 	@echo "[next-redir] $<"
-	@jupyter nbconvert $< --to html \
+	@jupyter nbconvert $< --to html --template next_redirect.tpl \
 	  	--output-dir $(REDIR_DIR) --output 2019-07-03-redirect-next-$*.html
 
 
