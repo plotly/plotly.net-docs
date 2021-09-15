@@ -4,7 +4,7 @@ jobs:
   build-doc:
     resource_class: xlarge
     docker:
-      - image:  circleci/python:3.7-stretch-node-browsers
+      - image: circleci/python:3.7-stretch-node-browsers
     steps:
       - add_ssh_keys:
           fingerprints:
@@ -18,12 +18,31 @@ jobs:
             - v1-dependencies-{{ checksum "requirements.txt" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
+
+      - run:
+          name: install dotnet sdk
+          command: |
+            wget https://packages.microsoft.com/config/ubuntu/21.04/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+            sudo dpkg -i packages-microsoft-prod.deb
+            rm packages-microsoft-prod.deb
+            sudo apt-get update
+            sudo apt-get install -y apt-transport-https
+            sudo apt-get update
+            sudo apt-get install -y dotnet-sdk-5.0
       - run:
           name: install dependencies
           command: |
             python3 -m venv venv
             . venv/bin/activate
             pip install -r requirements.txt
+            jupyter kernelspec list
+      - run:
+          name: install dot net interactive
+          command: |
+            . venv/bin/activate
+            dotnet tool restore
+            dotnet dotnet-interactive jupyter install
+            jupyter kernelspec list
 
       - save_cache:
           paths:
@@ -35,7 +54,7 @@ jobs:
           command: |
             . venv/bin/activate
             echo ${mapbox_token} > fsharp/.mapbox_token
-            make html || make html
+            make
             if [ "${CIRCLE_BRANCH}" == "main" ]; then
               cd build/html
               git init
