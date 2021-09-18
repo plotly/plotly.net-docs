@@ -32,12 +32,14 @@ jupyter:
     thumbnail: thumbnail/line-plot.jpg
 ---
 
-## Libraries
+# Line Charts in F#
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET, 2.0.0-preview.6"
+How to make line charts in F# with Plotly.NET. Examples on creating and styling line charts in F# with Plotly.NET.
+
+```fsharp  dotnet_interactive={"language": "fsharp"}
+#r "nuget: Plotly.NET, *-*"
 #r "nuget: newtonsoft.json"
-#r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
+#r "nuget: Plotly.NET.Interactive, *-*"
 
 open Plotly.NET
 open System
@@ -46,25 +48,33 @@ let random = System.Random();
 let nextFloat (min, max) = (random.NextDouble() * (max - min) + min);
 ```
 
-## Line Plots with
+# Sime Line Plot
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+Line Plots can be rendered either by Chart.Scatter or Chart.Line 
+
+```fsharp  dotnet_interactive={"language": "fsharp"}
+let xs = [0.0 .. 9.0]
+let ys = xs |> Seq.map (fun x -> x ** 2.0)
+
+Chart.Scatter(xs, ys, StyleParam.Mode.Lines_Markers)
+```
+
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x = [1952; 1957; 1962; 1967; 1972; 1977; 1982; 1987; 1992; 1997; 2002; 2007]
 let y = [68.75; 69.96; 71.3; 72.13; 72.88; 74.21; 75.76; 76.86; 77.95; 78.61; 79.77; 80.653]
 
-Chart.Spline(x, y)
-|> Chart.withX_AxisStyle("year")
-|> Chart.withY_AxisStyle("lifeExp")
+Chart.Line(x, y)
+|> Chart.withXAxisStyle("year")
+|> Chart.withYAxisStyle("lifeExp")
 |> Chart.withTitle("Life expectancy in Canada")
 |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid)
 ```
 
-## MultiLine Chart
-## Line Plots with column encoding color
+# MultiLine Chart
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x  = [1952; 1957; 1962; 1967; 1972; 1977; 1982; 1987; 1992; 1997; 2002; 2007]
@@ -81,17 +91,20 @@ let y2 = [69.39; 70.26; 71.24; 71.52; 71.89; 72.22; 73.84; 74.32; 76.33; 77.55; 
 
         Chart.Line(x, y2)
         |> Chart.withTraceName(Name="New Zealand")
-        |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid)
-]
-|> Chart.Combine
-|> Chart.withX_AxisStyle("year")
-|> Chart.withY_AxisStyle("lifeExp")
+        |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid) 
+] 
+|> Chart.combine
+|> Chart.withXAxisStyle("year")
+|> Chart.withYAxisStyle("lifeExp")
 ```
 
-## Data Order in Line Charts
-Unsorted Input
+# Data Order in Line Charts
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+Plotly line charts are implemented as connected scatterplots (see below), meaning that the points are plotted and connected with lines in the order they are provided, with no automatic reordering.
+
+This makes it possible to make charts like the one below, but also means that it may be required to explicitly sort data before passing it to Plotly.NET to avoid lines moving "backwards" across the chart.
+
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x  = [1.0; 3.0; 2.0; 4.0]
@@ -100,16 +113,12 @@ let y = [1.0; 2.0; 3.0; 4.0]
 // How to align title to the left
 Chart.Line(x, y)
 |> Chart.withTitle("Unsorted Input")
-|> Chart.withX_AxisStyle("X")
-|> Chart.withY_AxisStyle("Y")
+|> Chart.withXAxisStyle("X")
+|> Chart.withYAxisStyle("Y")
 |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid)
 ```
 
-<!-- #region dotnet_interactive={"language": "fsharp"} -->
-Sorted Input
-<!-- #endregion -->
-
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let y = [1.0; 3.0; 2.0; 4.0]
@@ -118,14 +127,16 @@ let x = Seq.sort x
 // How to align title to the left
 Chart.Line(x, y)
 |> Chart.withTitle("Sorted Input")
-|> Chart.withX_AxisStyle("X")
-|> Chart.withY_AxisStyle("Y")
-|> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid)
+|> Chart.withXAxisStyle("X")
+|> Chart.withYAxisStyle("Y")
+|> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid) 
 ```
 
-## Connected Scatterplots
+# Connected Scatterplots
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+In a connected scatterplot, two continuous variables are plotted against each other, with a line connecting them in some meaningful order, usually a time variable. In the plot below, we show the "trajectory" of a pair of countries through a space defined by GDP per Capita and Life Expectancy. 
+
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let labels = ["1952"; "1957"; "1962"; "1967"; "1972"; "1977"; "1982"; "1987"; "1992"; "1997"; "2002"; "2007"]
@@ -157,42 +168,17 @@ let y2 = [11367.86; 12489.95; 13462.49; 16076.59; 18970.57; 22090.88; 22898.79; 
                 MarkerSymbol=StyleParam.Symbol.Circle
         )
 ]
-|> Chart.Combine
-|> Chart.withX_AxisStyle("lifeExp")
-|> Chart.withY_AxisStyle("gdpPercap")
+|> Chart.combine
+|> Chart.withXAxisStyle("lifeExp")
+|> Chart.withYAxisStyle("gdpPercap")
 ```
 
-## Line charts with markers
+# Line charts with markers
 
-The markers argument can be set to True to show markers on lines.
+The ShowMarkers argument can be set to True to show markers on lines.
+The MarkerSymbol sets the type of Marker like StyleParam.Symbol.Circle or StyleParam.Symbol.Diamond
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-open Plotly.NET
-
-let x  = [1952; 1957; 1962; 1967; 1972; 1977; 1982; 1987; 1992; 1997; 2002; 2007]
-
-// Australia
-let y1 = [69.12; 70.30; 70.93; 71.1; 71.93; 73.49; 74.74; 76.32; 77.56; 78.3; 80.37; 81.235]
-// New Zealand
-let y2 = [69.39; 70.26; 71.24; 71.52; 71.89; 72.22; 73.84; 74.32; 76.33; 77.55; 79.11; 80.204]
-
-[
-        Chart.Line(x, y1, ShowMarkers=true, MarkerSymbol=StyleParam.Symbol.Circle)
-        |> Chart.withTraceName(Name="Australia")
-        |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid)
-
-        Chart.Line(x, y2, ShowMarkers=true, MarkerSymbol=StyleParam.Symbol.Circle)
-        |> Chart.withTraceName(Name="New Zealand")
-        |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid)
-]
-|> Chart.Combine
-|> Chart.withX_AxisStyle("year")
-|> Chart.withY_AxisStyle("lifeExp")
-```
-
-The symbol argument can be used to map a data field to the marker symbol.
-
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x  = [1952; 1957; 1962; 1967; 1972; 1977; 1982; 1987; 1992; 1997; 2002; 2007]
@@ -209,26 +195,16 @@ let y2 = [69.39; 70.26; 71.24; 71.52; 71.89; 72.22; 73.84; 74.32; 76.33; 77.55; 
 
         Chart.Line(x, y2, ShowMarkers=true, MarkerSymbol=StyleParam.Symbol.Diamond)
         |> Chart.withTraceName(Name="New Zealand")
-        |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid)
-]
-|> Chart.Combine
-|> Chart.withX_AxisStyle("year")
-|> Chart.withY_AxisStyle("lifeExp")
+        |> Chart.withLineStyle(Width=2.0, Dash=StyleParam.DrawingStyle.Solid) 
+] 
+|> Chart.combine
+|> Chart.withXAxisStyle("year")
+|> Chart.withYAxisStyle("lifeExp")
 ```
 
-## Line Plot with go.Scatter
-Simple Line Plot
+# Line Plot Modes
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-let xs = [0.0 .. 9.0]
-let ys = xs |> Seq.map (fun x -> x ** 2.0)
-
-Chart.Scatter(xs, ys, StyleParam.Mode.Lines_Markers)
-```
-
-Line Plot Modes
-
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 let n = 100
 let series = [0..n]
 
@@ -251,12 +227,14 @@ let random_ys2 = generate () |> Seq.map(fun x -> x - 5.0)
     Chart.Scatter(random_xs, random_ys2, StyleParam.Mode.Markers)
     |> Chart.withTraceName(Name="markers")
 ]
-|> Chart.Combine
+|> Chart.combine
+|> Chart.withSize(1100.,700.)
 ```
 
-## Style Line Plots
+# Style Line Plots
+This example styles the color and dash of the traces, adds trace names, modifies line width, and adds plot and axes titles.
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 
 //  Add data
 let month = ["January";"February";"March";"April";"May";"June";"July";"August";"September";"October";"November";"December"]
@@ -270,24 +248,24 @@ let low_2014 = [12.7; 14.3; 18.6; 35.5; 49.9; 58.0; 60.0; 58.6; 51.7; 45.2; 32.2
 
 // Create and style traces
 let high2014Chart = Chart.Scatter(month, high_2014, StyleParam.Mode.Lines_Markers,  Name="High 2014")
-                        |> Chart.withLineStyle(Color = "firebrick", Width=4.)
+                        |> Chart.withLineStyle(Color =Color.fromString "firebrick", Width=4.)
 
 let low2014Chart = Chart.Scatter(month, low_2014, StyleParam.Mode.Lines_Markers,  Name="Low 2014")
-                        |> Chart.withLineStyle(Color = "royalblue", Width=4.)
+                        |> Chart.withLineStyle(Color = Color.fromString "royalblue", Width=4.)
 
 let high2007Chart = Chart.Scatter(month, high_2007, StyleParam.Mode.Lines_Markers,  Name="High 2007")
-                        |> Chart.withLineStyle(Color = "firebrick", Width=4., Dash=StyleParam.DrawingStyle.Dash)
+                        |> Chart.withLineStyle(Color =Color.fromString "firebrick", Width=4., Dash=StyleParam.DrawingStyle.Dash)  
                         //dash options include 'dash', 'dot', and 'dashdot'
 
 let low2007Chart = Chart.Scatter(month, low_2007, StyleParam.Mode.Lines_Markers,  Name="Low 2007")
-                        |> Chart.withLineStyle(Color = "royalblue", Width=4., Dash=StyleParam.DrawingStyle.Dash)
+                        |> Chart.withLineStyle(Color = Color.fromString "royalblue", Width=4., Dash=StyleParam.DrawingStyle.Dash)  
 
 
 let high2000Chart = Chart.Scatter(month, high_2000, StyleParam.Mode.Lines_Markers,  Name="High 2000")
-                        |> Chart.withLineStyle(Color = "firebrick", Width=4., Dash=StyleParam.DrawingStyle.Dot)
+                        |> Chart.withLineStyle(Color = Color.fromString "firebrick", Width=4., Dash=StyleParam.DrawingStyle.Dot)
 
 let low2000Chart = Chart.Scatter(month, low_2000, StyleParam.Mode.Lines_Markers,  Name="Low 2000")
-                        |> Chart.withLineStyle(Color = "royalblue", Width=4., Dash=StyleParam.DrawingStyle.Dot)
+                        |> Chart.withLineStyle(Color = Color.fromString "royalblue", Width=4., Dash=StyleParam.DrawingStyle.Dot)  
 
 
 [
@@ -298,56 +276,59 @@ let low2000Chart = Chart.Scatter(month, low_2000, StyleParam.Mode.Lines_Markers,
     high2000Chart;
     low2000Chart
 
-]
-    |> Chart.Combine
+] 
+    |> Chart.combine
     |> Chart.withTitle("Average High and Low Temperatures in New York")
-    |> Chart.withX_AxisStyle ("Month")
-    |> Chart.withY_AxisStyle ("Temperature (degrees F)")
+    |> Chart.withXAxisStyle ("Month")
+    |> Chart.withYAxisStyle ("Temperature (degrees F)")
+    |> Chart.withSize(1100.,700.)
 ```
 
-## Connect Data Gaps
+# Connect Data Gaps
+ConnectGaps determines if missing values in the provided data are shown as a gap in the graph or not
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
+open Plotly.NET.TraceObjects
 
 let xs = [1; 2; 3; 4; 5; 6; 7; 8; 9; 10; 11; 12; 13; 14; 15]
 
 let chart = Chart.Scatter(xs,
-             [10.; 20.; nan; 15.; 10.; 5.; 15.;nan; 20.; 10.; 10.; 15.; 25.; 20.; 10.],
-             StyleParam.Mode.Lines_Markers, Name="<b>No</b> Gaps")
-             |> GenericChart.mapTrace(fun t ->
-                                                t?connectgaps <- true
-                                                t)
+             [10.; 20.; nan; 15.; 10.; 5.; 15.;nan; 20.; 10.; 10.; 15.; 25.; 20.; 10.], 
+             StyleParam.Mode.Lines_Markers, Name="<b>No</b> Gaps")             
+             |> GenericChart.mapTrace (Trace2DStyle.Scatter(ConnectGaps = true))
 [
-
+    
     chart;
     Chart.Scatter(xs,
-             [5.; 15.; nan; 10.; 5.; 0.; 10.; nan; 15.; 5.; 5.; 10.; 20.; 15.; 5.],
+             [5.; 15.; nan; 10.; 5.; 0.; 10.; nan; 15.; 5.; 5.; 10.; 20.; 15.; 5.], 
              StyleParam.Mode.Lines_Markers, Name="Gaps")
-] |> Chart.Combine
+] |> Chart.combine
 ```
 
-## Interpolation with Line Plots
+# Interpolation with Line Plots
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
+open Plotly.NET.LayoutObjects
+
 let xs = [1; 2; 3; 4; 5]
 let ys = [1; 3; 2; 3; 1]
 
-let linear = Chart.Scatter(xs, ys, StyleParam.Mode.Lines_Markers,Name="linear")
+let linear = Chart.Scatter(xs, ys, StyleParam.Mode.Lines_Markers,Name="linear") 
             |> Chart.withLineStyle(Shape =StyleParam.Shape.Linear)
 
-let spline = Chart.Scatter(xs, ys |> Seq.map(fun y->y+5) ,StyleParam.Mode.Lines_Markers,Labels=["tweak line smoothness<br>with 'smoothing' in line object"],Name="spline")
+let spline = Chart.Scatter(xs, ys |> Seq.map(fun y->y+5) ,StyleParam.Mode.Lines_Markers,Labels=["tweak line smoothness<br>with 'smoothing' in line object"],Name="spline") 
             |> Chart.withLineStyle(Shape =StyleParam.Shape.Spline)
 
-let vhv = Chart.Scatter(xs, ys |> Seq.map(fun y->y+10), StyleParam.Mode.Lines_Markers,Name="vhv")
+let vhv = Chart.Scatter(xs, ys |> Seq.map(fun y->y+10), StyleParam.Mode.Lines_Markers,Name="vhv") 
             |> Chart.withLineStyle(Shape =StyleParam.Shape.Vhv)
 
-let hvh = Chart.Scatter(xs, ys |> Seq.map(fun y->y+15), StyleParam.Mode.Lines_Markers,Name="hvh")
+let hvh = Chart.Scatter(xs, ys |> Seq.map(fun y->y+15), StyleParam.Mode.Lines_Markers,Name="hvh") 
             |> Chart.withLineStyle(Shape =StyleParam.Shape.Hvh)
 
-let vh = Chart.Scatter(xs, ys |> Seq.map(fun y->y+20), StyleParam.Mode.Lines_Markers,Name="vh")
+let vh = Chart.Scatter(xs, ys |> Seq.map(fun y->y+20), StyleParam.Mode.Lines_Markers,Name="vh") 
             |> Chart.withLineStyle(Shape =StyleParam.Shape.Vh)
 
-let hv = Chart.Scatter(xs,  ys |> Seq.map(fun y->y+25), StyleParam.Mode.Lines_Markers,Name="hv")
+let hv = Chart.Scatter(xs,  ys |> Seq.map(fun y->y+25), StyleParam.Mode.Lines_Markers,Name="hv") 
             |> Chart.withLineStyle(Shape =StyleParam.Shape.Hv)
 
 [
@@ -357,17 +338,22 @@ let hv = Chart.Scatter(xs,  ys |> Seq.map(fun y->y+25), StyleParam.Mode.Lines_Ma
     hvh;
     vh;
     hv  ]
-|> Chart.Combine
+|> Chart.combine
 |> Chart.withLegend(Legend.init(Y=0.5,TraceOrder=StyleParam.TraceOrder.Reversed))
 |> Chart.withLayout(Layout.init(Font=Font.init(Size=16.)))
+|> Chart.withSize(1100.,700.)
 ```
 
-## Label Lines with Annotations
+# Label Lines with Annotations
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
+open Plotly.NET.TraceObjects
+
 let title = "Main Source for News"
 let labels = ["Television"; "Newspaper"; "Internet"; "Radio"]
 let colors = ["rgb(67,67,67)"; "rgb(115,115,115)"; "rgb(49,130,189)"; "rgb(189,189,189)"]
+                |> Seq.map (fun c -> Color.fromString c)
+                |> Seq.toArray
 
 let mode_size = [|8; 8; 12; 8|]
 let line_size = [|2.; 2.; 4.; 2.|]
@@ -380,6 +366,48 @@ let y_data = [|
     [|13; 14; 20; 24; 20; 24; 24; 40; 35; 41; 43; 50|];
     [|18; 21; 18; 21; 16; 14; 13; 18; 17; 16; 19; 23|]|]
 
+let annotations = seq {
+        for (y_trace, label, color) in Seq.zip3 y_data labels colors do
+
+        // labeling the left_side of the plot     
+        let a1 = Annotation.init(XRef="paper", X=0.05, Y=y_trace.[0],
+                                  Text=  $"{label} {y_trace.[0]}%%",
+                                  ShowArrow=false,
+                                  Font=Font.init(Family=StyleParam.FontFamily.Arial, Size=16.), 
+                                  XAnchor = StyleParam.XAnchorPosition.Right,
+                                  YAnchor = StyleParam.YAnchorPosition.Middle)
+
+        //labeling the right_side of the plot
+        let a2 = Annotation.init(XRef="paper", X=0.95, Y=y_trace.[11],
+                                  Text=  $"{y_trace.[11]}%%",
+                                  ShowArrow=false,
+                                  Font=Font.init(Family=StyleParam.FontFamily.Arial, Size=16.),
+                                  XAnchor = StyleParam.XAnchorPosition.Left,
+                                  YAnchor = StyleParam.YAnchorPosition.Middle);
+
+        // Title
+        let a3 =  Annotation.init(XRef="paper",YRef="paper", X=0., Y=1.05,
+                                  Text=  "Main Source for News",
+                                  ShowArrow=false,
+                                  Font=Font.init(Family=StyleParam.FontFamily.Arial, 
+                                                 Size=30.,
+                                                 Color=Color.fromString "rgb(37,37,37)"),
+                                  XAnchor=StyleParam.XAnchorPosition.Left,
+                                  YAnchor = StyleParam.YAnchorPosition.Bottom);
+        
+        // Source
+        let a4 = Annotation.init(XRef="paper",YRef="paper", X=0.5, Y= -0.1,
+                                  Text=  "Source: PewResearch Center & Storytelling with data",
+                                  ShowArrow=false,
+                                  Font=Font.init(Family=StyleParam.FontFamily.Arial, 
+                                                 Size=12.,
+                                                 Color=Color.fromString "rgb(150,150,150)"),
+                                  XAnchor=StyleParam.XAnchorPosition.Center,
+                                  YAnchor = StyleParam.YAnchorPosition.Top)
+
+                            
+        yield! [a1;a2;a3;a4]
+    }
 
 
 seq {
@@ -392,79 +420,33 @@ seq {
                 Chart.Scatter([x_data.[i].[0]; x_data.[i].[^0]],
                               [y_data.[i].[0]; y_data.[i].[^0]],
                               mode=StyleParam.Mode.Markers)
-                    |> Chart.withMarkerStyle(Size=mode_size.[i], Color=colors.[i])
-        ]
-} |> Chart.Combine
-  |> Chart.withLayout(Layout.init(Autosize=false, Showlegend=false, Plot_bgcolor="white"))
-  |> Chart.withX_Axis(Axis.LinearAxis.init(Showline=true,
-                                            Showgrid=false,
-                                            Showticklabels=true,
-                                            Linecolor="rgb(204, 204, 204)",
-                                            Linewidth=2.,
+                    
+                |> Chart.withMarkerStyle(Size=mode_size.[i], Color=colors.[i])
+        ]        
+} |> Chart.combine
+  |> Chart.withLayout(Layout.init(AutoSize=false, ShowLegend=false, PlotBGColor=Color.fromString "white"))
+  |> Chart.withXAxis(LinearAxis.init(ShowLine=true,
+                                            ShowGrid=false,
+                                            ShowTickLabels=true,
+                                            LineColor=Color.fromString "rgb(204, 204, 204)",
+                                            LineWidth=2.,
                                             Ticks=StyleParam.TickOptions.Outside,
-                                            Tickfont = Font.init(Family=StyleParam.FontFamily.Arial,
+                                            TickFont = Font.init(Family=StyleParam.FontFamily.Arial,
                                                                  Size=12.,
-                                                                 Color="rgb(82, 82, 82)")))
+                                                                 Color=Color.fromString "rgb(82, 82, 82)")))
 
-    |> Chart.withY_Axis(Axis.LinearAxis.init(Showgrid=false,
-                                             Zeroline=false,
-                                             Showline=false,
-                                             Showticklabels=false))
+    |> Chart.withYAxis(LinearAxis.init(ShowGrid=false,
+                                             ZeroLine=false,
+                                             ShowLine=false,
+                                             ShowTickLabels=false))
     |> Chart.withMarginSize(Autoexpand=false, Left=100, Right=20,Top=110)
         // Adding labels
-    |> Chart.withAnnotations(seq {
-        for (y_trace, label, color) in Seq.zip3 y_data labels colors do
-
-        // labeling the left_side of the plot
-        let a1 = Annotation.init(XRef="paper", X=0.05, Y=y_trace.[0],
-                                  Text=  $"{label} {y_trace.[0]}%%",
-                                  ShowArrow=false,
-                                  Font=Font.init(Family=StyleParam.FontFamily.Arial, Size=16.))
-
-        a1?xanchor <-"right"  //workaround
-        a1?yanchor <-"middle" //workaround
-
-        //labeling the right_side of the plot
-        let a2 = Annotation.init(XRef="paper", X=0.95, Y=y_trace.[11],
-                                  Text=  $"{y_trace.[11]}%%",
-                                  ShowArrow=false,
-                                  Font=Font.init(Family=StyleParam.FontFamily.Arial, Size=16.));
-
-        a2?xanchor <-"left"  //workaround
-        a2?yanchor <-"middle" //workaround
-
-        // Title
-        let a3 =  Annotation.init(XRef="paper",YRef="paper", X=0., Y=1.05,
-                                  Text=  "Main Source for News",
-                                  ShowArrow=false,
-                                  Font=Font.init(Family=StyleParam.FontFamily.Arial,
-                                                 Size=30.,
-                                                 Color="rgb(37,37,37)"));
-        a3?xanchor <-"left"  //workaround
-        a3?yanchor <-"bottom" //workaround
-
-
-        // Source
-        let a4 = Annotation.init(XRef="paper",YRef="paper", X=0.5, Y= -0.1,
-                                  Text=  "Source: PewResearch Center & Storytelling with data",
-                                  ShowArrow=false,
-                                  Font=Font.init(Family=StyleParam.FontFamily.Arial,
-                                                 Size=12.,
-                                                 Color="rgb(150,150,150)"))
-
-        a4?xanchor <-"center"  //workaround
-        a4?yanchor <-"top" //workaround
-
-
-
-
-        yield! [a1;a2;a3;a4]
-    })
+    |> Chart.withAnnotations(annotations)
 ```
 
-## Filled Lines
+# Filled Lines
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 let x = [1.; 2.; 3.; 4.; 5.; 6.; 7.; 8.; 9.; 10.]
 let x_rev = x |> Seq.rev
 
@@ -488,46 +470,38 @@ let y3_lower = [9.; 7.; 5.; 3.; 1.; -5.; 1.; 3.; 1.; -1.]|> Seq.rev
     Chart.Scatter((Seq.append x x_rev),
                   (Seq.append y1_upper y1_lower),
                   StyleParam.Mode.Lines,
-                   Showlegend=false,
-                   Name="Fair")
-        |> Chart.withLineStyle(Color="rgba(255,255,255,0)")
-        |> GenericChart.mapTrace(fun t->
-                                        t?fill<-StyleParam.Fill.toString(StyleParam.Fill.ToSelf)
-                                        t?fillcolor<-"rgba(0,100,80,0.2)"
-                                        t)
+                   ShowLegend=false,
+                   Name="Fair") 
+        |> Chart.withLineStyle(Color=Color.fromString "rgba(255,255,255,0)")
+        |> GenericChart.mapTrace(Trace2DStyle.Scatter(Fill = StyleParam.Fill.ToSelf,FillColor= Color.fromString "rgba(0,100,80,0.2)"))
+        
 
     ;Chart.Scatter((Seq.append x x_rev),
                   (Seq.append y2_upper y2_lower),
                   StyleParam.Mode.Lines,
-                   Showlegend=false,
+                   ShowLegend=false,
                    Name="Premium")
-        |> Chart.withLineStyle(Color="rgba(255,255,255,0)")
-        |> GenericChart.mapTrace(fun t->
-                                        t?fill<-StyleParam.Fill.toString(StyleParam.Fill.ToSelf)
-                                        t?fillcolor<-"rgba(0,176,246,0.2)"
-                                        t)
-
-
-
+        |> Chart.withLineStyle(Color=Color.fromString "rgba(255,255,255,0)")
+        |> GenericChart.mapTrace(Trace2DStyle.Scatter(Fill = StyleParam.Fill.ToSelf,FillColor= Color.fromString "rgba(rgba(0,176,246,0.2))"))
+        
+        
     ;Chart.Scatter((Seq.append x x_rev),
                   (Seq.append y3_upper y3_lower),
                   StyleParam.Mode.Lines,
-                   Showlegend=false,
+                   ShowLegend=false,
                    Name="Ideal")
-        |> Chart.withLineStyle(Color="rgba(255,255,255,0)")
-        |> GenericChart.mapTrace(fun t->
-                                        t?fill<-StyleParam.Fill.toString(StyleParam.Fill.ToSelf)
-                                        t?fillcolor<-"rgba(231,107,243,0.2)"
-                                        t)
+        |> Chart.withLineStyle(Color=Color.fromString "rgba(255,255,255,0)")
+        |> GenericChart.mapTrace(Trace2DStyle.Scatter(Fill = StyleParam.Fill.ToSelf,FillColor= Color.fromString "rgba(231,107,243,0.2)"))
+            
 
-    ;Chart.Scatter(x,y1,StyleParam.Mode.Lines,Name="Fair")
-        |> Chart.withLineStyle(Color="rgb(0,100,80)")
+    ;Chart.Scatter(x,y1,StyleParam.Mode.Lines,Name="Fair") 
+        |> Chart.withLineStyle(Color=Color.fromString "rgb(0,100,80)")
 
-    ;Chart.Scatter(x,y2,StyleParam.Mode.Lines,Name="Premium")
-        |> Chart.withLineStyle(Color="rgb(0,176,246)")
+    ;Chart.Scatter(x,y2,StyleParam.Mode.Lines,Name="Premium") 
+        |> Chart.withLineStyle(Color=Color.fromString "rgb(0,176,246)")
 
-    ;Chart.Scatter(x,y3,StyleParam.Mode.Lines,Name="Ideal")
-        |> Chart.withLineStyle(Color="rgb(231,107,243)")
+    ;Chart.Scatter(x,y3,StyleParam.Mode.Lines,Name="Ideal") 
+        |> Chart.withLineStyle(Color=Color.fromString "rgb(231,107,243)")
 
-] |> Chart.Combine
+] |> Chart.combine
 ```
