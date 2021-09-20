@@ -32,9 +32,9 @@ jupyter:
     thumbnail: thumbnail/categorical.jpg
 ---
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET, *-*"
-#r "nuget: Plotly.NET.Interactive, *-*"
+```fsharp  dotnet_interactive={"language": "fsharp"}
+#r "nuget: Plotly.NET,  2.0.0-preview.8"
+#r "nuget: Plotly.NET.Interactive,  2.0.0-preview.8"
 
 ```
 
@@ -62,7 +62,7 @@ Both of these test an evenly-spaced sample of at most 1000 values
 
 It is possible to force the axis type by setting explicitly AxisType. In the example below the automatic X axis type would be linear (because there are not more than twice as many unique strings as unique numbers) but we force it to be category.
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x = [|"a"; "a"; "b"; "c"|]
@@ -75,12 +75,12 @@ Chart.Bar(xy)
 
 Box plots and violin plots are often shown with one categorical and one continuous axis.
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 #r "nuget: Deedle"
 #r "nuget: FSharp.Data"
 ```
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Deedle
 open FSharp.Data
 
@@ -102,7 +102,7 @@ let y = getColumnData "total_bill" |> Seq.cast<decimal>
 Chart.BoxPlot(x,y,Jitter=0.1,Boxpoints=StyleParam.Boxpoints.All)
 ```
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 Chart.Violin(x=x,y=y)
@@ -116,7 +116,7 @@ Set CategoryOrder to "StyleParam.CategoryOrder.CategoryAscending" or "StyleParam
 
 This example orders the categories alphabetically with CategoryOrder: 'CategoryAscending'
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 
 open Plotly.NET
 open Plotly.NET.LayoutObjects
@@ -133,7 +133,7 @@ let x = ['b'; 'a'; 'c'; 'd']
 |> Chart.withXAxis(LinearAxis.init(CategoryOrder=StyleParam.CategoryOrder.CategoryAscending))
 ```
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x = ['b'; 'a'; 'c'; 'd']
@@ -149,7 +149,7 @@ let x = ['b'; 'a'; 'c'; 'd']
 
 This example shows how to control category order by defining CategoryOrder to "Array" to derive the ordering from the attribute CategoryArray.
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x = ['b'; 'a'; 'c'; 'd']
@@ -168,7 +168,7 @@ let x = ['b'; 'a'; 'c'; 'd']
 
 By default, gridlines and ticks are not shown on categorical axes but they can be activated:
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x = ['b'; 'a'; 'c'; 'd']
@@ -185,7 +185,7 @@ Passing in a two-dimensional list as the x or y value of a trace causes the type
 
 Here is an example that creates a figure with a 2-level categorical x-axis.
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let trace x y name =  //Workaround
