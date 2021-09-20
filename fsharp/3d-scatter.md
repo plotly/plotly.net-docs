@@ -31,6 +31,7 @@ open Plotly.NET
 If Plotly Express does not provide a good starting point, it is also possible to use the more generic go.Scatter3D class from plotly.graph_objects. Like the 2D scatter plot go.Scatter, go.Scatter3d plots individual data in three-dimensional space.
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
+(*
 open System
 
 let t = [0. .. 0.5 .. 10.]
@@ -46,10 +47,11 @@ let x,y,z =
 
 let scatter3dLine = 
     Chart.Scatter3d(x,y,z,mode = StyleParam.Mode.Markers)
+*)
 ```
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-scatter3dLine
+//scatter3dLine
 ```
 
 # 3D Scatter Plot with Colorscaling and Marker Styling
@@ -84,9 +86,9 @@ let scatter3dLine =
     Chart.Scatter3d(x,y,z,mode = StyleParam.Mode.Markers)
     |> Chart.withMarker marker
     |> Chart.withLayout layout
-
+*)
 ```
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-scatter3dLine
+//scatter3dLine
 ```
