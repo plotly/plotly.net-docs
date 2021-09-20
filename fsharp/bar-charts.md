@@ -32,7 +32,7 @@ jupyter:
     thumbnail: thumbnail/bar.jpg
 ---
 
-```csharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET, *-*"
 #r "nuget: Plotly.NET.Interactive, *-*"
 open Plotly.NET

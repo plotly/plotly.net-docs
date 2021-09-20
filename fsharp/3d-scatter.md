@@ -10,26 +10,6 @@ jupyter:
     display_name: .NET (F#)
     language: F#
     name: .net-fsharp
-  language_info:
-    codemirror_mode:
-      name: ipython
-      version: 3
-    file_extension: .fs
-    mimetype: text/x-fsharp
-    name: F#
-    nbconvert_exporter: fsharp
-    pygments_lexer: fsharp
-    version: 5.0
-  plotly:
-    description: How to make 3D scatter plots in F# with Plotly.
-    display_as: 3d_charts
-    language: fsharp
-    layout: base
-    name: 3D Scatter Plots
-    order: 2
-    page_type: example_index
-    permalink: fsharp/3d-scatter-plots/
-    thumbnail: thumbnail/3d-scatter.jpg
 ---
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -55,16 +35,16 @@ open System
 
 let t = [0. .. 0.5 .. 10.]
 
-let x,y,z =
+let x,y,z =  
     t
     |> List.map (fun i ->
-        let i' = float i
+        let i' = float i 
         let r = 10. * Math.Cos (i' / 10.)
         (r*Math.Cos i',r*Math.Sin i',i')
     )
     |> List.unzip3
 
-let scatter3dLine =
+let scatter3dLine = 
     Chart.Scatter3d(x,y,z,mode = StyleParam.Mode.Markers)
 ```
 
@@ -76,16 +56,19 @@ scatter3dLine
 
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-open Plotly.NET
+open Plotly.NET 
+open Plotly.NET.TraceObjects
+open Plotly.NET.LayoutObjects
+
 open System
-
-
+ 
+ 
 let c = [0. .. 0.5 .. 10.]
 
-let x,y,z =
+let x,y,z =  
     c
     |> List.map (fun i ->
-        let i' = float i
+        let i' = float i 
         let r = 10. * Math.Cos (i' / 10.)
         (r*Math.Cos i',r*Math.Sin i',i')
     )
@@ -97,7 +80,7 @@ marker?color <- x
 let margin =Margin.init(Left =0., Bottom=0.,Top =0., Right  = 0. )
 let layout = Layout.init(  Margin=margin)
 
-let scatter3dLine =
+let scatter3dLine = 
     Chart.Scatter3d(x,y,z,mode = StyleParam.Mode.Markers)
     |> Chart.withMarker marker
     |> Chart.withLayout layout
