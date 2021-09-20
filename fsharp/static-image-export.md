@@ -34,16 +34,19 @@ jupyter:
     thumbnail: thumbnail/static-image-export.png
 ---
 
+
 ```fsharp dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET, *-*"
-#r "nuget: Plotly.NET.Interactive, *-*"
+#r "nuget: Plotly.NET,  2.0.0-preview.8"
+#r "nuget: Plotly.NET.Interactive,  2.0.0-preview.8"
 open Plotly.NET
+
 ```
 
 # Create a Figure
 
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
+open Plotly.NET.TraceObjects
 let N = 100
 let rnd = System.Random()
 let x = Array.init N (fun _ -> rnd.NextDouble())
@@ -71,7 +74,7 @@ open System.IO
 let srcPath="static/images/"
 
 if not <| Directory.Exists(srcPath) then
-        Directory.CreateDirectory(srcPath) |> ignore
+        Directory.CreateDirectory(srcPath) |> ignore    
 ```
 
 # Raster Formats: PNG, JPEG, SVG and PDF
@@ -131,3 +134,5 @@ let scatter =
 ```fsharp dotnet_interactive={"language": "fsharp"}
 scatter
 ```
+
+

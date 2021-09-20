@@ -32,14 +32,14 @@ jupyter:
     thumbnail: thumbnail/hover-text.png
 ---
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET, *-*"
-#r "nuget: Plotly.NET.Interactive, *-*"
+```fsharp  dotnet_interactive={"language": "fsharp"}
+#r "nuget: Plotly.NET,  2.0.0-preview.8"
+#r "nuget: Plotly.NET.Interactive,  2.0.0-preview.8"
 ```
 
 # Hover Labels
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x = [for i in 0..10 -> i]
@@ -51,7 +51,7 @@ Chart.Point(x,y,Labels=labels)
 
 # Customizing Hover Mode
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x = [for i in 0..10 -> i]
@@ -65,5 +65,5 @@ Chart.Line(x,y1,Labels=labels,ShowMarkers=true);
 Chart.Line(x,y2,Labels=labels,ShowMarkers=true);
 ]
 |> Chart.combine
-|> Chart.withLayout(Layout.init(Hovermode=StyleParam.HoverMode.X))
+|> Chart.withLayout(Layout.init(HoverMode=StyleParam.HoverMode.X))
 ```

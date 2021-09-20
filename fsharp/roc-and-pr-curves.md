@@ -33,9 +33,9 @@ jupyter:
     thumbnail: thumbnail/ml-roc-pr.png
 ---
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET, *-*"
-#r "nuget: Plotly.NET.Interactive, *-*"
+```fsharp  dotnet_interactive={"language": "fsharp"}
+#r "nuget: Plotly.NET,  2.0.0-preview.8"
+#r "nuget: Plotly.NET.Interactive,  2.0.0-preview.8"
 #r "nuget: FSharp.Stats"
 #r "nuget: Deedle"
 #r "nuget: Accord.MachineLearning"
@@ -56,7 +56,7 @@ In the histogram, we observe that the score spread such that most of the positiv
 
 As we adjust thresholds, the number of false positives will increase or decrease, and at the same time the number of true positives will also change; this is shown in the second plot. As you can see, the model seems to perform fairly well, because the true positive rate and the false positive rate decreases sharply as we increase the threshold. Those two lines each represent a dimension of the ROC curve.
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open FSharp.Data
 open Deedle
 open Plotly.NET
@@ -76,11 +76,11 @@ let getColumnData column=
         |> Series.values
         |> Array.ofSeq
 
-let X1 = getColumnData "Glucose"
-let X2 = getColumnData "BloodPressure"
-let Y:float[] = getColumnData "Outcome"
+let X1 = getColumnData "Glucose" 
+let X2 = getColumnData "BloodPressure" 
+let Y:float[] = getColumnData "Outcome" 
 
-let linspace (min,max,n) =
+let linspace (min,max,n) = 
     if n <= 2 then failwithf "n needs to be larger then 2"
     let bw = float32 (max - min) / (float32 n - 1.0f)
     Array.init n (fun i -> min + (bw * float32 i))
@@ -102,7 +102,7 @@ let label_1 = yScores |> Array.map (fun x -> x.[1])
 
 ```
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open FSharp.Data
 open Deedle
 open Plotly.NET
@@ -122,11 +122,11 @@ let getColumnData column=
         |> Series.values
         |> Array.ofSeq
 
-let X1 = getColumnData "Glucose"
-let X2 = getColumnData "BloodPressure"
-let Y:float[] = getColumnData "Outcome"
+let X1 = getColumnData "Glucose" 
+let X2 = getColumnData "BloodPressure" 
+let Y:float[] = getColumnData "Outcome" 
 
-let linspace (min,max,n) =
+let linspace (min,max,n) = 
     if n <= 2 then failwithf "n needs to be larger then 2"
     let bw = float32 (max - min) / (float32 n - 1.0f)
     Array.init n (fun i -> min + (bw * float32 i))
@@ -149,7 +149,7 @@ let cutoff = [|for point in roc.Points ->  point.Cutoff |]
 [
 Chart.Line(cutoff,tpr,Name="True Positive Rate");
 Chart.Line(cutoff,fpr,Name="False Positive Rate");
-]
+] 
 |> Chart.combine
 |> Chart.withXAxisStyle(title="Thresholds")
 |> Chart.withYAxisStyle(title="value")

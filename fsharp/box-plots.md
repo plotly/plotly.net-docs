@@ -32,16 +32,16 @@ jupyter:
     thumbnail: thumbnail/box.jpg
 ---
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET, *-*"
-#r "nuget: Plotly.NET.Interactive, *-*"
+```fsharp  dotnet_interactive={"language": "fsharp"}
+#r "nuget: Plotly.NET,  2.0.0-preview.8"
+#r "nuget: Plotly.NET.Interactive,  2.0.0-preview.8"
 ```
 
 # Basic Boxplot
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 
-open Plotly.NET
+open Plotly.NET 
 let y =  [2.; 1.5; 5.; 1.5; 3.; 2.5; 2.5; 1.5; 3.5; 1.]
 let x = ["bin1";"bin2";"bin1";"bin2";"bin1";"bin2";"bin1";"bin1";"bin2";"bin1"]
 
@@ -61,7 +61,7 @@ The exclusive algorithm uses the median to divide the ordered dataset into two h
 
 The inclusive algorithm also uses the median to divide the ordered dataset into two halves, but if the sample is odd, it includes the median in both halves. Q1 is then the median of the lower half and Q3 the median of the upper half.
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 let y' =  [2.; 1.5; 5.; 1.5; 2.; 2.5; 2.1; 2.5; 1.5; 1.;2.; 1.5; 5.; 1.5; 3.; 2.5; 2.5; 1.5; 3.5; 1.]
 
 
@@ -75,7 +75,7 @@ Chart.BoxPlot(x,y',Boxpoints=StyleParam.Boxpoints.All,QuartileMethod=StyleParam.
 
 For an explanation of how each algorithm works, see  <a href="https://plotly.com/r/box-plots/#choosing-the-algorithm-for-computing-quartiles" target="_blank">Choosing The Algorithm For Computing Quartiles</a>
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 let y =  [1;2;3;4;5]
 
 [
@@ -89,7 +89,7 @@ let y =  [1;2;3;4;5]
 
 # Horizontal Boxplot
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 let x1 =  [1;2;3;4;5]
 
 let x2 =  [1;2;4;5;6;9]
@@ -103,7 +103,7 @@ let x2 =  [1;2;4;5;6;9]
 
 # Adding Jittered Points
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 let y =  [2.; 1.5; 5.; 1.5; 3.; 2.5; 2.5; 1.5; 3.5; 1.]
 
 Chart.BoxPlot(y=y,Boxpoints=StyleParam.Boxpoints.All,Jitter=0.5,Pointpos= -1.8)
@@ -111,26 +111,28 @@ Chart.BoxPlot(y=y,Boxpoints=StyleParam.Boxpoints.All,Jitter=0.5,Pointpos= -1.8)
 
 # Styled box plot
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 let y =  [2.; 1.5; 5.; 1.5; 3.; 2.5; 2.5; 1.5; 3.5; 1.]
 
-Chart.BoxPlot(y=y,Boxpoints=StyleParam.Boxpoints.All,Jitter=0.5,Notched=true,Color="red",Name="Styled box plot")
+Chart.BoxPlot(y=y,Boxpoints=StyleParam.Boxpoints.All,Jitter=0.5,Notched=true,Color=Color.fromString "red",Name="Styled box plot")
 ```
 
 # Box Plot Styling Mean & Standard Deviation
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
+open Plotly.NET.TraceObjects
+
 let y=[2.37; 2.16; 4.82; 1.73; 1.04; 0.23; 1.32; 2.91; 0.11; 4.51; 0.51; 3.75; 1.35; 2.98; 4.50; 0.18; 4.66; 1.30; 2.06; 1.19]
 
 [
-    Chart.BoxPlot(y=y,Boxpoints=StyleParam.Boxpoints.All,Jitter=0.5,Notched=true,Marker=Marker.init(Color="red"),Boxmean=StyleParam.BoxMean.True,Name="Only Mean");
-    Chart.BoxPlot(y=y,Boxpoints=StyleParam.Boxpoints.All,Jitter=0.5,Notched=true,Marker=Marker.init(Color="blue"),Boxmean=StyleParam.BoxMean.SD,Name="Mean & SD")]
+    Chart.BoxPlot(y=y,Boxpoints=StyleParam.Boxpoints.All,Jitter=0.5,Notched=true,Marker=Marker.init(Color=Color.fromString "red"),Boxmean=StyleParam.BoxMean.True,Name="Only Mean");
+    Chart.BoxPlot(y=y,Boxpoints=StyleParam.Boxpoints.All,Jitter=0.5,Notched=true,Marker=Marker.init(Color=Color.fromString  "blue"),Boxmean=StyleParam.BoxMean.SD,Name="Mean & SD")]
 |> Chart.combine
 ```
 
 # Grouped Box plots
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 
 ```
 

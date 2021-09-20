@@ -32,9 +32,10 @@ jupyter:
     thumbnail: thumbnail/ml-regression.png
 ---
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET, *-*"
-#r "nuget: Plotly.NET.Interactive, *-*"
+
+```fsharp  dotnet_interactive={"language": "fsharp"}
+#r "nuget: Plotly.NET,  2.0.0-preview.8"
+#r "nuget: Plotly.NET.Interactive,  2.0.0-preview.8"
 #r "nuget: FSharp.Stats"
 #r "nuget: Deedle"
 
@@ -42,7 +43,7 @@ jupyter:
 
 # Basic linear regression plots
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Deedle
 open FSharp.Data
 open FSharp.Stats
@@ -52,7 +53,7 @@ open Plotly.NET
 let data=
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/tips.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
-
+    
 
 let getColumnData column=
         data
@@ -71,11 +72,11 @@ let yPredicted = [for x in xRange -> fittinFunc x]
 
 let xy = Seq.zip xRange yPredicted
 [
-    Chart.Point(x,y,Showlegend=true,Name="Tips")
+    Chart.Point(x,y,ShowLegend=true,Name="Tips")
     |> Chart.withXAxisStyle(title="total_bill")
     |> Chart.withYAxisStyle(title="tip");
 
-    Chart.Line(xy,Showlegend=true,Name="Regression Fit")
+    Chart.Line(xy,ShowLegend=true,Name="Regression Fit")
 ]
 |> Chart.combine
 
@@ -84,7 +85,7 @@ let xy = Seq.zip xRange yPredicted
 
 # Model generalization on unseen data
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Deedle
 open FSharp.Data
 open FSharp.Stats
@@ -95,7 +96,7 @@ open Plotly.NET
 let data=
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/tips.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
-
+    
 
 let getColumnData column=
         data
@@ -127,20 +128,20 @@ let yPredicted = [for x in xRange -> fittinFunc x]
 let xy = Seq.zip xRange yPredicted
 
 [
-    Chart.Point(xTrain,yTrain,Showlegend=true,Name="train")
+    Chart.Point(xTrain,yTrain,ShowLegend=true,Name="train")
     |> Chart.withXAxisStyle(title="total_bill")
     |> Chart.withYAxisStyle(title="tip");
 
-    Chart.Point(xTest,yTest,Showlegend=true,Name="test")
+    Chart.Point(xTest,yTest,ShowLegend=true,Name="test")
 
-    Chart.Line(xy,Showlegend=true,Name="Regression Fit")
+    Chart.Line(xy,ShowLegend=true,Name="Regression Fit")
 ]
 |> Chart.combine
 ```
 
 # Comparing different models parameters
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Deedle
 open FSharp.Data
 open FSharp.Stats
@@ -150,7 +151,7 @@ open Plotly.NET
 let data=
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/tips.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
-
+    
 
 let getColumnData column=
         data
@@ -178,12 +179,12 @@ let yPredictedWeighted = [for x in xRange -> fittingWeightedFunc x]
 let xy = Seq.zip xRange yPredicted
 let xyWeighted = Seq.zip xRange yPredictedWeighted
 [
-    Chart.Point(x,y,Showlegend=true,Name="Tips")
+    Chart.Point(x,y,ShowLegend=true,Name="Tips")
     |> Chart.withXAxisStyle(title="total_bill")
     |> Chart.withYAxisStyle(title="tip");
 
-    Chart.Line(xy,Showlegend=true,Name="Polynomial Fit");
-    Chart.Line(xyWeighted,Showlegend=true,Name="Weighted Polynomial Fit")
+    Chart.Line(xy,ShowLegend=true,Name="Polynomial Fit");
+    Chart.Line(xyWeighted,ShowLegend=true,Name="Weighted Polynomial Fit")
 ]
 |> Chart.combine
 
@@ -191,11 +192,11 @@ let xyWeighted = Seq.zip xRange yPredictedWeighted
 
 # 3D regression surface
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 #r "nuget:libsvm.net"
 ```
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open libsvm
 open System.Collections.Generic
 
@@ -214,7 +215,7 @@ type DataPoint={
     PetalWidth : float
 }
 
-let linspace (min,max,n) =
+let linspace (min,max,n) = 
     if n <= 2 then failwithf "n needs to be larger then 2"
     let bw = float (max - min) / (float n - 1.0)
     Array.init n (fun i -> min + (bw * float i))
@@ -254,7 +255,7 @@ let prob = ProblemHelper.ReadProblem(X)
 
 let svm = new Epsilon_SVR(prob, KernelHelper.RadialBasisFunctionKernel(gamma), C, epsilon)
 
-let z = Array.map (fun y -> Array.map (fun x -> svm.Predict([|new svm_node(index=1,value=x);new svm_node(index=2,value=y)|])) xRange) yRange
+let z = Array.map (fun y -> Array.map (fun x -> svm.Predict([|new svm_node(index=1,value=x);new svm_node(index=2,value=y)|])) xRange) yRange 
 
 [
 Chart.Surface(X=xRange,Y=yRange, zData=z);
@@ -271,15 +272,16 @@ Chart.Point3d(xyz=xyz)
 
 # Simple actual vs predicted plot
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Deedle
 open FSharp.Data
 open FSharp.Stats
 open FSharp.Stats.Fitting
 open FSharp.Stats.Fitting.NonLinearRegression
 open Plotly.NET
+open Plotly.NET.LayoutObjects
 
-let linspace (min,max,n) =
+let linspace (min,max,n) = 
     if n <= 2 then failwithf "n needs to be larger then 2"
     let bw = float (max - min) / (float n - 1.0)
     Array.init n (fun i -> min + (bw * float i))
@@ -300,7 +302,7 @@ let sepalLength = getColumnData "SepalLength"
 
 let xData = Array.map2 (fun x y -> [|x;y|]) sepalWidth sepalLength
 let X =  xData |> Matrix.ofJaggedArray
-let Y = vector petalWidth
+let Y = vector petalWidth 
 let coefs = OrdinaryLeastSquares.Linear.Multivariable.coefficients X Y
 let fittinFunc x= OrdinaryLeastSquares.Linear.Multivariable.fit coefs x
 
@@ -313,14 +315,14 @@ let yMax = Array.max(petalWidth)
 
 let labels = xy |> Array.map (fun item -> $"Ground Truth:{fst item} </br>Prediction: {snd item}")
 
-Chart.Point(xy,Labels=labels,Color="orange")
+Chart.Point(xy,Labels=labels,Color=Color.fromString "orange")
 |> Chart.withSize(width=1100.,height=700.)
 |> Chart.withShape(Shape.init(ShapeType=StyleParam.ShapeType.Line,X0=yMin,Y0=yMin,X1=yMax,Y1=yMax,Line=Line.init(Dash=StyleParam.DrawingStyle.Dash)))
 ```
 
 # Enhanced prediction error analysis (Not finished)
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 let values = [1; 2; 3;]
 let keys   = ["Product A"; "Product B"; "Product C";]
@@ -342,7 +344,7 @@ Chart.Histogram(x,Orientation=StyleParam.Orientation.Horizontal)
 
 # Residual Plots
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Deedle
 open FSharp.Data
 open FSharp.Stats
@@ -375,14 +377,14 @@ let chunkIndices =
                 |> Array.take m
 
 let xData = Array.map2 (fun x y -> [|x;y|]) sepalWidth sepalLength
-let Y = vector petalWidth
+let Y = vector petalWidth 
 
 let X =  xData |> Matrix.ofJaggedArray
 
 let xTest,xTrain = Matrix.splitRows chunkIndices X
 let yTest,yTrain = (vector Y) |> Vector.splitVector chunkIndices
 
-let fittinFunc X Y x=
+let fittinFunc X Y x= 
     let coefs = OrdinaryLeastSquares.Linear.Multivariable.coefficients X Y
     OrdinaryLeastSquares.Linear.Multivariable.fit coefs x
 
@@ -405,15 +407,15 @@ let fittingTrend = fittingLinearFunc (vector xTrend) (vector (Array.concat [resi
 let yTrend = xTrend |> Array.map (fun x -> fittingTrend x)
 
 let violinChart =   [
-                        Chart.Violin(y=residualTrain,Name="Train",Showlegend=false);
-                        Chart.Violin(y=residualTest,Name="Test",Showlegend=false);
+                        Chart.Violin(y=residualTrain,Name="Train",ShowLegend=false);
+                        Chart.Violin(y=residualTest,Name="Test",ShowLegend=false);
                     ]
                     |>Chart.combine
 
 let scatterPlot =   [
                         Chart.Point(yTrainPredicted,residualTrain,Name="Train");
                         Chart.Point(yTestPredicted,residualTest,Name="Test");
-                        Chart.Line(xTrend,yTrend,Showlegend=false);
+                        Chart.Line(xTrend,yTrend,ShowLegend=false);
                     ]
                     |>Chart.combine
                     |>Chart.withXAxisStyle(title="Prediction")
