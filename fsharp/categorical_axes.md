@@ -25,7 +25,7 @@ jupyter:
     display_as: basic
     language: fsharp
     layout: base
-    name: Categorical Charts
+    name: Categorical Axes
     order: 5
     page_type: u-guide
     permalink: fsharp/categorical-charts/
