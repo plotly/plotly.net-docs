@@ -10,6 +10,26 @@ jupyter:
     display_name: .NET (F#)
     language: F#
     name: .net-fsharp
+  language_info:
+    codemirror_mode:
+      name: ipython
+      version: 3
+    file_extension: .fs
+    mimetype: text/x-fsharp
+    name: F#
+    nbconvert_exporter: fsharp
+    pygments_lexer: fsharp
+    version: 5.0
+  plotly:
+    description: How to make 3D scatter plots in F# with Plotly.
+    display_as: 3d_charts
+    language: fsharp
+    layout: base
+    name: 3D Scatter Plots
+    order: 2
+    page_type: example_index
+    permalink: fsharp/3d-scatter-plots/
+    thumbnail: thumbnail/3d-scatter.jpg
 ---
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -31,7 +51,6 @@ open Plotly.NET
 If Plotly Express does not provide a good starting point, it is also possible to use the more generic go.Scatter3D class from plotly.graph_objects. Like the 2D scatter plot go.Scatter, go.Scatter3d plots individual data in three-dimensional space.
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-(*
 open System
 
 let t = [0. .. 0.5 .. 10.]
@@ -47,11 +66,10 @@ let x,y,z =
 
 let scatter3dLine = 
     Chart.Scatter3d(x,y,z,mode = StyleParam.Mode.Markers)
-*)
 ```
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-//scatter3dLine
+scatter3dLine
 ```
 
 # 3D Scatter Plot with Colorscaling and Marker Styling
@@ -86,9 +104,9 @@ let scatter3dLine =
     Chart.Scatter3d(x,y,z,mode = StyleParam.Mode.Markers)
     |> Chart.withMarker marker
     |> Chart.withLayout layout
-*)
+
 ```
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-//scatter3dLine
+scatter3dLine
 ```
