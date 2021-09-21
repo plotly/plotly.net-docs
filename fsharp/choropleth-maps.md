@@ -65,6 +65,7 @@ The GeoJSON data is passed to the geojson argument, and the data is passed into 
 open FSharp.Data
 open Newtonsoft.Json
 open Plotly.NET.LayoutObjects
+open Plotly.NET.TraceObjects
     
 #r "nuget: Deedle"
 open Deedle
