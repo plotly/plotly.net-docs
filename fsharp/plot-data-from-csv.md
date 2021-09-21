@@ -58,7 +58,7 @@ let getColumn column=
          
 let xy = Seq.zip  (getColumn "AAPL_x" :> seq<DateTime>) (getColumn "AAPL_y" :> seq<float>) 
 Chart.Line(xy,Name="Share Prices (in USD)")
-|>Chart.withLayout(Layout.init(Title.init("Apple Share Prices over time (2014)"),PlotBGColor=Color.fromString "#e5ecf6",ShowLegend=true,Width=1100.))
+|>Chart.withLayout(Layout.init(Title.init("Apple Share Prices over time (2014)"),PlotBGColor=Color.fromString "#e5ecf6",ShowLegend=true,Width=1100))
 |>Chart.withXAxis(LinearAxis.init(Title=Title.init("AAPL_x"),ZeroLineColor=Color.fromString"#ffff",ZeroLineWidth=2.,GridColor=Color.fromString"#ffff" ))
 |>Chart.withYAxis(LinearAxis.init(Title=Title.init("AAPL_y"),ZeroLineColor=Color.fromString"#ffff",ZeroLineWidth=2.,GridColor=Color.fromString"#ffff" ))
 
