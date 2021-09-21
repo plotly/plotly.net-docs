@@ -35,6 +35,9 @@ jupyter:
 ```fsharp  dotnet_interactive={"language": "fsharp"}
 #r "nuget: Plotly.NET,  2.0.0-preview.8"
 #r "nuget: Plotly.NET.Interactive,  2.0.0-preview.8"
+#r "nuget: FSharp.Data"
+#r "nuget: Newtonsoft.Json"
+#r "nuget: Deedle"
 ```
 
 A Choropleth Map is a map composed of colored polygons. It is used to represent spatial variations of a quantity. This page documents how to build outline choropleth maps, but you can also build choropleth tile maps using our Mapbox trace types.
@@ -60,13 +63,12 @@ The GeoJSON data is passed to the geojson argument, and the data is passed into 
 # Choropleth Map Using GeoJSON
 
 ```fsharp  dotnet_interactive={"language": "fsharp"}
-#r "nuget: FSharp.Data"
-#r "nuget: Newtonsoft.Json"
+
 open FSharp.Data
 open Newtonsoft.Json
 open Plotly.NET.LayoutObjects
-    
-#r "nuget: Deedle"
+open Plotly.NET.TraceObjects
+
 open Deedle
 open System.IO
 open System.Text
