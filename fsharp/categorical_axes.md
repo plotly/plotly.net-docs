@@ -64,6 +64,8 @@ It is possible to force the axis type by setting explicitly AxisType. In the exa
 
 ```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
+open Plotly.NET.LayoutObjects
+
 
 let x = [|"a"; "a"; "b"; "c"|]
 let y = [|1;2;3;4|]
