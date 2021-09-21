@@ -34,13 +34,13 @@ jupyter:
 
 # Basic Sankey Diagram
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET,*-*"
-#r "nuget: Plotly.NET.Interactive,*-*"
+```fsharp  dotnet_interactive={"language": "fsharp"}
+#r "nuget: Plotly.NET,2.0.0-preview.8"
+#r "nuget: Plotly.NET.Interactive,2.0.0-preview.8"
 #r "nuget: FSharp.Data"
 ```
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 
 open Plotly.NET
 
@@ -54,7 +54,7 @@ let nodes = [|
 |]
 
 Chart.Sankey(
-    nodePadding = 15.,
+    nodePadding = 15.,    
     nodeColor = "blue",
     nodeThickness = 20.0,
     nodeLineWidth = 0.5,
@@ -72,7 +72,7 @@ Chart.Sankey(
 
 # More complex Sankey diagram with colored links
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 
 open FSharp.Data
 
@@ -97,12 +97,12 @@ Chart.Sankey(nodes=nodes,links=links,
 // |> GenericChart.mapTrace (fun x ->  x.SetValue("valueformat", ".0f")
 //                                     x.SetValue("valuesuffix", ".TWh")
 //                                     x)
-|> Chart.withLayout(Layout.init(Width = 1000., Font = Font.init(Size = 10.), Title = Title.init(title)))
+|> Chart.withLayout(Layout.init(Width = 1000, Font = Font.init(Size = 10.), Title = Title.init(title)))
 ```
 
 # Style Sankey Diagram
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open FSharp.Data
 
 type remoteData = JsonProvider<"https://raw.githubusercontent.com/plotly/plotly.js/master/test/image/mocks/sankey_energy.json">
@@ -126,7 +126,7 @@ Chart.Sankey(nodes=nodes,links=links,
 // |> GenericChart.mapTrace (fun x ->  x.SetValue("valueformat", ".0f")
 //                                     x.SetValue("valuesuffix", ".TWh")
 //                                     x)
-|> Chart.withLayout(Layout.init(Width = 1000., Font = Font.init(Size = 10.,Color="white"), Title = Title.init(title),Plot_bgcolor="gray",Paper_bgcolor="gray",Hovermode=StyleParam.HoverMode.X))
+|> Chart.withLayout(Layout.init(Width = 1000, Font = Font.init(Size = 10.,Color=Color.fromString "white"), Title = Title.init(title),PlotBGColor=Color.fromString "gray",PaperBGColor=Color.fromString "gray",HoverMode=StyleParam.HoverMode.X))
 ```
 
 # Define Node Position

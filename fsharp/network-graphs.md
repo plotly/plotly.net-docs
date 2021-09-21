@@ -33,17 +33,17 @@ jupyter:
     thumbnail: thumbnail/net.jpg
 ---
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET, *-*"
-#r "nuget: Plotly.NET.Interactive, *-*"
+```fsharp  dotnet_interactive={"language": "fsharp"}
+#r "nuget: Plotly.NET,  2.0.0-preview.8"
+#r "nuget: Plotly.NET.Interactive,  2.0.0-preview.8"
 ```
 
 # Create Nodes
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 //open QuickGraph
 open Plotly.NET
-open Plotly.NET.Axis
+open Plotly.NET.LayoutObjects
 
 
 let x = [2;3;5;1;10;3]
@@ -58,7 +58,7 @@ Chart.Point(x,y)
 
 # Create Edges
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 
 open System
 
@@ -68,8 +68,8 @@ let x = [for i in 0..100 -> rand.Next(0,100) ]
 let y = [for i in x -> rand.Next(0,100) ]
 
 let edges = [for i in x ->  let i = rand.Next(0,100)
-                            let j = rand.Next(0,100)
-                            Shape.init(StyleParam.ShapeType.Line,X0=x.[i],X1=x.[j],Y0=y.[i],Y1=y.[j],Line=Line.init(Color="#888",Width=0.5))]
+                            let j = rand.Next(0,100)                            
+                            Shape.init(StyleParam.ShapeType.Line,X0=x.[i],X1=x.[j],Y0=y.[i],Y1=y.[j],Line=Line.init(Color=Color.fromString "#888",Width=0.5))]
 
 
 Chart.Point(x,y)

@@ -33,16 +33,20 @@ jupyter:
     thumbnail: thumbnail/multiple-axes.jpg
 ---
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET, *-*"
-#r "nuget: Plotly.NET.Interactive, *-*"
+```fsharp  dotnet_interactive={"language": "fsharp"}
+#r "nuget: Plotly.NET,  2.0.0-preview.8"
+#r "nuget: Plotly.NET.Interactive,  2.0.0-preview.8"
 ```
 
 # Two Y Axes
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+Multiple Axes are created by defining AxisAnchor for the plot as shown below
+
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
-open Plotly.NET.Axis
+open Plotly.NET.TraceObjects
+open Plotly.NET.LayoutObjects
+
 
 let x = [for i in 0..10 -> i]
 let y1 = [for i in x -> Math.Pow(float i,2.0)]
@@ -50,10 +54,10 @@ let y2 = [for i in x -> Math.Pow(float i,3.0)]
 
 [
     Chart.Line(x,y1,Name="anchor 1",ShowMarkers=true) |> Chart.withAxisAnchor(Y=1);
-    Chart.Line(x,y2,Name="anchor 2",ShowMarkers=true) |> Chart.withAxisAnchor(Y=2)
+    Chart.Line(x,y2,Name="anchor 2",ShowMarkers=true) |> Chart.withAxisAnchor(Y=2)       
 ]
 |> Chart.combine
-|> Chart.withLayout(Layout.init(Plot_bgcolor="#e5ecf6"))
+|> Chart.withLayout(Layout.init(PlotBGColor=Color.fromString "#e5ecf6"))
 |> Chart.withYAxisStyle(
         "axis 1",
         Side=StyleParam.Side.Left,
@@ -69,15 +73,17 @@ let y2 = [for i in x -> Math.Pow(float i,3.0)]
 
 # Multiple Axes
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
+open Plotly.NET
+
 [
-    for i in 1..4 ->
-                    Chart.Line(x=[for j in i..(i+4) -> j],y=[for j in i..(i+4) -> 2*j*j+3*j],Name=String.Format("anchor {0}",i),ShowMarkers=true )
-                    |> Chart.withAxisAnchor(Y=i)
+    for i in 1..4 -> 
+                    Chart.Line(x=[for j in i..(i+4) -> j],y=[for j in i..(i+4) -> 2*j*j+3*j],Name=String.Format("anchor {0}",i),ShowMarkers=true ) 
+                    |> Chart.withAxisAnchor(Y=i)      
 ]
 |> Chart.combine
 |> Chart.withXAxisStyle("x-axis",Domain=(0.3, 0.7))
-|> Chart.withLayout(Layout.init(Plot_bgcolor="#e5ecf6"))
+|> Chart.withLayout(Layout.init(PlotBGColor=Color.fromString "#e5ecf6"))
 |> Chart.withYAxisStyle(
         "y axis 1",
         Side=StyleParam.Side.Left,
@@ -87,14 +93,14 @@ let y2 = [for i in x -> Math.Pow(float i,3.0)]
         "y axis 2",
         Side=StyleParam.Side.Left,
         Id=StyleParam.SubPlotId.YAxis 2,
-        Position= 0.1,
+        Position= 0.1,        
         Overlaying=StyleParam.LinearAxisId.Y 1
     )
 |> Chart.withYAxisStyle(
         "y axis 3",
         Side=StyleParam.Side.Right,
         Id=StyleParam.SubPlotId.YAxis 3,
-        Overlaying=StyleParam.LinearAxisId.Y 1
+        Overlaying=StyleParam.LinearAxisId.Y 1   
     )
 |> Chart.withYAxisStyle(
         "y axis 4",
@@ -103,12 +109,12 @@ let y2 = [for i in x -> Math.Pow(float i,3.0)]
         Position= 0.85,
         Overlaying=StyleParam.LinearAxisId.Y 1
     )
-
+    
 ```
 
 # Multiple Y-Axes Subplots
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 // open Plotly.NET
 
 // let x = [for i in 0..10 -> i]
@@ -117,11 +123,11 @@ let y2 = [for i in x -> Math.Pow(float i,3.0)]
 
 // [
 //     [
-//         Chart.Point(x,y,Name="1,1") |> Chart.withAxisAnchor(Y=1)
-//         Chart.Point(x,y2,Name="1,2") |> Chart.withAxisAnchor(Y=2)
+//         Chart.Point(x,y,Name="1,1") |> Chart.withAxisAnchor(Y=1) 
+//         Chart.Point(x,y2,Name="1,2") |> Chart.withAxisAnchor(Y=2) 
 //     ]|>
 //     Chart.combine
-//     |> Chart.withYAxisStyle("y1",Side=StyleParam.Side.Left,Id=StyleParam.SubPlotId.YAxis 1)
+//     |> Chart.withYAxisStyle("y1",Side=StyleParam.Side.Left,Id=StyleParam.SubPlotId.YAxis 1)    
 //     |> Chart.withYAxisStyle("y2", Side=StyleParam.Side.Right,Id=StyleParam.SubPlotId.YAxis 2)
 
 //     Chart.Invisible()
@@ -134,7 +140,7 @@ let y2 = [for i in x -> Math.Pow(float i,3.0)]
 // let getChart i =
 //     [
 //         Chart.Line(x,y1,Name="anchor "+string i,ShowMarkers=true) |> Chart.withAxisAnchor(Y=i);
-//         Chart.Line(x,y2,Name="anchor "+string (i+1),ShowMarkers=true) |> Chart.withAxisAnchor(Y=i+1)
+//         Chart.Line(x,y2,Name="anchor "+string (i+1),ShowMarkers=true) |> Chart.withAxisAnchor(Y=i+1)       
 //     ]
 //     |> Chart.combine
 //     |> Chart.withLayout(Layout.init(Plot_bgcolor="#e5ecf6"))
@@ -150,7 +156,7 @@ let y2 = [for i in x -> Math.Pow(float i,3.0)]
 //             Overlaying=StyleParam.LinearAxisId.Y 1
 //         )
 
-// let grid =
+// let grid = 
 //     [
 //         for i in 1..1 -> (getChart i)
 //     ]
