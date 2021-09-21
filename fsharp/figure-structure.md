@@ -32,21 +32,21 @@ jupyter:
     thumbnail: thumbnail/violin.jpg
 ---
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET, *-*"
-#r "nuget: Plotly.NET.Interactive, *-*"
+```fsharp  dotnet_interactive={"language": "fsharp"}
+#r "nuget: Plotly.NET,  2.0.0-preview.8"
+#r "nuget: Plotly.NET.Interactive,  2.0.0-preview.8"
 ```
 
 # Figure Data Structure
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+```fsharp  dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
 
 let x  = [for i in 0..20 -> i]
 let y = [for i in 0..20 -> 2*i*2+3*i+10]
 
 let figure = Chart.Line(x,y)
-            |> Chart.withLayout(Layout.init(Width=500.0,Height=500.0))
+            |> Chart.withLayout(Layout.init(Width=500,Height=500))
             |> GenericChart.toFigure
 
 figure.Layout.GetProperties(true)
