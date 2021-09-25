@@ -71,7 +71,20 @@ jobs:
       - store_artifacts:
           path: build
           destination: build
-
+          
+      - run:
+          name: trigger doc build
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "main" ]; then
+              git clone --depth=1 https://github.com/plotly/graphing-library-docs.git
+              cd graphing-library-docs
+              git config user.name plotlydocbot
+              git config user.email accounts@plot.ly
+              git commit --allow-empty -m "deploying https://github.com/plotly/plotly.net-docs/commit/${CIRCLE_SHA1}"
+              git push
+              cd ..
+              rm -rf graphing-library-docs
+            fi
 workflows:
   build:
     jobs:
