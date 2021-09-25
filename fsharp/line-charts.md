@@ -26,20 +26,19 @@ jupyter:
     language: fsharp
     layout: base
     name: Line Charts
-    order: 5
+    order: 2
     page_type: u-guide
     permalink: fsharp/line-charts/
     thumbnail: thumbnail/line-plot.jpg
 ---
-
 # Line Charts in F#
 
 How to make line charts in F# with Plotly.NET. Examples on creating and styling line charts in F# with Plotly.NET.
 
 ```fsharp  dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET, *-*"
+#r "nuget: Plotly.NET,  2.0.0-preview.8"
 #r "nuget: newtonsoft.json"
-#r "nuget: Plotly.NET.Interactive, *-*"
+#r "nuget: Plotly.NET.Interactive,  2.0.0-preview.8"
 
 open Plotly.NET
 open System

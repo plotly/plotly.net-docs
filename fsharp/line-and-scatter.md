@@ -26,9 +26,9 @@ jupyter:
     language: fsharp
     layout: base
     name: Scatter Plots
-    order: 5
+    order: 1
     page_type: u-guide
-    permalink: fsharp/scatter-plots/
+    permalink: fsharp/line-and-scatter/
     thumbnail: thumbnail/line-and-scatter.jpg
 ---
 
@@ -36,9 +36,9 @@ jupyter:
 How to make scatter plots in F# with Plotly.NET
 
 ```fsharp  dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET, *-*"
+#r "nuget: Plotly.NET,  2.0.0-preview.8"
 #r "nuget: newtonsoft.json"
-#r "nuget: Plotly.NET.Interactive,  *-*"
+#r "nuget: Plotly.NET.Interactive,  2.0.0-preview.8"
 #r "nuget: FSharp.Data"
 #r "nuget: Deedle"
 
@@ -260,7 +260,7 @@ let xs = thetas |> Seq.zip rs |> Seq.map(fun (r,t)-> r*Math.Cos(t) )
 let ys = thetas |> Seq.zip rs |> Seq.map(fun (r,t)-> r*Math.Sin(t))
 
 let colors = series |> Seq.map (fun _ -> nextFloat(0. ,1.)) |> Seq.cast<IConvertible> |> Color.fromColorScaleValues
-let marker = Marker.init(Colorscale=StyleParam.Colorscale.Viridis, Line=Line.init(Width=01.))
+let marker = Marker.init(Colorscale=StyleParam.Colorscale.Viridis, Line=Line.init(Width=01.),Color=colors)
 
 
 Chart.Scatter(xs, ys, StyleParam.Mode.Markers, UseWebGL= true) 

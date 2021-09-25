@@ -26,10 +26,10 @@ jupyter:
     language: fsharp
     layout: base
     name: Categorical Axes
-    order: 5
+    order: 16
     page_type: u-guide
-    permalink: fsharp/categorical-charts/
-    thumbnail: thumbnail/categorical.jpg
+    permalink: fsharp/categorical-axes/
+    thumbnail: thumbnail/bar.jpg
 ---
 
 ```fsharp  dotnet_interactive={"language": "fsharp"}

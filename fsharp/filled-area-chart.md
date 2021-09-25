@@ -25,25 +25,22 @@ jupyter:
     display_as: basic
     language: fsharp
     layout: base
-    name: Filled Area Charts
-    order: 5
+    name: Filled Area
+    order: 7
     page_type: u-guide
-    permalink: fsharp/filled-area-charts/
+    permalink: fsharp/filled-area-plots/
     thumbnail: thumbnail/area.jpg
 ---
 
-# Filled Area Charts
-
-
-## Imports
+This example shows how to fill the area enclosed by traces.
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET, 2.0.0-preview.6"
-#r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
+#r "nuget: Plotly.NET, 2.0.0-preview.8"
+#r "nuget: Plotly.NET.Interactive, 2.0.0-preview.8"
 open Plotly.NET
 ```
 
-## Filled area chart with plotly.graph_objects
+# Basic Filled Area Chart
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
@@ -55,11 +52,11 @@ let y1 = [3; 5; 1; 7]
 [
     Chart.Area(x, y0)
     Chart.Area(x, y1)
-]
-|> Chart.Combine
+] 
+|> Chart.combine
 ```
 
-## Overlaid Area Chart Without Boundary Lines
+# Overlaid Area Chart Without Boundary Lines
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
@@ -69,34 +66,37 @@ let y0 = [0; 2; 3; 5]
 let y1 = [3; 5; 1; 7]
 
 [
-    Chart.Area(x, y0)
+    Chart.Area(x, y0) 
     Chart.Area(x, y1)
-]
-|> Chart.Combine
+] 
+|> Chart.combine
 |> Chart.withLineStyle(Width=0.0)
 ```
 
-## Interior Filling for Area Chart
+# Interior Filling for Area Chart
+
+Setting Fill=StyleParam.Fill.ToNext_y makes two traces fill only interior
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
+open Plotly.NET
 open Plotly.NET
 
 let x = [1; 2; 3; 4]
 let y0 = [3; 4; 8; 3]
 let y1 = [1; 6; 2; 6]
 
-let stackGroup = "filling"
-
 [
-    Chart.Scatter(x, y0, Plotly.NET.StyleParam.Mode.Lines, Color = "indigo")
-    Chart.Scatter(x, y1, Plotly.NET.StyleParam.Mode.Lines, Color = "indigo") |> GenericChart.mapTrace(fun x -> x.SetValue("fill", "tonexty"); x)
+    Chart.Scatter(x, y0, Plotly.NET.StyleParam.Mode.Lines, Color = Color.fromString "indigo")    
+    Chart.Scatter(x, y1, Plotly.NET.StyleParam.Mode.Lines, Color = Color.fromString "indigo")     
+    |> GenericChart.mapTrace(Trace2DStyle.Scatter(Fill=StyleParam.Fill.ToNext_y))    
 ]
-|> Chart.Combine
+|> Chart.combine
+
 
 
 ```
 
-## Stacked Area Chart
+# Stacked Area Chart
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
@@ -107,85 +107,77 @@ let y1 = [20; 10; 10; 60]
 let y2 = [40; 30; 50; 30]
 
 [
-    Chart.StackedArea(x, y0, Color="#B4A3F4")
-    Chart.StackedArea(x, y1, Color="#AAE9E8")
-    Chart.StackedArea(x, y2, Color="#CEF2E5")
-]
-|> Chart.Combine
+    Chart.StackedArea(x, y0, Color=Color.fromString "#B4A3F4") 
+    Chart.StackedArea(x, y1, Color=Color.fromString "#AAE9E8")
+    Chart.StackedArea(x, y2, Color=Color.fromString "#CEF2E5")
+] 
+|> Chart.combine
 |> Chart.withLineStyle(Width=0.0)
 ```
 
-## Stacked Area Chart with Normalized Values
+# Stacked Area Chart with Normalized Values
+Stacked Area Chart can be created using Chart.Scatter with same StackGroup property set for all traces. For example same StackGroup="one" set for all Chart.Scatter traces
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET
+open Plotly.NET.LayoutObjects
 
 let x = ["Winter"; "Spring"; "Summer"; "Fall"]
 let y0 = [40; 20; 30; 40]
-let y1 = [50; 70; 40; 60]
-let y2 = [70; 80; 60; 70]
-let y3 = [100; 100; 100; 100]
+let y1 = [20; 10; 10; 60]
+let y2 = [40; 30; 50; 30]
 
-let xAxis = Axis.LinearAxis.init(AxisType = StyleParam.AxisType.Category)
-
-let yAxis = Axis.LinearAxis.init(AxisType = StyleParam.AxisType.Linear,
+let yAxis = LinearAxis.init(AxisType = StyleParam.AxisType.Linear,
                                  Range = StyleParam.Range.MinMax(1.0, 100.0),
-                                 Ticksuffix = "%")
+                                 TickSuffix = "%")
 
 [
-    Chart.Scatter(x,
-                  y0,
+    Chart.Scatter(x, 
+                  y0, 
                   StyleParam.Mode.Lines,
-                  StackGroup = stackGroup,
+                  StackGroup = "one",
                   GroupNorm = StyleParam.GroupNorm.Percent,
-                  Color="#B4A3F4")
-    Chart.Scatter(x,
-                  y1,
+                  Color=Color.fromString "rgb(131, 90, 241)")
+    Chart.Scatter(x, 
+                  y1, 
                   StyleParam.Mode.Lines,
-                  StackGroup = stackGroup,
-                  Color="#B2C9F2")
-    Chart.Scatter(x,
-                  y2,
+                  StackGroup = "one",
+                  Color=Color.fromString "rgb(111, 231, 219)")
+    Chart.Scatter(x, 
+                  y2, 
                   StyleParam.Mode.Lines,
-                  StackGroup = stackGroup,
-                  Color="#AAE9E8")
-    Chart.Scatter(x,
-                  y3,
-                  StyleParam.Mode.Lines,
-                  StackGroup = stackGroup,
-                  Color="#CEF2E5")
-]
-|> Chart.Combine
+                  StackGroup = "one",
+                  Color=Color.fromString "rgb(184, 247, 2121)")
+] 
+|> Chart.combine
 |> Chart.withLineStyle(Width=0.0)
-|> Chart.withX_Axis xAxis
-|> Chart.withY_Axis yAxis
+|> Chart.withYAxis yAxis
 ```
 
-## Select Hover Points
+# Select Hover Points
+
+Chart.Area uses Chart.Scatter, hence setting Trace2DStyle.Scatter will apply area trace styles. HoverInformation can be set by the following properties in Trace2DStyle.Scatter
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
+open Plotly.NET.TraceObjects
+
 let x0 = [0.0; 0.5; 1.0; 1.5; 2.0]
 let y = [0.0; 1.0; 2.0; 1.0; 0.0]
 let x1 = [3.0; 3.5; 4.0; 4.5; 5.0]
 
-let xAxis = Axis.LinearAxis.init(AxisType = StyleParam.AxisType.Linear,
-                                 Range = StyleParam.Range.MinMax(0.0, 5.2))
-
-let yAxis = Axis.LinearAxis.init(AxisType = StyleParam.AxisType.Linear,
-                                 Range = StyleParam.Range.MinMax(0.0, 3.0))
-
 [
-    Chart.Area(x0,
-               y,
-               Color="#9400D3")
-               |> GenericChart.mapTrace(fun x -> x.SetValue("hoveron", "points+fills"); x.SetValue("text", "Points + Fills"); x.SetValue("hoverinfo", "text+x+y"); x)
-    Chart.Area(x1,
-               y,
-               Color="#EE82EE")
-               |> GenericChart.mapTrace(fun x -> x.SetValue("hoveron", "points"); x.SetValue("text", "Points only"); x.SetValue("hoverinfo", "text+x+y"); x)
-]
-|> Chart.Combine
-|> Chart.withX_Axis xAxis
-|> Chart.withY_Axis yAxis
-|> Chart.withLayout(Layout.init(Width = 1000.))
+    Chart.Area(x0, 
+               y, 
+               Color=Color.fromString "#9400D3")
+    |> GenericChart.mapTrace (Trace2DStyle.Scatter(HoverOn=StyleParam.HoverOn.PointsFills,HoverInfo=StyleParam.HoverInfo.All,Text="Points + Fills"))
+                               
+    Chart.Area(x1, 
+               y, 
+               Color=Color.fromString "#EE82EE")
+    |> GenericChart.mapTrace (Trace2DStyle.Scatter(HoverOn=StyleParam.HoverOn.Points,HoverInfo=StyleParam.HoverInfo.All,Text="Points Only"))               
+] 
+|> Chart.combine
+|> Chart.withXAxisStyle(title="X",MinMax=(0.0, 5.2))
+|> Chart.withYAxisStyle(title="Y",MinMax=(0.0, 3.0))
+|> Chart.withSize(Width = 1000)
 ```
