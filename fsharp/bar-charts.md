@@ -228,7 +228,7 @@ let textLabels key= Array.map2 (fun h w -> $"{h} x {w} = <br>"+ string (h*w))  d
 |> Chart.combine
 |> Chart.withLayout(Layout.init(BarMode=StyleParam.BarMode.Stack))
 |> Chart.withXAxis(LinearAxis.init(TickVals=tickVals,TickText=ticks,ShowGrid=true))
-|> Chart.withSize(1100.0,700.)
+
 
 
 ```

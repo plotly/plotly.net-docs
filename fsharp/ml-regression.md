@@ -264,7 +264,7 @@ Chart.Point3d(xyz=xyz)
 |> Chart.withYAxisStyle(title="Sepal Length",Id=StyleParam.SubPlotId.Scene 1)
 |> Chart.withZAxisStyle(title="Petal Width")
 |> Chart.withMarkerStyle(Size=5)
-|> Chart.withSize(width=1100.,height=700.)]
+]
 |> Chart.combine
 
 
@@ -316,7 +316,6 @@ let yMax = Array.max(petalWidth)
 let labels = xy |> Array.map (fun item -> $"Ground Truth:{fst item} </br>Prediction: {snd item}")
 
 Chart.Point(xy,Labels=labels,Color=Color.fromString "orange")
-|> Chart.withSize(width=1100.,height=700.)
 |> Chart.withShape(Shape.init(ShapeType=StyleParam.ShapeType.Line,X0=yMin,Y0=yMin,X1=yMax,Y1=yMax,Line=Line.init(Dash=StyleParam.DrawingStyle.Dash)))
 ```
 
@@ -427,6 +426,6 @@ violinChart
 ]
 |>
 Chart.Grid(1,2)
-|> Chart.withSize(1100.,700.)
+
 
 ```

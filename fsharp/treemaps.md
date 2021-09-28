@@ -91,7 +91,6 @@ let values2 = [65.0; 14.0; 12.0; 10.0; 2.0; 6.0; 6.0; 1.0; 4.0]
 ]
 |> Chart.combine
 |> Chart.withLayoutGridStyle(Rows=1,Columns=2)
-|> Chart.withSize(Width=1100)
 |> Chart.withMarginSize(Top=50,Left=25,Right=25,Bottom=25)
 ```
 
@@ -176,7 +175,6 @@ Chart.Treemap(labels=labels,
             parents=parents,
             Ids=Ids,
             Maxdepth=3) 
-|> Chart.withSize(Width=1100)
 |> Chart.withMarginSize(Top=50,Left=25,Right=25,Bottom=25)
 ```
 
@@ -198,7 +196,6 @@ Chart.Treemap(labels=labels,
             parents=parents,
             Ids=Ids,            
             PathBar=Pathbar.init(Textfont=Font.init(Size=15.))) 
-|> Chart.withSize(Width=1100)
 |> Chart.withLayout(Layout.init(
                             UniformText=UniformText.init(MinSize=10,Mode=StyleParam.UniformTextMode.Hide),
                             Margin = Margin.init(Top=50,Left=25,Right=25,Bottom=25)))

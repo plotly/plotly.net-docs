@@ -227,7 +227,7 @@ let random_ys2 = generate () |> Seq.map(fun x -> x - 5.0)
     |> Chart.withTraceName(Name="markers")
 ]
 |> Chart.combine
-|> Chart.withSize(1100.,700.)
+
 ```
 
 # Style Line Plots
@@ -280,7 +280,7 @@ let low2000Chart = Chart.Scatter(month, low_2000, StyleParam.Mode.Lines_Markers,
     |> Chart.withTitle("Average High and Low Temperatures in New York")
     |> Chart.withXAxisStyle ("Month")
     |> Chart.withYAxisStyle ("Temperature (degrees F)")
-    |> Chart.withSize(1100.,700.)
+
 ```
 
 # Connect Data Gaps
@@ -340,7 +340,7 @@ let hv = Chart.Scatter(xs,  ys |> Seq.map(fun y->y+25), StyleParam.Mode.Lines_Ma
 |> Chart.combine
 |> Chart.withLegend(Legend.init(Y=0.5,TraceOrder=StyleParam.TraceOrder.Reversed))
 |> Chart.withLayout(Layout.init(Font=Font.init(Size=16.)))
-|> Chart.withSize(1100.,700.)
+
 ```
 
 # Label Lines with Annotations

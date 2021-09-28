@@ -115,7 +115,7 @@ let y i= Array.init n (fun _ -> yData.[i])
                         Annotations=annotations,
                         PaperBGColor =Color.fromString "rgb(248, 248, 255)", PlotBGColor =Color.fromString "rgb(248, 248, 255)",
                         Font = Font.init(Family = StyleParam.FontFamily.Arial, Size=14., Color =Color.fromString "rgb(67, 67, 67)")))
-|> Chart.withSize(1100,700)
+
 |> Chart.withXAxis(LinearAxis.init(Domain = StyleParam.Range.MinMax (0.15, 1.), ZeroLine = false, ShowTickLabels = false, ShowLine = false, ShowGrid = false ))
 |> Chart.withYAxis(LinearAxis.init(ZeroLine = false, ShowTickLabels = false, ShowLine = false, ShowGrid = false ))
 

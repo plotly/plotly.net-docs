@@ -32,7 +32,7 @@ jupyter:
     thumbnail: thumbnail/line-and-scatter.jpg
 ---
 
-# Scatter Plots in F#
+# Scatter Plots in Fsharp
 How to make scatter plots in F# with Plotly.NET
 
 ```fsharp  dotnet_interactive={"language": "fsharp"}
@@ -161,9 +161,9 @@ let SepalLength:float[] = getColumnData "SepalLength"
 let PetalLength:float[] = getColumnData "PetalLength"
 let PetalWidth:float[] = getColumnData "PetalWidth"
 let colors = getColumnData "Name"  |> Array.map (fun name -> match name with
-                                                            |"Iris-setosa" -> Color.fromString "red"
-                                                            |"Iris-versicolor" -> Color.fromString "blue"
-                                                            |_ -> Color.fromString "deeppink") |> Color.fromColors
+                                                                |"Iris-setosa" -> Color.fromString "red"
+                                                                |"Iris-versicolor" -> Color.fromString "blue"
+                                                                |_ -> Color.fromString "deeppink") |> Color.fromColors
                                 
  
 

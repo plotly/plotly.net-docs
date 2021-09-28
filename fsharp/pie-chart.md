@@ -141,7 +141,6 @@ let CO2Annotation = Annotation.init(X= 0.80,Y = 0.5,ShowArrow=false,Text="CO2",F
 |> Chart.combine
 |> Chart.withLayoutGrid(LayoutGrid.init(Rows=1,Columns=2))
 |> Chart.withAnnotations([CHGAnnotation;CO2Annotation])
-|> Chart.withSize(Width=1100,Height=700)
 |> Chart.withTitle("Global Emissions 1990-2011")
 
 ```
@@ -191,7 +190,6 @@ let gdp2007 = Chart.Pie(Name="World GDP 2007",Labels=labels,values=[21.;15.;3.;1
 [gdp1980;gdp2007] 
 |> Chart.combine
 |> Chart.withLayoutGrid(LayoutGrid.init(Rows=1,Columns=2))
-|> Chart.withSize(Width=1100,Height=700)
 |> Chart.withTitle("World GDP")
 ```
 

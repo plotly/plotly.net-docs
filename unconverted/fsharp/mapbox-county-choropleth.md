@@ -126,7 +126,6 @@ Chart.ChoroplethMapbox(z=z,geoJson=geoJson,locations=locations,FeatureIdKey="id"
 |> Chart.withMapbox(
         Mapbox.init(Style=StyleParam.MapboxStyle.CartoPositron,Zoom=3.,Center=(-95.7129,37.0902))
     )
-|> Chart.withSize(width=1100.,height=700.)
 ```
 
 # Indexing by GeoJSON Properties
@@ -204,5 +203,4 @@ Chart.ChoroplethMapbox(z=z,geoJson=geoJson,locations=locations,FeatureIdKey="id"
 |> Chart.withMapbox(
         Mapbox.init(Style=StyleParam.MapboxStyle.MapboxLight,Zoom=3.,Center=(-95.7129,37.0902),AccessToken=token)
     )
-|> Chart.withSize(width=1100.,height=700.)
 ```

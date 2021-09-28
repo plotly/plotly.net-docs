@@ -98,7 +98,7 @@ let label_1 = yScores |> Array.map (fun x -> x.[1])
     Chart.Histogram(label_1,nBinsx=50,Name="Label 1")
 ]
 |> Chart.combine
-|> Chart.withSize(1100.,700.)
+
 
 ```
 
@@ -153,7 +153,6 @@ Chart.Line(cutoff,fpr,Name="False Positive Rate");
 |> Chart.combine
 |> Chart.withXAxisStyle(title="Thresholds")
 |> Chart.withYAxisStyle(title="value")
-|> Chart.withSize(1100.,700.)
 |> Chart.withTitle("TPR and FPR at every threshold")
 
 

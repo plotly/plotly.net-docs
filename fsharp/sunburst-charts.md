@@ -139,7 +139,6 @@ let df2 = DFII.Load("https://raw.githubusercontent.com/plotly/datasets/718417069
 ] 
 |> Chart.combine
 |> Chart.withMargin (Margin.init (Top = 0., Left = 0., Right = 0., Bottom = 0.))
-|> Chart.withSize (Width = 1100)
 |> Chart.withLayoutGrid (LayoutGrid.init (Rows = 1, Columns = 2))
 ```
 

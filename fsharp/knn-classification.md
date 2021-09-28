@@ -96,7 +96,7 @@ Chart.Point(testLabel_0,Name="Test Label 0") |> Chart.withMarkerStyle(Size=12,Sy
 Chart.Point(testLabel_1,Name="Test Label 1") |> Chart.withMarkerStyle(Size=12,Symbol=StyleParam.Symbol.CircleCross)
 ]
 |> Chart.combine
-|> Chart.withSize(1100.,700.)
+
 
 
 ```
@@ -177,7 +177,7 @@ let label_2 = getLabelData 2
     Chart.Point(label_2,Name="Label 2") |> Chart.withMarkerStyle(Symbol=StyleParam.Symbol.Circle,Size=12)
 
 ]|> Chart.combine
-|> Chart.withSize(1100.,700.)
+
 |> Chart.withXAxisStyle(title="X1")
 |> Chart.withYAxisStyle(title="X2")
 ```
@@ -244,7 +244,7 @@ let z = Array.map (fun y -> Array.map (fun x -> let score = predictionEngine.Pre
                                                 score.[0]/(Array.sum score)) xRange) yRange
 
 Chart.Contour(z,X=xRange,Y=yRange)
-|> Chart.withSize(1100.,700.)
+
 ```
 
 Now, let's try to combine our Contour plot with the first scatter plot of our data points, so that we can visually compare the confidence of our model with the true labels.
@@ -327,7 +327,7 @@ testLabels |> Array.mapi (fun i test -> Chart.Point(test,Name= $"Label {i+1}",Sh
 Chart.Contour(z,X=xRange,Y=yRange,Colorscale=StyleParam.Colorscale.RdBu)
 ]
 |> Chart.combine
-|> Chart.withSize(1100.,700.)
+
 ```
 
 # Multi-class prediction confidence with Heatmap
@@ -414,7 +414,7 @@ testLabels |> Array.mapi (fun i test -> Chart.Point(test,Name= $"Label {i+1}",Sh
 Chart.Heatmap(z,ColNames=xRange,RowNames=yRange,Colorscale=StyleParam.Colorscale.RdBu)
 ]
 |> Chart.combine
-|> Chart.withSize(1100.,700.)
+
 
                     
 
