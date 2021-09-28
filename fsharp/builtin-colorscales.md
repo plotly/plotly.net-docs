@@ -45,6 +45,7 @@ The following built-in continuous color scales are available. Through Custom Col
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open Microsoft.FSharp.Reflection
+open Plotly.NET
 
 let builtinColorScales = FSharpType.GetUnionCases typeof<StyleParam.Colorscale>
 
