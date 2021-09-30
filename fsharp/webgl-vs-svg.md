@@ -73,7 +73,6 @@ let marker = Marker.init(Colorscale=StyleParam.Colorscale.Bluered, Line=Line.ini
 
 Chart.Scatter(xs, ys, StyleParam.Mode.Markers, UseWebGL= true)
 |> Chart.withMarker(marker)
-|> Chart.withLayout(Layout.init(Width = 1000))
 ```
 
 # WebGL Rendering with 1 Million Points
@@ -102,7 +101,6 @@ let marker = Marker.init(Colorscale=StyleParam.Colorscale.Bluered, Line=Line.ini
 
 Chart.Scatter(xs, ys, StyleParam.Mode.Markers, UseWebGL= true)
 |> Chart.withMarker(marker)
-|> Chart.withLayout(Layout.init(Width = 1000))
 ```
 
 # WebGL Rendering with many traces

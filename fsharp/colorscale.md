@@ -27,61 +27,49 @@ jupyter:
     language: fsharp
     layout: base
     name: Continuous Color Scales and Color Bars
-    order: 21
+    order: 20
     page_type: example_index
-    permalink: fsharp/logarithmic-color-scale/
+    permalink: fsharp/colorscales/
     thumbnail: thumbnail/heatmap_colorscale.jpg
 ---
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-// #r "nuget: Plotly.NET, *-*"
-// #r "nuget: Plotly.NET.Interactive, *-*"
-#r "nuget: Plotly.NET, 2.0.0-preview.6"
-#r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
+#r "nuget: Plotly.NET,  2.0.0-preview.8"
+#r "nuget: Plotly.NET.Interactive,  2.0.0-preview.8"
 #r "nuget: Deedle"
 #r "nuget: FSharp.Data"
 open Plotly.NET
 
 ```
 
-# Custom Discretized Heatmap Color scale with Graph Objects
-
+# Custom Discretized Heatmap Color scale
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 let  z=[[0;1;2;3;4;5;6;7;8;9]]
 let customColorscale = StyleParam.Colorscale.Custom [(0.0,"#000000");(1.0,"#B4B4B4")]
 
-```
-
-```fsharp dotnet_interactive={"language": "fsharp"}
 Chart.Heatmap(z,Colorscale=customColorscale)
 |> Chart.withSize(800.,600.)
 ```
 
-# Color scale for Scatter Plots with Graph Objects
+# Color scale for Scatter Plots
 
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
+open Plotly.NET.TraceObjects
+
 let N = 40
-let rnd = System.Random()
-let values = Array.init N (fun _ -> rnd.Next(0, 40))
-let marker = Marker.init(Size= 16,Colorscale=StyleParam.Colorscale.Viridis, Showscale=true);
-marker?color <-values;
+let values = [1..40]
 
+let colors = Color.fromColorScaleValues ([|1..40|] |> Seq.cast<IConvertible>)
+
+let marker = Marker.init(Size= 16,Colorscale=StyleParam.Colorscale.Viridis, Showscale=true,Color=colors)
+
+Chart.Scatter(values,values,StyleParam.Mode.Markers) 
+|> Chart.withMarker(marker)
 ```
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-let scatter =
-  Chart.Scatter(values,values,StyleParam.Mode.Markers)
-  |> Chart.withMarker(marker)
-
-```
-
-```fsharp dotnet_interactive={"language": "fsharp"}
-scatter
-```
-
-# Color scale for Contour Plot with Graph Objects
+# Color scale for Contour Plot
 
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -92,17 +80,10 @@ let z=[| [|10.0; 10.625; 12.5; 15.625; 20.0;|];
         [|0.0; 0.625; 2.5; 5.625; 10.0|]|]
 
 
-let contour =
-    z
-    |> Chart.Contour
-    |> Chart.withSize(600.,600.)
+Chart.Contour(data=z,Colorscale=StyleParam.Colorscale.Cividis)
 ```
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-contour
-```
-
-# Custom Heatmap Color scale with Graph Objects
+# Custom Heatmap Color scale
 
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -110,81 +91,87 @@ open FSharp.Data
 
 type jsondata = JsonProvider<"https://raw.githubusercontent.com/plotly/datasets/master/custom_heatmap_colorscale.json">
 let data = jsondata.Load("https://raw.githubusercontent.com/plotly/datasets/master/custom_heatmap_colorscale.json")
-```
-
-```fsharp dotnet_interactive={"language": "fsharp"}
 let z = data.Z
-//let customColorscale = StyleParam.Colorscale.Custom [(0.0,"#A6CEE3");(1.0,"#E31A1C")]
-let customColorscale = StyleParam.Colorscale.Custom [(0.0,"rgb(165,0,38)");(0.11,"rgb(215,48,39)");(0.22,"rgb(244,109,67)");
-                                                     (0.33,"rgb(253,174,97)");(0.44,"rgb(254,224,144)");(0.55,"rgb(224,243,248)");
-                                                     (0.66,"rgb(171,217,233)");(0.77,"rgb(116,173,209)");(0.88,"rgb(69,117,180)");
-                                                      (1.0,"rgb(49,54,149)");]
 
-```
+let customColorscale =
+    StyleParam.Colorscale.Custom [ (0.0, "rgb(165,0,38)")
+                                   (0.11, "rgb(215,48,39)")
+                                   (0.22, "rgb(244,109,67)")
+                                   (0.33, "rgb(253,174,97)")
+                                   (0.44, "rgb(254,224,144)")
+                                   (0.55, "rgb(224,243,248)")
+                                   (0.66, "rgb(171,217,233)")
+                                   (0.77, "rgb(116,173,209)")
+                                   (0.88, "rgb(69,117,180)")
+                                   (1.0, "rgb(49,54,149)") ]
 
-```fsharp dotnet_interactive={"language": "fsharp"}
 Chart.Heatmap(z,Colorscale=customColorscale,Showscale=true)
+
 ```
 
-# Setting the Midpoint of a Diverging Color scale with Graph Objects
+# Setting the Midpoint of a Diverging Color scale
+
+The following example uses the Marker Cmid attribute to set the mid-point of the color domain by scaling 'Cmin' and/or 'Cmax' to be equidistant to this point. It only has impact when Marker Color sets, and 'Marker Cauto' is True.
 
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 let N = 20
-let rnd = System.Random()
-let values = Array.init N (fun _ -> rnd.Next(-5, 15))
-let marker = Marker.init(Size= 25,Colorscale=StyleParam.Colorscale.Viridis, Showscale=true);
-marker?color <-values;
-marker?cmid<-0;
+let colors = [-3..10] |> Seq.cast<IConvertible> |> Color.fromColorScaleValues
+let marker = Marker.init(Size= 25,Colorscale=StyleParam.Colorscale.Viridis,Cmid=0.,Color=colors, Showscale=true)
+
+Chart.Scatter([1..20],[-5..15],StyleParam.Mode.Markers) 
+|> Chart.withMarker(marker)
+   
 ```
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-let scatter =
-  Chart.Scatter(values,values,StyleParam.Mode.Markers)
-  |> Chart.withMarker(marker)
+The heatmap chart uses Marker Zmid attribute to set the mid-point of the color domain.  **NOT IMPLEMENTED YET** 
 
+```fsharp dotnet_interactive={"language": "fsharp"}
+// let a = [-10..5]
+// let b = [-5..10]
+// let c = [-5..15]
+
+// let z = [|a;b;c|]
+// let marker = Marker.init(Size= 25,Colorscale=StyleParam.Colorscale.Viridis,Cmid=0.,Color=colors, Showscale=true)
+
+// Chart.Heatmap(z,Colorscale=StyleParam.Colorscale.RdBu)
+// |> Chart.withMarker(marker)
 ```
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-scatter
-```
-
-# Custom Contour Plot Color scale with Graph Objects
-
+# Custom Contour Plot Color scale
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-let z=[| [|10.0; 10.625; 12.5; 15.625; 20.0;|];
-        [|5.625; 6.25; 8.125; 11.25; 15.625;|];
-        [|2.5; 3.125; 5.0; 8.125; 12.5;|];
-        [|0.625; 1.25; 3.125; 6.25; 10.625;|];
-        [|0.0; 0.625; 2.5; 5.625; 10.0|]|]
+let z =
+    [| [| 10.0; 10.625; 12.5; 15.625; 20.0 |]
+       [| 5.625; 6.25; 8.125; 11.25; 15.625 |]
+       [| 2.5; 3.125; 5.0; 8.125; 12.5 |]
+       [| 0.625; 1.25; 3.125; 6.25; 10.625 |]
+       [| 0.0; 0.625; 2.5; 5.625; 10.0 |] |]
 
 //let customColorscale = StyleParam.Colorscale.Custom [(0.0,"#A6CEE3");(1.0,"#E31A1C")]
 
-
-let customColorscale = StyleParam.Colorscale.Custom [(0.0,"rgb(166,206,227)");(0.25,"rgb(31,120,180)");(0.45,"rgb(178,223,138)");
-                                                     (0.65,"rgb(51,160,44)");(0.85,"rgb(251,154,153)");
-                                                      (1.0,"rgb(227,26,28)");]
-let contour =
- Chart.Contour(z,Colorscale=customColorscale)
+let customColorscale =
+    StyleParam.Colorscale.Custom [ (0.0, "rgb(166,206,227)")
+                                   (0.25, "rgb(31,120,180)")
+                                   (0.45, "rgb(178,223,138)")
+                                   (0.65, "rgb(51,160,44)")
+                                   (0.85, "rgb(251,154,153)")
+                                   (1.0, "rgb(227,26,28)") ]
+Chart.Contour(z,Colorscale=customColorscale)
     |> Chart.withSize(600.,600.)
 ```
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-contour
-```
-
-# Custom Color bar Title, Labels, and Ticks with Graph Objects
-#### (Work well on scatter and othe plots but issue on heat map)
-
+# Custom Color bar Title, Labels, and Ticks 
+Like axes, you can customize the color bar ticks, labels, and values with ticks, ticktext, and tickvals.
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open FSharp.Data
+open Plotly.NET.LayoutObjects
+open Plotly.NET.TraceObjects
+
 type jsondata = JsonProvider<"https://raw.githubusercontent.com/plotly/datasets/master/custom_heatmap_colorscale.json">
 let data = jsondata.Load("https://raw.githubusercontent.com/plotly/datasets/master/custom_heatmap_colorscale.json")
-```
 
-```fsharp dotnet_interactive={"language": "fsharp"}
 let z = data.Z
 //let customColorscale = StyleParam.Colorscale.Custom [(0.0,"#A6CEE3");(1.0,"#E31A1C")]
 
@@ -199,54 +186,46 @@ let customColorscale = StyleParam.Colorscale.Custom [(0.0,"rgb(165,0,38)");
                                                      (0.88,"rgb(69,117,180)");
                                                       (1.0,"rgb(49,54,149)");]
 
+let colorBar = ColorBar.init(Title=Title.init("Surface Heat",Side=StyleParam.Side.Top),
+                                TickLabelPosition=StyleParam.TickLabelPosition.Outside,
+                                TickMode=StyleParam.TickMode.Array,
+                                TickVals=[|2;50;100|],
+                                TickText=[|"Cool";"Mild";"Hot"|])
 
+Chart.Heatmap(z,Colorscale=customColorscale)
+|> Chart.withColorBar(colorBar)
 
 ```
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-Chart.Heatmap(z,
-             Colorscale=customColorscale,
-             Colorbar= Colorbar.init(Title="Surface Heat",Titleside=StyleParam.Side.Top,
-             Tickmode=StyleParam.TickMode.Array, Tickvals=[|2;50;100|],Ticktext=[|"Cool";"Mild";"Hot"|]))
+# Sharing a Color Axis
 
-```
-
-# Sharing a Color Axis with Graph Objects
+To share colorscale information in multiple subplots, you can use ColorAxis. (**NOT IMPLEMENETED YET**)
 
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-let z0=[|1; 2; 3; 4;4;-3;-1;1;|];
-let z1=[|10; 2; 1; 0;4;3;5;6;|];
-let seq1 = [1 ..4 ] |> Seq.map(fun _-> z0) |> Seq.toArray
-let seq2 = [1 ..4 ] |> Seq.map(fun _-> z1) |> Seq.toArray
-let marker = Marker.init(Size= 25,Colorscale=StyleParam.Colorscale.Viridis, Showscale=false);
-let layout =
-    let temp = Layout()
-    temp?coloraxis  <- "coloraxis"
-    temp
-```
 
-```fsharp dotnet_interactive={"language": "fsharp"}
+let seq1 = [|[|1; 2; 3; 4|]; [|4; -3; -1; 1|]|]
+let seq2 = [|[|10; 2; 1; 0|]; [|4; 3; 5; 6|]|]
+let marker = Marker.init(Size= 25, Showscale=false);
 
-let headmap1=
+let colorAxis = ColorAxis.init(AutoColorScale=true)
+
+let heatmap1=
            Chart.Heatmap(data=seq1)
-           |>Chart.withMarker(marker)
-           |>Chart.withLayout(layout)
+           |> Chart.withMarker(marker)
+           |> Chart.withColorAxis(colorAxis, Id=StyleParam.SubPlotId.ColorAxis 1)
 
-headmap1
-
-```
-
-```fsharp dotnet_interactive={"language": "fsharp"}
-let headmap2=
+let heatmap2=
            Chart.Heatmap(seq2)
-           |>Chart.withMarker(marker)
-           |>Chart.withLayout(layout)
+           |> Chart.withMarker(marker)
+           |> Chart.withColorAxis(colorAxis, Id=StyleParam.SubPlotId.ColorAxis 1)
 
-headmap2
+[|heatmap1;heatmap2|]
+|> Chart.Grid(1,2)
+|> Chart.withSize(Width=800,Height=500)
 ```
 
-# Logarithmic Color scale with Graph Objects
+# Logarithmic Color scale
 
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
@@ -255,7 +234,6 @@ let z=[| [|10.; 100.625; 1200.5; 150.625; 2000.;|];
         [|2000.5; 300.125; 50.; 8.125; 12.5|];
         [|10.625; 1.25; 3.125; 6000.25; 100.625|];
         [|0.; 0.625; 2.5; 50000.625; 10.;|]|]
-//let customColorscale = StyleParam.Colorscale.Custom [(0.0,"#FAFAFA");(1.0,"#1C1C1C")]
 
 let customColorscale = StyleParam.Colorscale.Custom [(0.,"rgb(250, 250, 250)");
                                                      (1./10000.,"rgb(200, 200, 200)");
@@ -265,10 +243,10 @@ let customColorscale = StyleParam.Colorscale.Custom [(0.,"rgb(250, 250, 250)");
                                                      (1.,"rgb(0, 0, 0)");
                                                      ]
 
-```
+let colorBar = ColorBar.init(   Tick0=0,
+                                TickMode=StyleParam.TickMode.Array,
+                                TickVals=[|0;1000;10000;100000|])
 
-```fsharp dotnet_interactive={"language": "fsharp"}
-Chart.Heatmap(z,Colorscale=customColorscale)
+Chart.Heatmap(z,Colorscale=customColorscale,ColorBar=colorBar)
 |> Chart.withSize(800.,600.)
-// |>Chart.withMarker(marker)
 ```
