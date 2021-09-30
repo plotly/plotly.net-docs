@@ -27,21 +27,22 @@ jupyter:
     language: fsharp
     layout: base
     name: Discrete Colors
-    order: 29
+    order: 28
     page_type: example_index
     permalink: fsharp/discrete-color/
     thumbnail: thumbnail/heatmap_colorscale.jpg
 ---
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET, *-*"
-#r "nuget: Plotly.NET.Interactive, *-*"
+#r "nuget: Plotly.NET,  2.0.0-preview.8"
+#r "nuget: Plotly.NET.Interactive,  2.0.0-preview.8"
 
 #r "nuget: Deedle"
 #r "nuget: FSharp.Data"
-
-
 ```
+
+color can be used to represent continuous or discrete data.
+Marker Color can be used to set discrete colors to individual points as shown in the below example. This page is about using color to represent categorical data using discrete colors, but Plotly.NET can also represent continuous values with color.
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
 open Deedle
@@ -51,7 +52,7 @@ open Plotly.NET
 let data=
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/tips.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
-
+    
 
 let getColumnData column=
         data
@@ -60,11 +61,31 @@ let getColumnData column=
         |> Array.ofSeq
 
 let x  = [1.; 2.; 3.; 4.; 5.; 6.; 7.; 8.; 9.; 10.; ]
-let y' = [2.; 1.5; 5.; 1.5; 3.; 2.5; 2.5; 1.5; 3.5; 1.]
+let y = [2.; 1.5; 5.; 1.5; 3.; 2.5; 2.5; 1.5; 3.5; 1.]
 
-Chart.Point(x,y',Name="line")
+let colors = ["red"; "magenta"; "yellow"; "blue"; "deeppink";
+                "orangered"; "black"; "gray"; "aliceblue"; "cyan"]
+                |> Seq.map (fun c -> Color.fromString c)
+                |> Color.fromColors
+
+Chart.Point(x,y,Name="line",Color=colors)  
 
 
+```
 
+```fsharp dotnet_interactive={"language": "fsharp"}
+open Plotly.NET.TraceObjects
 
+let x=[1; 2; 3; 4]
+let y=[10; 11; 12; 13]
+
+let colors = 
+    ["rgb(160, 164, 214)"; "rgb(255, 144, 14)";  "rgb(44, 160, 101)"; "rgb(255, 65, 54)"]
+    |> Seq.map (fun c -> Color.fromString(c))
+    |> Color.fromColors
+
+let marker = Marker.init(Color=colors)
+
+Chart.Scatter(x,y,StyleParam.Mode.Markers)
+    |> Chart.withMarker(marker)
 ```
