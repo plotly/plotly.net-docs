@@ -36,8 +36,8 @@ jupyter:
 // #r "nuget: Plotly.NET, 2.0.0-preview.6"
 // #r "nuget: Plotly.NET.Interactive, 2.0.0-preview.6"
 
-#r "nuget: Plotly.NET, *-*"
-#r "nuget: Plotly.NET.Interactive, *-*"
+#r "nuget: Plotly.NET, 2.0.0-preview.8"
+#r "nuget: Plotly.NET.Interactive, 2.0.0-preview.8"
 open Plotly.NET
 ```
 

@@ -34,8 +34,8 @@ jupyter:
 ---
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET,*-*"
-#r "nuget: Plotly.NET.Interactive,*-*"
+#r "nuget: Plotly.NET,2.0.0-preview.8"
+#r "nuget: Plotly.NET.Interactive,2.0.0-preview.8"
 #r "nuget: FSharp.Data"
 #r "nuget:Deedle"
 #r "nuget:Newtonsoft.Json"
