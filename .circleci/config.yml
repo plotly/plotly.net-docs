@@ -54,6 +54,7 @@ jobs:
           command: |
             . venv/bin/activate
             echo ${mapbox_token} > fsharp/.mapbox_token
+            echo ${mapbox_token} > csharp/.mapbox_token
             make
             if [ "${CIRCLE_BRANCH}" == "main" ]; then
               cd build/html
@@ -71,7 +72,7 @@ jobs:
       - store_artifacts:
           path: build
           destination: build
-          
+
       - run:
           name: trigger doc build
           command: |
