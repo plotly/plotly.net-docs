@@ -47,8 +47,8 @@ The plotly.NET package exists to create, manipulate and render graphical figures
 ```csharp dotnet_interactive={"language": "csharp"}
 using Plotly.NET;
 using Plotly.NET.LayoutObjects;
-using Microsoft.csharp.Core;
-using Microsoft.csharp.Collections;
+using Microsoft.FSharp.Core;
+using Microsoft.FSharp.Collections;
 
 LinearAxis xAxis = new LinearAxis();
 xAxis.SetValue("title", "xAxis");
@@ -123,7 +123,7 @@ This section summarizes several ways to create new Plotly figures with the Plotl
 ```csharp dotnet_interactive={"language": "csharp"}
 using Plotly.NET;
 using System.Net;
-using csharp.Data;
+using FSharp.Data;
 
 var title = Title.init (Text : "A Plotly Figure");
 var csv = CsvFile.Load("https://raw.githubusercontent.com/plotly/datasets/master/iris.csv");
