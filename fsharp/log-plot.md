@@ -26,7 +26,7 @@ jupyter:
     language: fsharp
     layout: base
     name: Log Plots
-    order: 1
+    order: 5
     page_type: example_index
     permalink: fsharp/log-plot/
     thumbnail: thumbnail/log.jpg

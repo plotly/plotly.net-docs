@@ -26,7 +26,7 @@ jupyter:
     language: fsharp
     layout: base
     name: Ternary Plots
-    order: 1
+    order: 4
     page_type: example_index
     permalink: fsharp/ternary-plots/
     thumbnail: thumbnail/v4-migration.png
