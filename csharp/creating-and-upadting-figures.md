@@ -7,8 +7,8 @@ jupyter:
       format_version: '1.3'
       jupytext_version: 1.12.0
   kernelspec:
-    display_name: .NET (F#)
-    language: F#
+    display_name: .NET (C#)
+    language: C#
     name: .net-csharp
   language_info:
     codemirror_mode:
@@ -16,12 +16,12 @@ jupyter:
       version: 3
     file_extension: .fs
     mimetype: text/x-csharp
-    name: F#
+    name: C#
     nbconvert_exporter: csharp
     pygments_lexer: csharp
     version: 5.0
   plotly:
-    description: Creating and Updating Figures in F# with Plotly.
+    description: Creating and Updating Figures in C# with Plotly.
     display_as: file_settings
     language: csharp
     layout: base
@@ -82,10 +82,10 @@ GenericChart.fromFigure(fig)
 
 # Figures as GenericChart Objects
 
-Plotly.NET is a .NET wrapper for creation of `plotly charts`() written in F#. This means that, under the hood, all functionality creates JSON objects that can be rendered by plotly.
+Plotly.NET is a .NET wrapper for creation of `plotly charts`() written in C#. This means that, under the hood, all functionality creates JSON objects that can be rendered by plotly.
 The central type that gets created by all Chart constructors is `GenericChart`, which itself represents either a single chart or a multi chart (as a Discriminate Union type). Plotly.NET has multiple abstraction layers to work with `GenericChart`s.
 
-Chart type provides an F# convience layer that abstracts dynamic object creation. Chart type covers all the plot types(i.e Scatter,Line,3D, Heatmap etc).
+Chart type provides an C# convience layer that abstracts dynamic object creation. Chart type covers all the plot types(i.e Scatter,Line,3D, Heatmap etc).
 The main benefit of creating charts using Chart type is; It provides strongly typed access to all the properties of Plotly figure 
 
 ```csharp dotnet_interactive={"language": "csharp"}
@@ -367,7 +367,7 @@ Chart.Combine(fig1)
 
 Trace and layout properties can be updated using property assignment syntax. Here is an example of setting the figure title using property assignment.
 
-As TraceObjects and LayoutObjects are of DynamicObj, they can be set through dynamic property assignment. But this is not a preferred way, consider using appropriate F# abstractions to set the properties
+As TraceObjects and LayoutObjects are of DynamicObj, they can be set through dynamic property assignment. But this is not a preferred way, consider using appropriate C# abstractions to set the properties
 
 ```csharp dotnet_interactive={"language": "csharp"}
 using Plotly.NET;
