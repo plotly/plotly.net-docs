@@ -21,9 +21,7 @@ jupyter:
     pygments_lexer: fsharp
     version: 5.0
   plotly:
-    description: How to make interactive candlestick charts in F# with Plotly.
-      Six examples of candlestick charts with Pandas, time series, and yahoo finance
-      data with Plotly.
+    description: How to make interactive candlestick charts in F# with Plotly.      
     display_as: financial
     language: fsharp
     layout: base
@@ -34,41 +32,50 @@ jupyter:
     thumbnail: thumbnail/candlestick.jpg
 ---
 
-```fsharp  dotnet_interactive={"language": "fsharp"}
-#r "nuget: Plotly.NET,  2.0.0-preview.8"
-#r "nuget: Plotly.NET.Interactive,  2.0.0-preview.8"
+```fsharp dotnet_interactive={"language": "fsharp"}
+#r "nuget: Newtonsoft.Json, 12.0.3"
+#r "nuget: Plotly.NET,  2.0.0-preview.10"
+#r "nuget: Plotly.NET.Interactive,  2.0.0-preview.10"
 #r "nuget:Deedle"
 #r "nuget: FSharp.Data"
 ```
 
+The candlestick chart is a style of financial chart describing open, high, low and close for a given x coordinate (most likely time). The boxes represent the spread between the open and close values and the lines represent the spread between the low and high values. Sample points where the close value is higher (lower) then the open value are called increasing (decreasing). By default, increasing candles are drawn in green whereas decreasing are drawn in red.
+
+
 # Simple Candlestick
 
-```fsharp  dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Deedle
 open FSharp.Data
 open Plotly.NET
 open System.Globalization
 open Plotly.NET.TraceObjects
 
-let dataset = 
-  Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv"
-   |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
+let dataset =
+    Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/finance-charts-apple.csv"
+    |> fun csv -> Frame.ReadCsvString(csv, true, separators = ",")
 
-let getColumn column=
-        dataset
-        |> Frame.getCol column
-        |> Series.values
-        |> Array.ofSeq
+let getColumn column =
+    dataset
+    |> Frame.getCol column
+    |> Series.values
+    |> Array.ofSeq
 
 let format = "MM/dd/yyyy hh:mm:ss"
 let provider = CultureInfo.InvariantCulture
 
-let getDateTime d= DateTime.ParseExact(string(d),format,provider)
+let getDateTime d =
+    DateTime.ParseExact(string (d), format, provider)
 
-let stockData = dataset 
-                |> Frame.mapRows (fun k v -> (v.Get("Date") |> getDateTime ,StockData.Create(v?``AAPL.Open``,v?``AAPL.High``,v?``AAPL.Low``,v?``AAPL.Close``)) )
-                |> Series.values 
-                |> Array.ofSeq
+let stockData =
+    dataset
+    |> Frame.mapRows
+        (fun k v ->
+            (v.Get("Date") |> getDateTime,
+             StockData.Create(v?``AAPL.Open``, v?``AAPL.High``, v?``AAPL.Low``, v?``AAPL.Close``)))
+    |> Series.values
+    |> Array.ofSeq
 
 Chart.Candlestick(stockData)
 
@@ -76,7 +83,7 @@ Chart.Candlestick(stockData)
 
 # Candlestick without Rangeslider
 
-```fsharp  dotnet_interactive={"language": "fsharp"}
+```fsharp dotnet_interactive={"language": "fsharp"}
 open Plotly.NET.LayoutObjects
 
 Chart.Candlestick(stockData)
@@ -86,34 +93,63 @@ Chart.Candlestick(stockData)
 
 # Adding Customized Text and Annotations
 
-```fsharp  dotnet_interactive={"language": "fsharp"}
-let annotation = Annotation.init(X="2016-12-09",Y=0.05,Text="Increase Period Begins",XRef="x", YRef="paper",ShowArrow=false)
-let line = Shape.init(StyleParam.ShapeType.Line, X0="2016-12-09", X1="2016-12-09", Y0=0, Y1=1,Xref="x",Yref="paper",Line=Line.init(Width=1.5))
+```fsharp dotnet_interactive={"language": "fsharp"}
+let annotation =
+    Annotation.init (
+        X = "2016-12-09",
+        Y = 0.05,
+        Text = "Increase Period Begins",
+        XRef = "x",
+        YRef = "paper",
+        ShowArrow = false
+    )
+
+let line =
+    Shape.init (
+        StyleParam.ShapeType.Line,
+        X0 = "2016-12-09",
+        X1 = "2016-12-09",
+        Y0 = 0,
+        Y1 = 1,
+        Xref = "x",
+        Yref = "paper",
+        Line = Line.init (Width = 1.5)
+    )
 
 Chart.Candlestick(stockData)
-|> Chart.withTitle(title="The Great Recession")
-|> Chart.withAnnotations([annotation])
-|> Chart.withShapes([line])
-|> Chart.withLayout(Layout.init(PlotBGColor=Color.fromString "#e5ecf6",Width=800))
-|> Chart.withXAxisRangeSlider(RangeSlider.init(Visible=false))
+|> Chart.withTitle (title = "The Great Recession")
+|> Chart.withAnnotations ([ annotation ])
+|> Chart.withShapes ([ line ])
+|> Chart.withLayout (Layout.init (PlotBGColor = Color.fromString "#e5ecf6", Width = 800))
+|> Chart.withXAxisRangeSlider (RangeSlider.init (Visible = false))
+
 ```
 
 # Custom Candlestick Colors (Not Working)
 
-```fsharp  dotnet_interactive={"language": "fsharp"}
-Chart.Candlestick(stockData,Increasing=Line.init(Color=Color.fromString "cyan"),Decreasing=Line.init(Color=Color.fromString "gray"))
+```fsharp dotnet_interactive={"language": "fsharp"}
+Chart.Candlestick(
+    stockData,
+    Increasing = Line.init (Color = Color.fromString "cyan"),
+    Decreasing = Line.init (Color = Color.fromString "gray")
+)
+
 ```
 
 # Simple Example
 
-```fsharp  dotnet_interactive={"language": "fsharp"}
-let dates = [for i in 1..5 -> DateTime.Now.AddDays(float i)]
-let open_price = [10.0;5.0;7.0;12.0;10.0]
-let close = [20.0;3.0;12.0;21.0;5.0]
-let low = [5.0;1.0;5.0;12.0;3.0]
-let high = [25.0;10.0;15.0;27.0;15.0]
+```fsharp dotnet_interactive={"language": "fsharp"}
+let dates =
+    [ for i in 1 .. 5 -> DateTime.Now.AddDays(float i) ]
 
-let stock_data = [for i in 0..4 -> (dates.[i], StockData.Create(o=open_price.[i],h=high.[i],l=low.[i],c=close.[i]))]
+let open_price = [ 10.0; 5.0; 7.0; 12.0; 10.0 ]
+let close = [ 20.0; 3.0; 12.0; 21.0; 5.0 ]
+let low = [ 5.0; 1.0; 5.0; 12.0; 3.0 ]
+let high = [ 25.0; 10.0; 15.0; 27.0; 15.0 ]
+
+let stock_data =
+    [ for i in 0 .. 4 -> (dates.[i], StockData.Create(o = open_price.[i], h = high.[i], l = low.[i], c = close.[i])) ]
 
 Chart.Candlestick(stock_data)
+
 ```
