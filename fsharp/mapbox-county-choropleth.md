@@ -188,7 +188,7 @@ Chart.ChoroplethMapbox(
 open Plotly.NET
 open Newtonsoft.Json
 
-let token = File.ReadAllText("mapbox_token") //# you will need your own token
+let token = "pk.eyJ1IjoibWFoZXNocHVubmEiLCJhIjoiY2t0NXB4eXA0MGFzYjJxcXN3b2xpNzc2ZSJ9.xliv67HWVdNd_tfmfgMXmA" //# you will need your own token
 
 let data = 
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv"
