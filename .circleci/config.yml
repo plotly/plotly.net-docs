@@ -68,7 +68,7 @@ jobs:
               cd ../..
             fi
             tar -zcf build.tgz build
-            rm -rf build
+            # rm -rf build
       - store_artifacts:
           path: build
           destination: build
