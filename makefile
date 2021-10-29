@@ -3,7 +3,7 @@ export PLOTLY_RENDERER=notebook_connected
 MD_DIR_FSharp ?= fsharp
 UNCONV_DIR_FSharp ?= unconverted/fsharp
 IPYNB_DIR_FSharp ?= build/fsharp/ipynb
-HTML_DIR_FSharp ?= build/fsharp/html
+HTML_DIR_FSharp ?= build/fsharp
 FAIL_DIR_FSharp ?= build/fsharp/failures
 
 MD_FILES_FSharp := $(shell ls $(MD_DIR_FSharp)/*.md)
@@ -43,7 +43,7 @@ $(HTML_DIR_FSharp)/2019-07-03-%.html: $(IPYNB_DIR_FSharp)/%.ipynb
 MD_DIR_CSharp ?= csharp
 UNCONV_DIR_CSharp ?= unconverted/csharp
 IPYNB_DIR_CSharp ?= build/csharp/ipynb
-HTML_DIR_CSharp ?= build/csharp/html
+HTML_DIR_CSharp ?= build/csharp
 FAIL_DIR_CSharp ?= build/csharp/failures
 
 MD_FILES_CSharp := $(shell ls $(MD_DIR_CSharp)/*.md)

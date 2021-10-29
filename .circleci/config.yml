@@ -61,8 +61,8 @@ jobs:
               git init
               git config user.name plotlydocbot
               git config user.email accounts@plot.ly
-              git add csharp/html
-              git add fsharp/html
+              git add csharp/*.html
+              git add fsharp/*.html
               git commit -m "build of https://github.com/plotly/plotly.net-docs/commit/${CIRCLE_SHA1}"
               git push --force git@github.com:plotly/plotly.net-docs.git master:built
               rm -rf .git
