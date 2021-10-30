@@ -21,7 +21,7 @@ jupyter:
     pygments_lexer: fsharp
     version: 5.0
   plotly:
-    description: How to make a Mapbox Choropleth Map of US Counties in in F# with Plotly.
+    description: How to make a Mapbox Choropleth Map of US Counties in F# with Plotly.
     display_as: maps
     language: fsharp
     layout: base
