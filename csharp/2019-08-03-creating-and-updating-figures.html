@@ -1,0 +1,1327 @@
+---
+description: Creating and Updating Figures in C# with Plotly.
+display_as: file_settings
+language: csharp
+layout: base
+name: Creating and Updating Figures
+order: 2
+page_type: u-guide
+permalink: csharp/creating-and-updating-figures/
+thumbnail: thumbnail/creating-and-updating-figures.png
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="err">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET, 2.0.0-preview.8&quot;</span>
+<span class="err">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive, 2.0.0-preview.8&quot;</span>
+<span class="err">#</span><span class="n">r</span> <span class="s">&quot;nuget: Deedle&quot;</span>
+<span class="err">#</span><span class="n">r</span> <span class="s">&quot;nuget: FSharp.Data&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-12985.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '12985.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>Deedle, 2.4.3</span></li><li><span>FSharp.Data, 4.2.4</span></li><li><span>Plotly.NET, 2.0.0-preview.8</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.8</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The plotly.NET package exists to create, manipulate and render graphical figures (i.e. charts, plots, maps and diagrams) represented by data structures also referred to as figures. The rendering process uses the Plotly.js JavaScript library under the hood although .NET developers using this module very rarely need to interact with the Javascript library directly, if ever. Figures can be represented as 'DynamicObj' an extension of <code>DynamicObject</code> which makes it possible to set arbitraryly named and typed properties of these objects via the <code>?</code> operator, and are serialized as text in JavaScript Object Notation (JSON) before being passed to Plotly.js.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Creating-Figures-using-DynamicObject">Creating Figures using DynamicObject<a class="anchor-link" href="#Creating-Figures-using-DynamicObject">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="k">using</span> <span class="nn">Plotly.NET</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Plotly.NET.LayoutObjects</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.FSharp.Core</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Microsoft.FSharp.Collections</span><span class="p">;</span>
+
+<span class="n">LinearAxis</span> <span class="n">xAxis</span> <span class="p">=</span> <span class="k">new</span> <span class="n">LinearAxis</span><span class="p">();</span>
+<span class="n">xAxis</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;xAxis&quot;</span><span class="p">);</span>
+<span class="n">xAxis</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;zerolinecolor&quot;</span><span class="p">,</span> <span class="s">&quot;#ffff&quot;</span><span class="p">);</span>
+<span class="n">xAxis</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;gridcolor&quot;</span><span class="p">,</span> <span class="s">&quot;#ffff&quot;</span><span class="p">);</span>
+<span class="n">xAxis</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;showline&quot;</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+<span class="n">xAxis</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;zerolinewidth&quot;</span><span class="p">,</span><span class="m">2</span><span class="p">);</span>
+
+<span class="n">LinearAxis</span> <span class="n">yAxis</span> <span class="p">=</span> <span class="k">new</span> <span class="n">LinearAxis</span><span class="p">();</span>
+<span class="n">yAxis</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;yAxis&quot;</span><span class="p">);</span>
+<span class="n">yAxis</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;zerolinecolor&quot;</span><span class="p">,</span> <span class="s">&quot;#ffff&quot;</span><span class="p">);</span>
+<span class="n">yAxis</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;gridcolor&quot;</span><span class="p">,</span> <span class="s">&quot;#ffff&quot;</span><span class="p">);</span>
+<span class="n">yAxis</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;showline&quot;</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+<span class="n">yAxis</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;zerolinewidth&quot;</span><span class="p">,</span><span class="m">2</span><span class="p">);</span>
+
+<span class="n">Layout</span> <span class="n">layout</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Layout</span><span class="p">();</span>
+<span class="n">layout</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;xaxis&quot;</span><span class="p">,</span> <span class="n">xAxis</span><span class="p">);</span>
+<span class="n">layout</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;yaxis&quot;</span><span class="p">,</span> <span class="n">yAxis</span><span class="p">);</span>
+<span class="n">layout</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;A Figure Specified by DynamicObj&quot;</span><span class="p">);</span>
+<span class="n">layout</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;plot_bgcolor&quot;</span><span class="p">,</span> <span class="s">&quot;#e5ecf6&quot;</span><span class="p">);</span>
+<span class="n">layout</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;showlegend&quot;</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+
+<span class="n">Trace</span> <span class="n">trace</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Trace</span><span class="p">(</span><span class="s">&quot;bar&quot;</span><span class="p">);</span>
+<span class="n">trace</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;x&quot;</span><span class="p">,</span> <span class="k">new</span> <span class="p">[]{</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">});</span>
+<span class="n">trace</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="k">new</span> <span class="p">[]{</span><span class="m">1</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">});</span>
+
+
+<span class="kt">var</span> <span class="n">fig</span> <span class="p">=</span> <span class="n">GenericChart</span><span class="p">.</span><span class="n">Figure</span><span class="p">.</span><span class="n">create</span><span class="p">(</span><span class="n">ListModule</span><span class="p">.</span><span class="n">OfSeq</span><span class="p">(</span><span class="k">new</span> <span class="p">[]{</span><span class="n">trace</span><span class="p">}),</span><span class="n">layout</span><span class="p">);</span>
+<span class="n">GenericChart</span><span class="p">.</span><span class="n">fromFigure</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="2878c8fa-9bc5-4339-b192-65184902b33a" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_2878c8fa9bc54339b19265184902b33a = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[1,2,3],"y":[1,3,2]}];
+            var layout = {"xaxis":{"title":"xAxis","zerolinecolor":"#ffff","gridcolor":"#ffff","showline":true,"zerolinewidth":2},"yaxis":{"title":"yAxis","zerolinecolor":"#ffff","gridcolor":"#ffff","showline":true,"zerolinewidth":2},"title":"A Figure Specified by DynamicObj","plot_bgcolor":"#e5ecf6","showlegend":true};
+            var config = {};
+            Plotly.newPlot('2878c8fa-9bc5-4339-b192-65184902b33a', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_2878c8fa9bc54339b19265184902b33a();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_2878c8fa9bc54339b19265184902b33a();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Figures-as-GenericChart-Objects">Figures as GenericChart Objects<a class="anchor-link" href="#Figures-as-GenericChart-Objects">&#182;</a></h1><p>Plotly.NET is a .NET wrapper for creation of <code>plotly charts</code>() written in C#. This means that, under the hood, all functionality creates JSON objects that can be rendered by plotly.
+The central type that gets created by all Chart constructors is <code>GenericChart</code>, which itself represents either a single chart or a multi chart (as a Discriminate Union type). Plotly.NET has multiple abstraction layers to work with <code>GenericChart</code>s.</p>
+<p>Chart type provides an C# convience layer that abstracts dynamic object creation. Chart type covers all the plot types(i.e Scatter,Line,3D, Heatmap etc).
+The main benefit of creating charts using Chart type is; It provides strongly typed access to all the properties of Plotly figure</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="k">using</span> <span class="nn">Plotly.NET</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Plotly.NET.TraceObjects</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">Plotly.NET.LayoutObjects</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">xAxis</span> <span class="p">=</span> <span class="n">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="p">&lt;</span><span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">&gt;(</span>
+                <span class="n">Title</span><span class="p">:</span><span class="n">Title</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="s">&quot;xAxis&quot;</span><span class="p">),</span>
+                <span class="n">ZeroLineColor</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;#ffff&quot;</span><span class="p">),</span>
+                <span class="n">GridColor</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;#ffff&quot;</span><span class="p">),</span>
+                <span class="n">ZeroLineWidth</span><span class="p">:</span><span class="m">2</span><span class="p">);</span>
+
+<span class="kt">var</span> <span class="n">yAxis</span> <span class="p">=</span> <span class="n">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="p">&lt;</span><span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">&gt;(</span>
+                <span class="n">Title</span><span class="p">:</span><span class="n">Title</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="s">&quot;yAxis&quot;</span><span class="p">),</span>
+                <span class="n">ZeroLineColor</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;#ffff&quot;</span><span class="p">),</span>
+                <span class="n">GridColor</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;#ffff&quot;</span><span class="p">),</span>
+                <span class="n">ZeroLineWidth</span><span class="p">:</span><span class="m">2</span><span class="p">);</span>
+
+<span class="kt">var</span> <span class="n">layout</span> <span class="p">=</span> <span class="n">Layout</span><span class="p">.</span><span class="n">init</span><span class="p">&lt;</span><span class="n">IConvertible</span><span class="p">&gt;(</span><span class="n">Title</span><span class="p">:</span><span class="n">Title</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="s">&quot;A Plotly.NET Chart&quot;</span><span class="p">),</span><span class="n">PlotBGColor</span> <span class="p">:</span> <span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;#e5ecf6&quot;</span><span class="p">));</span>
+
+<span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">keys</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">},</span><span class="n">values</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">1</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">})</span>
+    <span class="p">.</span><span class="n">WithXAxis</span><span class="p">(</span><span class="n">xAxis</span><span class="p">)</span>
+    <span class="p">.</span><span class="n">WithYAxis</span><span class="p">(</span><span class="n">yAxis</span><span class="p">)</span>
+    <span class="p">.</span><span class="n">WithLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="41bfbf73-bc78-466c-8e8f-adc69bd3796a" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_41bfbf73bc78466c8e8fadc69bd3796a = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[1,2,3],"y":[1,3,2],"marker":{}}];
+            var layout = {"xaxis":{"title":{"text":"xAxis"},"gridcolor":"#ffff","zerolinecolor":"#ffff","zerolinewidth":2.0},"yaxis":{"title":{"text":"yAxis"},"gridcolor":"#ffff","zerolinecolor":"#ffff","zerolinewidth":2.0},"title":{"text":"A Plotly.NET Chart"},"plot_bgcolor":"#e5ecf6"};
+            var config = {};
+            Plotly.newPlot('41bfbf73-bc78-466c-8e8f-adc69bd3796a', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_41bfbf73bc78466c8e8fadc69bd3796a();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_41bfbf73bc78466c8e8fadc69bd3796a();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Creating-Figures/Charts">Creating Figures/Charts<a class="anchor-link" href="#Creating-Figures/Charts">&#182;</a></h1><p>This section summarizes several ways to create new Plotly figures with the Plotly.NET.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Scatter-Plot">Scatter Plot<a class="anchor-link" href="#Scatter-Plot">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="k">using</span> <span class="nn">Plotly.NET</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.Net</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">FSharp.Data</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">title</span> <span class="p">=</span> <span class="n">Title</span><span class="p">.</span><span class="n">init</span> <span class="p">(</span><span class="n">Text</span> <span class="p">:</span> <span class="s">&quot;A Plotly Figure&quot;</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">csv</span> <span class="p">=</span> <span class="n">CsvFile</span><span class="p">.</span><span class="n">Load</span><span class="p">(</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/master/iris.csv&quot;</span><span class="p">);</span>
+
+<span class="n">IEnumerable</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">&gt;</span> <span class="n">GetData</span><span class="p">(</span><span class="kt">string</span> <span class="n">column</span><span class="p">)</span> <span class="p">=&gt;</span> <span class="n">csv</span><span class="p">.</span><span class="n">Rows</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">row</span> <span class="p">=&gt;</span> <span class="n">row</span><span class="p">.</span><span class="n">GetColumn</span><span class="p">(</span><span class="n">column</span><span class="p">));</span>
+
+<span class="kt">var</span> <span class="n">X</span> <span class="p">=</span> <span class="n">Array</span><span class="p">.</span><span class="n">ConvertAll</span><span class="p">(</span><span class="n">GetData</span><span class="p">(</span><span class="s">&quot;SepalWidth&quot;</span><span class="p">).</span><span class="n">ToArray</span><span class="p">(),</span><span class="n">Single</span><span class="p">.</span><span class="n">Parse</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">Y</span> <span class="p">=</span> <span class="n">Array</span><span class="p">.</span><span class="n">ConvertAll</span><span class="p">(</span><span class="n">GetData</span><span class="p">(</span><span class="s">&quot;SepalLength&quot;</span><span class="p">).</span><span class="n">ToArray</span><span class="p">(),</span><span class="n">Single</span><span class="p">.</span><span class="n">Parse</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">Colors</span> <span class="p">=</span> <span class="n">GetData</span><span class="p">(</span><span class="s">&quot;Name&quot;</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">name</span> <span class="p">=&gt;</span> 
+                        <span class="n">name</span> <span class="k">switch</span><span class="p">{</span>
+                                <span class="s">&quot;Iris-setosa&quot;</span> <span class="p">=&gt;</span> <span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;blue&quot;</span><span class="p">),</span>
+                                <span class="s">&quot;Iris-versicolor&quot;</span> <span class="p">=&gt;</span> <span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;orange&quot;</span><span class="p">),</span>
+                                <span class="n">_</span> <span class="p">=&gt;</span> <span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;deeppink&quot;</span><span class="p">)});</span>
+
+<span class="kt">var</span> <span class="n">layout</span> <span class="p">=</span> <span class="n">Layout</span><span class="p">.</span><span class="n">init</span><span class="p">&lt;</span><span class="n">IConvertible</span><span class="p">&gt;(</span><span class="n">Title</span><span class="p">:</span><span class="n">title</span><span class="p">,</span> <span class="n">PlotBGColor</span> <span class="p">:</span> <span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;#e5ecf6&quot;</span><span class="p">));</span>
+
+<span class="kt">var</span> <span class="n">xAxis</span> <span class="p">=</span> <span class="n">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="p">&lt;</span><span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">&gt;(</span>
+        <span class="n">Title</span><span class="p">:</span><span class="n">Title</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="s">&quot;xAxis&quot;</span><span class="p">),</span>
+        <span class="n">ZeroLineColor</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;#ffff&quot;</span><span class="p">),</span>
+        <span class="n">GridColor</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;#ffff&quot;</span><span class="p">),</span>
+        <span class="n">ZeroLineWidth</span><span class="p">:</span><span class="m">2</span><span class="p">);</span>
+
+<span class="kt">var</span> <span class="n">yAxis</span> <span class="p">=</span> <span class="n">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="p">&lt;</span><span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">,</span> <span class="n">IConvertible</span><span class="p">&gt;(</span>
+        <span class="n">Title</span><span class="p">:</span><span class="n">Title</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="s">&quot;yAxis&quot;</span><span class="p">),</span>
+        <span class="n">ZeroLineColor</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;#ffff&quot;</span><span class="p">),</span>
+        <span class="n">GridColor</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;#ffff&quot;</span><span class="p">),</span>
+        <span class="n">ZeroLineWidth</span><span class="p">:</span><span class="m">2</span><span class="p">);</span>
+
+<span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">.</span><span class="n">Scatter</span><span class="p">&lt;</span><span class="kt">float</span><span class="p">,</span><span class="kt">float</span><span class="p">,</span><span class="kt">string</span><span class="p">&gt;(</span><span class="n">x</span><span class="p">:</span><span class="n">X</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">Y</span><span class="p">,</span><span class="n">mode</span><span class="p">:</span><span class="n">StyleParam</span><span class="p">.</span><span class="n">Mode</span><span class="p">.</span><span class="n">Markers</span><span class="p">,</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromColors</span><span class="p">(</span><span class="n">Colors</span><span class="p">))</span>
+                <span class="p">.</span><span class="n">WithLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>        
+                <span class="p">.</span><span class="n">WithXAxis</span><span class="p">(</span><span class="n">xAxis</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">WithYAxis</span><span class="p">(</span><span class="n">yAxis</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>
+warning CS1701: Assuming assembly reference &#39;FSharp.Core, Version=4.7.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a&#39; used by &#39;FSharp.Data&#39; matches identity &#39;FSharp.Core, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a&#39; of &#39;FSharp.Core&#39;, you may need to supply runtime policy
+
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="880110f7-22be-47c4-8c2a-8e09a5172065" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_880110f722be47c48c2a8e09a5172065 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scatter","mode":"markers","x":[3.5,3.0,3.2,3.1,3.6,3.9,3.4,3.4,2.9,3.1,3.7,3.4,3.0,3.0,4.0,4.4,3.9,3.5,3.8,3.8,3.4,3.7,3.6,3.3,3.4,3.0,3.4,3.5,3.4,3.2,3.1,3.4,4.1,4.2,3.1,3.2,3.5,3.1,3.0,3.4,3.5,2.3,3.2,3.5,3.8,3.0,3.8,3.2,3.7,3.3,3.2,3.2,3.1,2.3,2.8,2.8,3.3,2.4,2.9,2.7,2.0,3.0,2.2,2.9,2.9,3.1,3.0,2.7,2.2,2.5,3.2,2.8,2.5,2.8,2.9,3.0,2.8,3.0,2.9,2.6,2.4,2.4,2.7,2.7,3.0,3.4,3.1,2.3,3.0,2.5,2.6,3.0,2.6,2.3,2.7,3.0,2.9,2.9,2.5,2.8,3.3,2.7,3.0,2.9,3.0,3.0,2.5,2.9,2.5,3.6,3.2,2.7,3.0,2.5,2.8,3.2,3.0,3.8,2.6,2.2,3.2,2.8,2.8,2.7,3.3,3.2,2.8,3.0,2.8,3.0,2.8,3.8,2.8,2.8,2.6,3.0,3.4,3.1,3.0,3.1,3.1,3.1,2.7,3.2,3.3,3.0,2.5,3.0,3.4,3.0],"y":[5.1,4.9,4.7,4.6,5.0,5.4,4.6,5.0,4.4,4.9,5.4,4.8,4.8,4.3,5.8,5.7,5.4,5.1,5.7,5.1,5.4,5.1,4.6,5.1,4.8,5.0,5.0,5.2,5.2,4.7,4.8,5.4,5.2,5.5,4.9,5.0,5.5,4.9,4.4,5.1,5.0,4.5,4.4,5.0,5.1,4.8,5.1,4.6,5.3,5.0,7.0,6.4,6.9,5.5,6.5,5.7,6.3,4.9,6.6,5.2,5.0,5.9,6.0,6.1,5.6,6.7,5.6,5.8,6.2,5.6,5.9,6.1,6.3,6.1,6.4,6.6,6.8,6.7,6.0,5.7,5.5,5.5,5.8,6.0,5.4,6.0,6.7,6.3,5.6,5.5,5.5,6.1,5.8,5.0,5.6,5.7,5.7,6.2,5.1,5.7,6.3,5.8,7.1,6.3,6.5,7.6,4.9,7.3,6.7,7.2,6.5,6.4,6.8,5.7,5.8,6.4,6.5,7.7,7.7,6.0,6.9,5.6,7.7,6.3,6.7,7.2,6.2,6.1,6.4,7.2,7.4,7.9,6.4,6.3,6.1,7.7,6.3,6.4,6.0,6.9,6.7,6.9,5.8,6.8,6.7,6.7,6.3,6.5,6.2,5.9],"line":{"color":["blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink"]},"marker":{"color":["blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","blue","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","orange","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink","deeppink"]}}];
+            var layout = {"title":{"text":"A Plotly Figure"},"plot_bgcolor":"#e5ecf6","xaxis":{"title":{"text":"xAxis"},"gridcolor":"#ffff","zerolinecolor":"#ffff","zerolinewidth":2.0},"yaxis":{"title":{"text":"yAxis"},"gridcolor":"#ffff","zerolinecolor":"#ffff","zerolinewidth":2.0}};
+            var config = {};
+            Plotly.newPlot('880110f7-22be-47c4-8c2a-8e09a5172065', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_880110f722be47c48c2a8e09a5172065();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_880110f722be47c48c2a8e09a5172065();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Make-Subplots">Make Subplots<a class="anchor-link" href="#Make-Subplots">&#182;</a></h2><p>Chart.Grid creates a grid of subplots that traces can be added to</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="k">using</span> <span class="nn">Plotly.NET</span><span class="p">;</span>
+
+<span class="kt">int</span><span class="p">[]</span> <span class="n">x</span> <span class="p">=</span> <span class="p">{</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">};</span>
+<span class="kt">int</span><span class="p">[]</span> <span class="n">y</span> <span class="p">=</span> <span class="p">{</span><span class="m">4</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">1</span><span class="p">};</span>
+<span class="kt">var</span> <span class="n">scatter</span> <span class="p">=</span> <span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">.</span><span class="n">Scatter</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">,</span><span class="kt">string</span><span class="p">&gt;(</span><span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">:</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span> <span class="p">:</span> <span class="n">StyleParam</span><span class="p">.</span><span class="n">Mode</span><span class="p">.</span><span class="n">Markers</span><span class="p">,</span> <span class="n">Name</span> <span class="p">:</span> <span class="s">&quot;Scatter&quot;</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">bar</span> <span class="p">=</span> <span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">keys</span><span class="p">:</span><span class="n">x</span><span class="p">,</span><span class="n">values</span><span class="p">:</span><span class="n">y</span><span class="p">,</span><span class="n">Name</span><span class="p">:</span><span class="s">&quot;Bar&quot;</span><span class="p">);</span>
+
+<span class="kt">var</span> <span class="n">chartCombined</span> <span class="p">=</span> <span class="k">new</span> <span class="p">[]{</span><span class="n">scatter</span><span class="p">,</span><span class="n">bar</span><span class="p">};</span>
+<span class="n">Chart</span><span class="p">.</span><span class="n">Grid</span><span class="p">&lt;</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">GenericChart</span><span class="p">.</span><span class="n">GenericChart</span><span class="p">&gt;&gt;(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">).</span><span class="n">Invoke</span><span class="p">(</span><span class="n">chartCombined</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="62a19fad-8159-4cf7-bc1c-2347b1cf12da" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_62a19fad81594cf7bc1c2347b1cf12da = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scatter","mode":"markers","x":[1,2,3],"y":[4,2,1],"name":"Scatter","line":{},"marker":{},"xaxis":"x","yaxis":"y"},{"type":"bar","x":[1,2,3],"y":[4,2,1],"marker":{},"name":"Bar","xaxis":"x2","yaxis":"y2"}];
+            var layout = {"xaxis":{},"yaxis":{},"xaxis2":{},"yaxis2":{},"grid":{"rows":1,"columns":2,"pattern":"independent"}};
+            var config = {};
+            Plotly.newPlot('62a19fad-8159-4cf7-bc1c-2347b1cf12da', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_62a19fad81594cf7bc1c2347b1cf12da();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_62a19fad81594cf7bc1c2347b1cf12da();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Updating-Figures">Updating Figures<a class="anchor-link" href="#Updating-Figures">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Adding-Traces">Adding Traces<a class="anchor-link" href="#Adding-Traces">&#182;</a></h2><p>Traces can be added using Chart.combine that creates a GenericChart object</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="k">using</span> <span class="nn">Plotly.NET</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">scatter</span> <span class="p">=</span> <span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">.</span><span class="n">Scatter</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">,</span><span class="kt">string</span><span class="p">&gt;(</span><span class="n">x</span> <span class="p">:</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="p">:</span> <span class="n">y</span><span class="p">,</span> <span class="n">mode</span> <span class="p">:</span> <span class="n">StyleParam</span><span class="p">.</span><span class="n">Mode</span><span class="p">.</span><span class="n">Markers</span><span class="p">,</span> <span class="n">Name</span> <span class="p">:</span> <span class="s">&quot;Scatter&quot;</span><span class="p">)</span>
+                <span class="p">.</span><span class="n">WithMarkerStyle</span><span class="p">(</span><span class="n">Size</span><span class="p">:</span><span class="m">10</span><span class="p">);</span>
+
+<span class="kt">var</span> <span class="n">bar</span> <span class="p">=</span> <span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">keys</span><span class="p">:</span><span class="n">x</span><span class="p">,</span><span class="n">values</span><span class="p">:</span><span class="n">y</span><span class="p">,</span><span class="n">Name</span><span class="p">:</span><span class="s">&quot;Bar&quot;</span><span class="p">);</span>
+
+<span class="n">Chart</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="k">new</span> <span class="p">[]{</span><span class="n">scatter</span><span class="p">,</span><span class="n">bar</span><span class="p">})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[6]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="2275ce1a-54ad-44a1-8f7f-fb878b4c485e" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_2275ce1a54ad44a18f7ffb878b4c485e = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scatter","mode":"markers","x":[1,2,3],"y":[4,2,1],"name":"Scatter","line":{},"marker":{"size":10}},{"type":"bar","x":[1,2,3],"y":[4,2,1],"marker":{},"name":"Bar"}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('2275ce1a-54ad-44a1-8f7f-fb878b4c485e', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_2275ce1a54ad44a18f7ffb878b4c485e();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_2275ce1a54ad44a18f7ffb878b4c485e();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Updating-Figure-Layouts">Updating Figure Layouts<a class="anchor-link" href="#Updating-Figure-Layouts">&#182;</a></h2><p>Chart.withLayout updates the default Layout for the plot</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="k">using</span> <span class="nn">Plotly.NET</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">title</span> <span class="p">=</span> <span class="n">Title</span><span class="p">.</span><span class="n">init</span> <span class="p">(</span><span class="n">Text</span> <span class="p">:</span> <span class="s">&quot;Using Layout() With Plotly Figures&quot;</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">layout</span> <span class="p">=</span> <span class="n">Layout</span><span class="p">.</span><span class="n">init</span><span class="p">&lt;</span><span class="n">IConvertible</span><span class="p">&gt;(</span><span class="n">Title</span><span class="p">:</span><span class="n">title</span><span class="p">,</span> 
+                            <span class="n">PlotBGColor</span> <span class="p">:</span> <span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;#e5ecf6&quot;</span><span class="p">),</span>
+                            <span class="n">Font</span><span class="p">:</span><span class="n">Font</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="n">Size</span><span class="p">:</span><span class="m">17</span><span class="p">));</span>
+
+<span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">keys</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">},</span><span class="n">values</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">4</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">1</span><span class="p">})</span>
+    <span class="p">.</span><span class="n">WithLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[7]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="8edbc991-f129-4e36-b3e3-3073982b7218" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_8edbc991f1294e36b3e33073982b7218 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[1,2,3],"y":[4,2,1],"marker":{}}];
+            var layout = {"title":{"text":"Using Layout() With Plotly Figures"},"font":{"size":17.0},"plot_bgcolor":"#e5ecf6"};
+            var config = {};
+            Plotly.newPlot('8edbc991-f129-4e36-b3e3-3073982b7218', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_8edbc991f1294e36b3e33073982b7218();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_8edbc991f1294e36b3e33073982b7218();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Updating-Traces">Updating Traces<a class="anchor-link" href="#Updating-Traces">&#182;</a></h1><p>Plotly.NET provides extensions for updating properties of GenericChart</p>
+<p>To show some examples, we will start with a chart that contains bar and scatter traces across two subplots.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="k">using</span> <span class="nn">Plotly.NET</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">_2DChart</span> <span class="p">=</span> <span class="n">Plotly</span><span class="p">.</span><span class="n">NET</span><span class="p">.</span><span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">fig1</span> <span class="p">=</span> <span class="k">new</span> <span class="p">[]{</span> 
+    <span class="n">_2DChart</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">keys</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">},</span><span class="n">values</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">2</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">3</span><span class="p">},</span><span class="n">Name</span><span class="p">:</span><span class="s">&quot;b&quot;</span><span class="p">,</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">)),</span>
+
+    <span class="n">_2DChart</span><span class="p">.</span><span class="n">Scatter</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">double</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">x</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">},</span><span class="n">y</span><span class="p">:</span><span class="k">new</span><span class="p">[]{</span><span class="m">4</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3.5</span><span class="p">},</span><span class="n">Name</span><span class="p">:</span><span class="s">&quot;a&quot;</span><span class="p">,</span><span class="n">mode</span><span class="p">:</span><span class="n">StyleParam</span><span class="p">.</span><span class="n">Mode</span><span class="p">.</span><span class="n">Markers</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">WithMarkerStyle</span><span class="p">(</span><span class="n">Size</span><span class="p">:</span><span class="m">20</span><span class="p">,</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;rgb(51, 204, 51)&quot;</span><span class="p">))</span>
+    <span class="p">};</span>
+
+<span class="kt">var</span> <span class="n">combinedFig1</span> <span class="p">=</span> <span class="n">Chart</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">fig1</span><span class="p">);</span>
+
+<span class="kt">var</span> <span class="n">fig2</span> <span class="p">=</span> <span class="k">new</span> <span class="p">[]{</span> 
+    <span class="n">_2DChart</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">keys</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">},</span><span class="n">values</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">1</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">},</span><span class="n">Name</span><span class="p">:</span><span class="s">&quot;c&quot;</span><span class="p">,</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;#33cc33&quot;</span><span class="p">)),</span>
+
+    <span class="n">_2DChart</span><span class="p">.</span><span class="n">Scatter</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">double</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">x</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">},</span><span class="n">y</span><span class="p">:</span><span class="k">new</span><span class="p">[]{</span><span class="m">2</span><span class="p">,</span><span class="m">3.5</span><span class="p">,</span><span class="m">4</span><span class="p">},</span><span class="n">Name</span><span class="p">:</span><span class="s">&quot;a&quot;</span><span class="p">,</span><span class="n">mode</span><span class="p">:</span><span class="n">StyleParam</span><span class="p">.</span><span class="n">Mode</span><span class="p">.</span><span class="n">Markers</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">WithMarkerStyle</span><span class="p">(</span><span class="n">Size</span><span class="p">:</span><span class="m">20</span><span class="p">,</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;rgb(255, 0,0)&quot;</span><span class="p">))</span>
+    <span class="p">};</span>
+
+<span class="kt">var</span> <span class="n">combinedFig2</span> <span class="p">=</span> <span class="n">Chart</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">fig2</span><span class="p">);</span>
+
+<span class="n">Chart</span><span class="p">.</span><span class="n">Grid</span><span class="p">&lt;</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">GenericChart</span><span class="p">.</span><span class="n">GenericChart</span><span class="p">&gt;&gt;(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">).</span><span class="n">Invoke</span><span class="p">(</span><span class="k">new</span> <span class="p">[]{</span><span class="n">combinedFig1</span><span class="p">,</span><span class="n">combinedFig2</span><span class="p">})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[8]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="4c6de12e-1d35-422c-bf18-8c5949d07e2a" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_4c6de12e1d35422cbf188c5949d07e2a = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[0,1,2],"y":[2,1,3],"marker":{"color":"red"},"name":"b","xaxis":"x","yaxis":"y"},{"type":"scatter","mode":"markers","x":[0,1,2],"y":[4.0,2.0,3.5],"name":"a","line":{},"marker":{"size":20,"color":"rgb(51, 204, 51)"},"xaxis":"x","yaxis":"y"},{"type":"bar","x":[0,1,2],"y":[1,3,2],"marker":{"color":"#33cc33"},"name":"c","xaxis":"x2","yaxis":"y2"},{"type":"scatter","mode":"markers","x":[0,1,2],"y":[2.0,3.5,4.0],"name":"a","line":{},"marker":{"size":20,"color":"rgb(255, 0,0)"},"xaxis":"x2","yaxis":"y2"}];
+            var layout = {"xaxis":{},"yaxis":{},"xaxis2":{},"yaxis2":{},"grid":{"rows":1,"columns":2,"pattern":"independent"}};
+            var config = {};
+            Plotly.newPlot('4c6de12e-1d35-422c-bf18-8c5949d07e2a', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_4c6de12e1d35422cbf188c5949d07e2a();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_4c6de12e1d35422cbf188c5949d07e2a();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Note that both scatter and bar traces have a Marker Color property to control their coloring. Here is an example of using markerStyle() to modify the color of all traces.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="k">using</span> <span class="nn">Plotly.NET</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">_2DChart</span> <span class="p">=</span> <span class="n">Plotly</span><span class="p">.</span><span class="n">NET</span><span class="p">.</span><span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">fig1</span> <span class="p">=</span> <span class="k">new</span> <span class="p">[]{</span> 
+    <span class="n">_2DChart</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">keys</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">},</span><span class="n">values</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">2</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">3</span><span class="p">},</span><span class="n">Name</span><span class="p">:</span><span class="s">&quot;b&quot;</span><span class="p">,</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">)),</span>
+
+    <span class="n">_2DChart</span><span class="p">.</span><span class="n">Scatter</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">double</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">x</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">},</span><span class="n">y</span><span class="p">:</span><span class="k">new</span><span class="p">[]{</span><span class="m">4</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3.5</span><span class="p">},</span><span class="n">Name</span><span class="p">:</span><span class="s">&quot;a&quot;</span><span class="p">,</span><span class="n">mode</span><span class="p">:</span><span class="n">StyleParam</span><span class="p">.</span><span class="n">Mode</span><span class="p">.</span><span class="n">Markers</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">WithMarkerStyle</span><span class="p">(</span><span class="n">Size</span><span class="p">:</span><span class="m">20</span><span class="p">,</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;rgb(51, 204, 51)&quot;</span><span class="p">))</span>
+    <span class="p">};</span>
+
+<span class="kt">var</span> <span class="n">combinedFig1</span> <span class="p">=</span> <span class="n">Chart</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">fig1</span><span class="p">)</span>
+                        <span class="p">.</span><span class="n">WithMarkerStyle</span><span class="p">(</span><span class="n">Size</span><span class="p">:</span><span class="m">20</span><span class="p">,</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;blue&quot;</span><span class="p">));</span>
+
+<span class="kt">var</span> <span class="n">fig2</span> <span class="p">=</span> <span class="k">new</span> <span class="p">[]{</span> 
+    <span class="n">_2DChart</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">keys</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">},</span><span class="n">values</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">1</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">},</span><span class="n">Name</span><span class="p">:</span><span class="s">&quot;c&quot;</span><span class="p">,</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;#33cc33&quot;</span><span class="p">)),</span>
+
+    <span class="n">_2DChart</span><span class="p">.</span><span class="n">Scatter</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">double</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">x</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">},</span><span class="n">y</span><span class="p">:</span><span class="k">new</span><span class="p">[]{</span><span class="m">2</span><span class="p">,</span><span class="m">3.5</span><span class="p">,</span><span class="m">4</span><span class="p">},</span><span class="n">Name</span><span class="p">:</span><span class="s">&quot;a&quot;</span><span class="p">,</span><span class="n">mode</span><span class="p">:</span><span class="n">StyleParam</span><span class="p">.</span><span class="n">Mode</span><span class="p">.</span><span class="n">Markers</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">WithMarkerStyle</span><span class="p">(</span><span class="n">Size</span><span class="p">:</span><span class="m">20</span><span class="p">,</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;rgb(255, 0,0)&quot;</span><span class="p">))</span>
+    <span class="p">};</span>
+
+<span class="kt">var</span> <span class="n">combinedFig2</span> <span class="p">=</span> <span class="n">Chart</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">fig2</span><span class="p">)</span>
+                        <span class="p">.</span><span class="n">WithMarkerStyle</span><span class="p">(</span><span class="n">Size</span><span class="p">:</span><span class="m">20</span><span class="p">,</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;blue&quot;</span><span class="p">));</span>
+
+<span class="n">Chart</span><span class="p">.</span><span class="n">Grid</span><span class="p">&lt;</span><span class="n">IEnumerable</span><span class="p">&lt;</span><span class="n">GenericChart</span><span class="p">.</span><span class="n">GenericChart</span><span class="p">&gt;&gt;(</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">).</span><span class="n">Invoke</span><span class="p">(</span><span class="k">new</span> <span class="p">[]{</span><span class="n">combinedFig1</span><span class="p">,</span><span class="n">combinedFig2</span><span class="p">})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[9]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="e0e3cc08-6369-4bfc-9888-1884a5f70d5c" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_e0e3cc0863694bfc98881884a5f70d5c = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[0,1,2],"y":[2,1,3],"marker":{"size":20,"color":"blue"},"name":"b","xaxis":"x","yaxis":"y"},{"type":"scatter","mode":"markers","x":[0,1,2],"y":[4.0,2.0,3.5],"name":"a","line":{},"marker":{"size":20,"color":"blue"},"xaxis":"x","yaxis":"y"},{"type":"bar","x":[0,1,2],"y":[1,3,2],"marker":{"size":20,"color":"blue"},"name":"c","xaxis":"x2","yaxis":"y2"},{"type":"scatter","mode":"markers","x":[0,1,2],"y":[2.0,3.5,4.0],"name":"a","line":{},"marker":{"size":20,"color":"blue"},"xaxis":"x2","yaxis":"y2"}];
+            var layout = {"xaxis":{},"yaxis":{},"xaxis2":{},"yaxis2":{},"grid":{"rows":1,"columns":2,"pattern":"independent"}};
+            var config = {};
+            Plotly.newPlot('e0e3cc08-6369-4bfc-9888-1884a5f70d5c', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_e0e3cc0863694bfc98881884a5f70d5c();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_e0e3cc0863694bfc98881884a5f70d5c();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Individual trace marker styles can be updated with markerStyle like as shown above</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Overwrite-Existing-Properties">Overwrite Existing Properties<a class="anchor-link" href="#Overwrite-Existing-Properties">&#182;</a></h1><p>It is possible to overwrite the defined properties with the corresponding extension methods / abstractions</p>
+<p>For example, Chart.withMarker() overwrites the red color of markers as shown below</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="k">using</span> <span class="nn">Plotly.NET</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">_2DChart</span> <span class="p">=</span> <span class="n">Plotly</span><span class="p">.</span><span class="n">NET</span><span class="p">.</span><span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">marker</span> <span class="p">=</span> <span class="n">Marker</span><span class="p">.</span><span class="n">init</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">Opacity</span><span class="p">:</span><span class="m">0.4</span><span class="p">);</span>
+<span class="n">_2DChart</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">keys</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">},</span><span class="n">values</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">1</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">},</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">))</span>
+        <span class="p">.</span><span class="n">WithMarker</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[10]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="eedc44b6-bbca-43a0-9941-8ceeb633719e" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_eedc44b6bbca43a099418ceeb633719e = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[1,2,3],"y":[1,3,2],"marker":{"opacity":0.4}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('eedc44b6-bbca-43a0-9941-8ceeb633719e', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_eedc44b6bbca43a099418ceeb633719e();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_eedc44b6bbca43a099418ceeb633719e();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Updating-Figure-Axes">Updating Figure Axes<a class="anchor-link" href="#Updating-Figure-Axes">&#182;</a></h1><p>Here is an example of using Chart.withXAxis to disable the vertical grid lines across the subplots in a figure produced by Plotly.NET</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="k">using</span> <span class="nn">Plotly.NET</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">_2DChart</span> <span class="p">=</span> <span class="n">Plotly</span><span class="p">.</span><span class="n">NET</span><span class="p">.</span><span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">LinearAxisTuple</span> <span class="p">=</span> <span class="n">System</span><span class="p">.</span><span class="n">Tuple</span><span class="p">&lt;</span><span class="n">Plotly</span><span class="p">.</span><span class="n">NET</span><span class="p">.</span><span class="n">StyleParam</span><span class="p">.</span><span class="n">LinearAxisId</span><span class="p">,</span><span class="n">Plotly</span><span class="p">.</span><span class="n">NET</span><span class="p">.</span><span class="n">StyleParam</span><span class="p">.</span><span class="n">LinearAxisId</span><span class="p">&gt;;</span>
+
+<span class="kt">var</span> <span class="n">rand</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Random</span><span class="p">();</span>
+<span class="kt">var</span> <span class="n">x</span> <span class="p">=</span> <span class="n">Enumerable</span><span class="p">.</span><span class="n">Range</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">100</span><span class="p">).</span><span class="n">ToArray</span><span class="p">();</span>
+<span class="kt">var</span> <span class="n">y1</span> <span class="p">=</span> <span class="n">x</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">_</span> <span class="p">=&gt;</span> <span class="n">rand</span><span class="p">.</span><span class="n">NextDouble</span><span class="p">()*</span><span class="m">10</span><span class="p">+</span><span class="m">5</span><span class="p">);</span>
+<span class="kt">var</span> <span class="n">y2</span> <span class="p">=</span> <span class="n">x</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">_</span> <span class="p">=&gt;</span> <span class="n">rand</span><span class="p">.</span><span class="n">NextDouble</span><span class="p">()*</span><span class="m">5</span><span class="p">);</span>
+
+<span class="kt">var</span> <span class="n">subPlots</span> <span class="p">=</span><span class="k">new</span> <span class="p">[]{</span><span class="k">new</span> <span class="p">[]{</span>
+            <span class="k">new</span> <span class="nf">LinearAxisTuple</span><span class="p">(</span><span class="n">StyleParam</span><span class="p">.</span><span class="n">LinearAxisId</span><span class="p">.</span><span class="n">X</span><span class="p">.</span><span class="n">NewX</span><span class="p">(</span><span class="m">1</span><span class="p">),</span>
+                                            <span class="n">StyleParam</span><span class="p">.</span><span class="n">LinearAxisId</span><span class="p">.</span><span class="n">X</span><span class="p">.</span><span class="n">NewY</span><span class="p">(</span><span class="m">1</span><span class="p">)),</span>
+            <span class="k">new</span> <span class="nf">LinearAxisTuple</span><span class="p">(</span><span class="n">StyleParam</span><span class="p">.</span><span class="n">LinearAxisId</span><span class="p">.</span><span class="n">X</span><span class="p">.</span><span class="n">NewX</span><span class="p">(</span><span class="m">2</span><span class="p">),</span>
+                                            <span class="n">StyleParam</span><span class="p">.</span><span class="n">LinearAxisId</span><span class="p">.</span><span class="n">X</span><span class="p">.</span><span class="n">NewY</span><span class="p">(</span><span class="m">1</span><span class="p">))}};</span>
+
+<span class="kt">var</span> <span class="n">layoutGrid</span> <span class="p">=</span> <span class="n">LayoutGrid</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="n">Rows</span><span class="p">:</span><span class="m">1</span><span class="p">,</span><span class="n">Columns</span><span class="p">:</span><span class="m">2</span><span class="p">,</span><span class="n">SubPlots</span><span class="p">:</span><span class="n">subPlots</span><span class="p">);</span>
+
+<span class="kt">var</span> <span class="n">chart1</span> <span class="p">=</span> <span class="n">_2DChart</span><span class="p">.</span><span class="n">Point</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">double</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">y1</span><span class="p">,</span><span class="n">Name</span><span class="p">:</span><span class="s">&quot;1,1&quot;</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">WithAxisAnchor</span><span class="p">(</span><span class="n">X</span><span class="p">:</span><span class="m">1</span><span class="p">);</span>
+
+<span class="kt">var</span> <span class="n">chart2</span> <span class="p">=</span> <span class="n">_2DChart</span><span class="p">.</span><span class="n">Point</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">double</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">x</span><span class="p">:</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">:</span><span class="n">y2</span><span class="p">,</span><span class="n">Name</span><span class="p">:</span><span class="s">&quot;1,2&quot;</span><span class="p">)</span>
+                    <span class="p">.</span><span class="n">WithAxisAnchor</span><span class="p">(</span><span class="n">X</span><span class="p">:</span><span class="m">2</span><span class="p">);</span>
+
+<span class="n">Chart</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="k">new</span> <span class="p">[]{</span><span class="n">chart1</span><span class="p">,</span><span class="n">chart2</span><span class="p">})</span>
+    <span class="p">.</span><span class="n">WithLayoutGrid</span><span class="p">(</span><span class="n">layoutGrid</span><span class="p">)</span>
+    <span class="p">.</span><span class="n">WithXAxisStyle</span><span class="p">(</span><span class="n">title</span><span class="p">=</span><span class="n">Title</span><span class="p">.</span><span class="n">init</span><span class="p">(),</span><span class="n">ShowGrid</span><span class="p">:</span><span class="k">false</span><span class="p">,</span><span class="n">Id</span><span class="p">:</span><span class="n">StyleParam</span><span class="p">.</span><span class="n">SubPlotId</span><span class="p">.</span><span class="n">NewXAxis</span><span class="p">(</span><span class="m">1</span><span class="p">))</span>
+    <span class="p">.</span><span class="n">WithXAxisStyle</span><span class="p">(</span><span class="n">title</span><span class="p">=</span><span class="n">Title</span><span class="p">.</span><span class="n">init</span><span class="p">(),</span><span class="n">ShowGrid</span><span class="p">:</span><span class="k">false</span><span class="p">,</span><span class="n">Id</span><span class="p">:</span><span class="n">StyleParam</span><span class="p">.</span><span class="n">SubPlotId</span><span class="p">.</span><span class="n">NewXAxis</span><span class="p">(</span><span class="m">2</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[11]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="7f1b85e8-9c4c-4cd0-9bf0-3c3efa72e7a6" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_7f1b85e89c4c4cd09bf03c3efa72e7a6 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scatter","mode":"markers","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100],"y":[8.105763356716261,14.90152901033942,5.723446435631926,14.967660079695126,5.251701758360351,7.709023883896426,12.098777302121174,5.788617991278236,5.629585385615744,6.044545011149973,5.908008786341179,6.670326693761314,5.480613755286026,8.202384227515378,7.457097918939357,7.984941835973851,11.143442031994201,6.080924594346865,6.60377225913283,6.839296138770551,10.102314387961437,5.61480313568134,11.825718696613665,6.900557653000838,6.524047097900905,10.440040750168283,13.124515953531729,11.167411336753243,10.964272509312384,10.782861097614681,5.233856937956929,12.32488334520016,6.4712065278884054,9.1348353140684,10.320517311487588,13.510885796747583,14.818468596701727,13.72370261639529,5.872052698802228,13.188645722432362,14.84474102027935,7.403714942002536,7.234754465629698,11.845967740214416,5.18687228215247,8.933832605338576,8.141221098201918,5.105540538255843,14.919205186850952,14.39777374705196,8.387278478307314,14.993505505841927,14.077236903401667,10.857490247980454,6.1282453970649495,7.490960221034921,8.075810313725755,13.82288878263109,13.443612981794221,9.811661008192068,9.584507930364696,5.931365965367931,9.824345481965851,9.846724288001063,5.8106880731930435,8.58312544114102,5.199120165872909,11.345778441217625,12.88186691602779,8.946212122191774,8.166473239272122,12.419739415598912,5.208871895544637,8.415126536700468,6.9945551184912,7.698599445958901,13.380048670051641,14.97975095639925,6.713685370848368,12.590214492562328,7.298819651966365,13.018975415275886,11.248206149902291,11.566498762260423,7.395582619307369,5.240351432115003,13.247646441798492,10.613716279907951,8.006589917003453,7.829557090452666,10.435075483021826,5.9955798140706404,5.280089634601069,11.06039169061016,8.604137792067666,13.91337505491142,12.579369460036684,12.388030177628636,11.03527966702137,11.60374684101145],"name":"1,1","marker":{},"xaxis":"x"},{"type":"scatter","mode":"markers","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100],"y":[1.8673562197328342,3.3977213284921466,1.1118368111140267,2.9864965323295896,3.1156502538899193,2.9837695313542008,4.892316805148645,2.8310551833505997,1.9314675647446269,4.214822975553024,2.05545577549164,1.5480296786632528,3.5546017058913604,0.42669924461594744,1.2564206781128517,3.282766257544405,2.34157990773282,4.128923359852714,1.225570834346847,0.28516832053902014,2.6677394996712636,2.292701942982479,1.6695942621070863,2.5261549127875615,4.255568319584973,1.085446712600741,3.5698248904989214,2.0742401024672388,4.905494372316401,1.5405900317898904,2.5596149929611083,0.49600924621150333,1.9722356446889395,2.5549692649184585,1.9277510265483295,2.751688497491036,2.897650896523917,0.137606542621556,0.1675991272402923,3.2140217782994833,0.22785891090885688,1.2927680375486463,0.8753905752093487,2.288471982948702,4.3593227697346935,1.1695080628476608,1.9431882011439596,4.713345572684587,1.7737751671922277,3.519302638489428,2.1151076197228895,4.660761370165628,2.4684442544674705,2.7324715129716655,0.6341339208344621,4.574654276750355,1.72812706638506,3.585681898326465,3.7309282127446157,2.030203541289178,4.413944640855279,2.818076702681406,2.925560811034199,0.39087753295473643,1.6552079825919157,1.5594465292801365,4.575794033974313,0.999632440972902,3.4989482180676177,3.504732180621816,0.3851153610204883,2.2039733651112643,3.961324232612422,3.0115490560473637,0.0573094096301633,1.374971462122617,1.4173113677731304,4.381122279158385,3.1668321430528685,3.0860602567373125,4.142258511456781,3.8564793178143346,0.30046493527501117,1.3861917338269725,4.4254824120670015,2.8988536227954804,3.0275649917440326,4.2397641317172745,1.9208353440839963,2.3530967497979742,1.0235614311059757,4.311968998197452,1.40667832987694,3.137395585951114,3.8000771374442044,2.409782208227451,3.367207226514447,0.48451304225461234,0.6332640003567859,2.799876240454556],"name":"1,2","marker":{},"xaxis":"x2"}];
+            var layout = {"grid":{"subplots":[["xy","x2y"]],"rows":1,"columns":2},"xaxis":{"title":{},"showgrid":false},"xaxis2":{"title":{},"showgrid":false}};
+            var config = {};
+            Plotly.newPlot('7f1b85e8-9c4c-4cd0-9bf0-3c3efa72e7a6', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_7f1b85e89c4c4cd09bf03c3efa72e7a6();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_7f1b85e89c4c4cd09bf03c3efa72e7a6();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Other-Update-Methods">Other Update Methods<a class="anchor-link" href="#Other-Update-Methods">&#182;</a></h1><p>GenericCharts created with the Plotly.NET graphing library also support:</p>
+<p>the Chart.withLayoutImages() method in order to update background layout images,
+Chart.withAnnotations() in order to update annotations,
+and Chart.withShapes() in order to update shapes.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Chaining-Figure-Operations">Chaining Figure Operations<a class="anchor-link" href="#Chaining-Figure-Operations">&#182;</a></h1><p>All of the Chart update operations described above are methods that return a reference to the Chart being modified. This makes it possible to chain multiple figure modification operations together into a single expression.</p>
+<p>Here is an example of a chained expression that:</p>
+<p>sets the title font size using Chart.withTitle,
+disables vertical grid lines using LinearAxis,
+updates the size and color of the markers and bar,
+and then displaying the Chart.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="k">using</span> <span class="nn">Plotly.NET</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">_2DChart</span> <span class="p">=</span> <span class="n">Plotly</span><span class="p">.</span><span class="n">NET</span><span class="p">.</span><span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">marker</span> <span class="p">=</span> <span class="n">Marker</span><span class="p">.</span><span class="n">init</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">Size</span><span class="p">:</span><span class="m">20</span><span class="p">,</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;yellow&quot;</span><span class="p">),</span><span class="n">Line</span><span class="p">:</span><span class="n">Line</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="n">Width</span><span class="p">:</span><span class="m">1.5</span><span class="p">));</span>
+<span class="kt">var</span> <span class="n">fig1</span> <span class="p">=</span> <span class="k">new</span> <span class="p">[]{</span> 
+    <span class="n">_2DChart</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">keys</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">},</span><span class="n">values</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">2</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">3</span><span class="p">},</span><span class="n">Name</span><span class="p">:</span><span class="s">&quot;b&quot;</span><span class="p">,</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">))</span>
+            <span class="p">.</span><span class="n">WithMarker</span><span class="p">(</span><span class="n">marker</span><span class="p">),</span>
+
+    <span class="n">_2DChart</span><span class="p">.</span><span class="n">Scatter</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">double</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">x</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">0</span><span class="p">,</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">},</span><span class="n">y</span><span class="p">:</span><span class="k">new</span><span class="p">[]{</span><span class="m">4</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3.5</span><span class="p">},</span><span class="n">Name</span><span class="p">:</span><span class="s">&quot;a&quot;</span><span class="p">,</span><span class="n">mode</span><span class="p">:</span><span class="n">StyleParam</span><span class="p">.</span><span class="n">Mode</span><span class="p">.</span><span class="n">Markers</span><span class="p">)</span>
+            <span class="p">.</span><span class="n">WithMarkerStyle</span><span class="p">(</span><span class="n">Size</span><span class="p">:</span><span class="m">20</span><span class="p">,</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;blue&quot;</span><span class="p">))</span>
+    <span class="p">};</span>
+
+<span class="n">Chart</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">fig1</span><span class="p">)</span>
+    <span class="p">.</span><span class="n">WithTitle</span><span class="p">(</span><span class="n">title</span><span class="p">:</span><span class="s">&quot;Chaining Multiple Chart Operations With A Plotly Chart&quot;</span><span class="p">,</span><span class="n">TitleFont</span><span class="p">:</span><span class="n">Font</span><span class="p">.</span><span class="n">init</span><span class="p">(</span><span class="n">Size</span><span class="p">:</span><span class="m">15</span><span class="p">))</span>
+    <span class="p">.</span><span class="n">WithXAxisStyle</span><span class="p">(</span><span class="n">title</span><span class="p">:</span><span class="n">Title</span><span class="p">.</span><span class="n">init</span><span class="p">(),</span><span class="n">ShowGrid</span><span class="p">:</span><span class="k">false</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[12]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="a10d946d-a922-4761-973d-913141bf799a" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_a10d946da9224761973d913141bf799a = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[0,1,2],"y":[2,1,3],"marker":{"size":20,"color":"yellow","line":{"width":1.5}},"name":"b"},{"type":"scatter","mode":"markers","x":[0,1,2],"y":[4.0,2.0,3.5],"name":"a","line":{},"marker":{"size":20,"color":"blue"}}];
+            var layout = {"title":{"text":"Chaining Multiple Chart Operations With A Plotly Chart","font":{"size":15.0}},"xaxis":{"title":{},"showgrid":false}};
+            var config = {};
+            Plotly.newPlot('a10d946d-a922-4761-973d-913141bf799a', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_a10d946da9224761973d913141bf799a();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_a10d946da9224761973d913141bf799a();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Property-Assignment">Property Assignment<a class="anchor-link" href="#Property-Assignment">&#182;</a></h1><p>Trace and layout properties can be updated using property assignment syntax. Here is an example of setting the figure title using property assignment.</p>
+<p>As TraceObjects and LayoutObjects are of DynamicObj, they can be set through dynamic property assignment. But this is not a preferred way, consider using appropriate C# abstractions to set the properties</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="k">using</span> <span class="nn">Plotly.NET</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">_2DChart</span> <span class="p">=</span> <span class="n">Plotly</span><span class="p">.</span><span class="n">NET</span><span class="p">.</span><span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">layout</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Layout</span><span class="p">();</span>
+<span class="n">layout</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;title&quot;</span><span class="p">,</span> <span class="s">&quot;Using Property Assignment Syntax With GenericChart Object&quot;</span><span class="p">);</span>
+<span class="n">layout</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;plot_bgcolor&quot;</span><span class="p">,</span> <span class="s">&quot;#e5ecf6&quot;</span><span class="p">);</span>
+<span class="n">layout</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;showlegend&quot;</span><span class="p">,</span> <span class="k">true</span><span class="p">);</span>
+
+<span class="n">_2DChart</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">keys</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">},</span><span class="n">values</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">1</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">},</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">))</span>
+        <span class="p">.</span><span class="n">WithLayout</span><span class="p">(</span><span class="n">layout</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[13]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="854f9637-b706-40f0-830a-12242ad77569" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_854f9637b70640f0830a12242ad77569 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[1,2,3],"y":[1,3,2],"marker":{"color":"red"}}];
+            var layout = {"title":"Using Property Assignment Syntax With GenericChart Object","plot_bgcolor":"#e5ecf6","showlegend":true};
+            var config = {};
+            Plotly.newPlot('854f9637-b706-40f0-830a-12242ad77569', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_854f9637b70640f0830a12242ad77569();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_854f9637b70640f0830a12242ad77569();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>And here is an example of updating the bar outline using property assignment.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="k">using</span> <span class="nn">Plotly.NET</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">_2DChart</span> <span class="p">=</span> <span class="n">Plotly</span><span class="p">.</span><span class="n">NET</span><span class="p">.</span><span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">;</span>
+
+<span class="kt">var</span> <span class="n">marker</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Marker</span><span class="p">();</span>
+<span class="kt">var</span> <span class="n">line</span> <span class="p">=</span> <span class="k">new</span> <span class="n">Line</span><span class="p">();</span>
+<span class="n">line</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;width&quot;</span><span class="p">,</span><span class="m">4</span><span class="p">);</span>
+<span class="n">line</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;color&quot;</span><span class="p">,</span><span class="s">&quot;black&quot;</span><span class="p">);</span>
+<span class="n">marker</span><span class="p">.</span><span class="n">SetValue</span><span class="p">(</span><span class="s">&quot;line&quot;</span><span class="p">,</span><span class="n">line</span><span class="p">);</span>
+
+<span class="n">_2DChart</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">,</span><span class="kt">int</span><span class="p">&gt;(</span><span class="n">keys</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">1</span><span class="p">,</span><span class="m">2</span><span class="p">,</span><span class="m">3</span><span class="p">},</span><span class="n">values</span><span class="p">:</span><span class="k">new</span> <span class="p">[]{</span><span class="m">1</span><span class="p">,</span><span class="m">3</span><span class="p">,</span><span class="m">2</span><span class="p">},</span><span class="n">Color</span><span class="p">:</span><span class="n">Color</span><span class="p">.</span><span class="n">fromString</span><span class="p">(</span><span class="s">&quot;red&quot;</span><span class="p">))</span>
+        <span class="p">.</span><span class="n">WithMarker</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[14]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="949e4af2-9731-4e95-8fd9-a824781b9425" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_949e4af297314e958fd9a824781b9425 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[1,2,3],"y":[1,3,2],"marker":{"line":{"width":4,"color":"black"}}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('949e4af2-9731-4e95-8fd9-a824781b9425', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_949e4af297314e958fd9a824781b9425();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_949e4af297314e958fd9a824781b9425();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}

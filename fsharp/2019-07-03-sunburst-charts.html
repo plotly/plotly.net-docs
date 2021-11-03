@@ -1,0 +1,744 @@
+---
+description: How to make Sunburst Charts in F# with Plotly.
+display_as: basic
+language: fsharp
+layout: base
+name: Sunburst Charts
+order: 10
+page_type: u-guide
+permalink: fsharp/sunburst-charts/
+thumbnail: thumbnail/sunburst.gif
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET, 2.0.0-preview.8&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive, 2.0.0-preview.8&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: FSharp.Data&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-11372.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '11372.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>FSharp.Data, 4.2.4</span></li><li><span>Plotly.NET, 2.0.0-preview.8</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.8</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Sunburst plots visualize hierarchical data spanning outwards radially from root to leaves. Similar to Icicle charts and Treemaps, the hierarchy is defined by labels and parents attributes. The root starts from the center and children are added to the outer rings.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Basic-Sunburst-Plot">Basic Sunburst Plot<a class="anchor-link" href="#Basic-Sunburst-Plot">&#182;</a></h1><p>The following example creates a basic Sunburst Plot</p>
+<p>Main arguments:</p>
+<ul>
+<li>labels : sets the labels of sunburst sectors.</li>
+<li>parents: sets the parent sectors of sunburst sectors. An empty string "" is used for the root node in the hierarchy. In this example, the root is "Eve".</li>
+<li>values: sets the values associated with sunburst sectors, determining their width (See the branchvalues section below for different modes for setting the width).</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.LayoutObjects</span>
+
+<span class="k">let</span> <span class="nv">labels</span><span class="o">=[</span><span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Cain&quot;</span><span class="o">;</span> <span class="s">&quot;Seth&quot;</span><span class="o">;</span> <span class="s">&quot;Enos&quot;</span><span class="o">;</span> <span class="s">&quot;Noam&quot;</span><span class="o">;</span> <span class="s">&quot;Abel&quot;</span><span class="o">;</span> <span class="s">&quot;Awan&quot;</span><span class="o">;</span> <span class="s">&quot;Enoch&quot;</span><span class="o">;</span> <span class="s">&quot;Azura&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">parents</span><span class="o">=[</span><span class="s">&quot;&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Seth&quot;</span><span class="o">;</span> <span class="s">&quot;Seth&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Awan&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span> <span class="o">]</span>
+<span class="k">let</span> <span class="nv">values</span><span class="o">=[</span><span class="mi">10</span><span class="o">.;</span> <span class="mi">14</span><span class="o">.;</span> <span class="mi">12</span><span class="o">.;</span> <span class="mi">10</span><span class="o">.;</span> <span class="mi">2</span><span class="o">.;</span> <span class="mi">6</span><span class="o">.;</span> <span class="mi">6</span><span class="o">.;</span> <span class="mi">4</span><span class="o">.;</span> <span class="mi">4</span><span class="o">.]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Sunburst</span><span class="o">(</span><span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span> <span class="n">Values</span><span class="o">=</span><span class="n">values</span><span class="o">,</span> <span class="n">parents</span><span class="o">=</span><span class="n">parents</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span><span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Margin</span> <span class="o">=</span> <span class="nn">Margin</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Top</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.,</span> <span class="n">Left</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.,</span> <span class="n">Right</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.,</span> <span class="n">Bottom</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.)))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="9d361c27-5f6d-485b-89d3-c0507213f810" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_9d361c275f6d485b89d3c0507213f810 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"sunburst","labels":["Eve","Cain","Seth","Enos","Noam","Abel","Awan","Enoch","Azura"],"parents":["","Eve","Eve","Seth","Seth","Eve","Eve","Awan","Eve"],"values":[10.0,14.0,12.0,10.0,2.0,6.0,6.0,4.0,4.0],"marker":{}}];
+            var layout = {"margin":{"l":0.0,"r":0.0,"t":0.0,"b":0.0}};
+            var config = {};
+            Plotly.newPlot('9d361c27-5f6d-485b-89d3-c0507213f810', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_9d361c275f6d485b89d3c0507213f810();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_9d361c275f6d485b89d3c0507213f810();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Sunburst-with-Repeated-Labels">Sunburst with Repeated Labels<a class="anchor-link" href="#Sunburst-with-Repeated-Labels">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.LayoutObjects</span>
+
+<span class="k">let</span> <span class="nv">ids</span><span class="o">=[</span>
+    <span class="s">&quot;North America&quot;</span><span class="o">;</span> <span class="s">&quot;Europe&quot;</span><span class="o">;</span> <span class="s">&quot;Australia&quot;</span><span class="o">;</span> <span class="s">&quot;North America - Football&quot;</span><span class="o">;</span> <span class="s">&quot;Soccer&quot;</span><span class="o">;</span>
+    <span class="s">&quot;North America - Rugby&quot;</span><span class="o">;</span> <span class="s">&quot;Europe - Football&quot;</span><span class="o">;</span> <span class="s">&quot;Rugby&quot;</span><span class="o">;</span>
+    <span class="s">&quot;Europe - American Football&quot;</span><span class="o">;</span><span class="s">&quot;Australia - Football&quot;</span><span class="o">;</span> <span class="s">&quot;Association&quot;</span><span class="o">;</span>
+    <span class="s">&quot;Australian Rules&quot;</span><span class="o">;</span> <span class="s">&quot;Autstralia - American Football&quot;</span><span class="o">;</span> <span class="s">&quot;Australia - Rugby&quot;</span><span class="o">;</span>
+    <span class="s">&quot;Rugby League&quot;</span><span class="o">;</span> <span class="s">&quot;Rugby Union&quot;</span>
+<span class="o">]</span>
+<span class="k">let</span> <span class="nv">labels</span><span class="o">=</span> <span class="o">[</span>
+    <span class="s">&quot;North&lt;br&gt;America&quot;</span><span class="o">;</span> <span class="s">&quot;Europe&quot;</span><span class="o">;</span> <span class="s">&quot;Australia&quot;</span><span class="o">;</span> <span class="s">&quot;Football&quot;</span><span class="o">;</span> <span class="s">&quot;Soccer&quot;</span><span class="o">;</span> <span class="s">&quot;Rugby&quot;</span><span class="o">;</span>
+    <span class="s">&quot;Football&quot;</span><span class="o">;</span> <span class="s">&quot;Rugby&quot;</span><span class="o">;</span> <span class="s">&quot;American&lt;br&gt;Football&quot;</span><span class="o">;</span> <span class="s">&quot;Football&quot;</span><span class="o">;</span> <span class="s">&quot;Association&quot;</span><span class="o">;</span>
+    <span class="s">&quot;Australian&lt;br&gt;Rules&quot;</span><span class="o">;</span> <span class="s">&quot;American&lt;br&gt;Football&quot;</span><span class="o">;</span> <span class="s">&quot;Rugby&quot;</span><span class="o">;</span> <span class="s">&quot;Rugby&lt;br&gt;League&quot;</span><span class="o">;</span>
+    <span class="s">&quot;Rugby&lt;br&gt;Union&quot;</span>
+<span class="o">]</span>
+<span class="k">let</span>  <span class="nv">parents</span><span class="o">=[</span>
+    <span class="s">&quot;&quot;</span><span class="o">;</span> <span class="s">&quot;&quot;</span><span class="o">;</span> <span class="s">&quot;&quot;</span><span class="o">;</span> <span class="s">&quot;North America&quot;</span><span class="o">;</span> <span class="s">&quot;North America&quot;</span><span class="o">;</span> <span class="s">&quot;North America&quot;</span><span class="o">;</span> <span class="s">&quot;Europe&quot;</span><span class="o">;</span>
+    <span class="s">&quot;Europe&quot;</span><span class="o">;</span> <span class="s">&quot;Europe&quot;</span><span class="o">;</span><span class="s">&quot;Australia&quot;</span><span class="o">;</span> <span class="s">&quot;Australia - Football&quot;</span><span class="o">;</span> <span class="s">&quot;Australia - Football&quot;</span><span class="o">;</span>
+    <span class="s">&quot;Australia - Football&quot;</span><span class="o">;</span> <span class="s">&quot;Australia - Football&quot;</span><span class="o">;</span> <span class="s">&quot;Australia - Rugby&quot;</span><span class="o">;</span>
+    <span class="s">&quot;Australia - Rugby&quot;</span>
+<span class="o">]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Sunburst</span><span class="o">(</span><span class="n">Ids</span><span class="o">=</span><span class="n">ids</span><span class="o">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span> <span class="n">parents</span><span class="o">=</span><span class="n">parents</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMargin</span><span class="o">(</span><span class="nn">Margin</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Top</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.,</span> <span class="n">Left</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.,</span> <span class="n">Right</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.,</span> <span class="n">Bottom</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="bc32041e-7285-4e6d-a957-81dae48a4559" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_bc32041e72854e6da95781dae48a4559 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"sunburst","labels":["North<br>America","Europe","Australia","Football","Soccer","Rugby","Football","Rugby","American<br>Football","Football","Association","Australian<br>Rules","American<br>Football","Rugby","Rugby<br>League","Rugby<br>Union"],"parents":["","","","North America","North America","North America","Europe","Europe","Europe","Australia","Australia - Football","Australia - Football","Australia - Football","Australia - Football","Australia - Rugby","Australia - Rugby"],"ids":["North America","Europe","Australia","North America - Football","Soccer","North America - Rugby","Europe - Football","Rugby","Europe - American Football","Australia - Football","Association","Australian Rules","Autstralia - American Football","Australia - Rugby","Rugby League","Rugby Union"],"marker":{}}];
+            var layout = {"margin":{"l":0.0,"r":0.0,"t":0.0,"b":0.0}};
+            var config = {};
+            Plotly.newPlot('bc32041e-7285-4e6d-a957-81dae48a4559', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_bc32041e72854e6da95781dae48a4559();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_bc32041e72854e6da95781dae48a4559();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Branchvalues">Branchvalues<a class="anchor-link" href="#Branchvalues">&#182;</a></h1><p>With branchvalues "total", the value of the parent represents the width of its wedge. In the example below, "Enoch" is 4 and "Awan" is 6 and so Enoch's width is 4/6ths of Awans. With branchvalues "remainder", the parent's width is determined by its own value plus those of its children. So, Enoch's width is 4/10ths of Awan's (4 / (6 + 4)).</p>
+<p>Note that this means that the sum of the values of the children cannot exceed the value of their parent when branchvalues is set to "total". When branchvalues is set to "remainder" (the default), children will not take up all of the space below their parent (unless the parent is the root and it has a value of 0).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.LayoutObjects</span>
+
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Cain&quot;</span><span class="o">;</span> <span class="s">&quot;Seth&quot;</span><span class="o">;</span> <span class="s">&quot;Enos&quot;</span><span class="o">;</span> <span class="s">&quot;Noam&quot;</span><span class="o">;</span> <span class="s">&quot;Abel&quot;</span><span class="o">;</span> <span class="s">&quot;Awan&quot;</span><span class="o">;</span> <span class="s">&quot;Enoch&quot;</span><span class="o">;</span> <span class="s">&quot;Azura&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">parents</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;&quot;</span><span class="o">;</span>    <span class="s">&quot;Eve&quot;</span><span class="o">;</span>  <span class="s">&quot;Eve&quot;</span><span class="o">;</span>  <span class="s">&quot;Seth&quot;</span><span class="o">;</span> <span class="s">&quot;Seth&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span>  <span class="s">&quot;Eve&quot;</span><span class="o">;</span>  <span class="s">&quot;Awan&quot;</span><span class="o">;</span>  <span class="s">&quot;Eve&quot;</span> <span class="o">]</span>
+<span class="k">let</span> <span class="nv">values</span> <span class="o">=</span> <span class="o">[</span>  <span class="mi">65</span><span class="o">.;</span>  <span class="mi">14</span><span class="o">.;</span>  <span class="mi">12</span><span class="o">.;</span>  <span class="mi">10</span><span class="o">.;</span>  <span class="mi">2</span><span class="o">.;</span>  <span class="mi">6</span><span class="o">.;</span>  <span class="mi">6</span><span class="o">.;</span>  <span class="mi">4</span><span class="o">.;</span>  <span class="mi">4</span><span class="o">.]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Sunburst</span><span class="o">(</span><span class="n">Values</span><span class="o">=</span><span class="n">values</span><span class="o">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span> <span class="n">parents</span><span class="o">=</span><span class="n">parents</span><span class="o">,</span> <span class="n">Branchvalues</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">BranchValues</span><span class="p">.</span><span class="n">Total</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMargin</span><span class="o">(</span><span class="nn">Margin</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Top</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.,</span> <span class="n">Left</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.,</span> <span class="n">Right</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.,</span> <span class="n">Bottom</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="22ed9055-669a-43f4-93b3-006186475f1d" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_22ed9055669a43f493b3006186475f1d = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"sunburst","labels":["Eve","Cain","Seth","Enos","Noam","Abel","Awan","Enoch","Azura"],"parents":["","Eve","Eve","Seth","Seth","Eve","Eve","Awan","Eve"],"values":[65.0,14.0,12.0,10.0,2.0,6.0,6.0,4.0,4.0],"branchvalues":"total","marker":{}}];
+            var layout = {"margin":{"l":0.0,"r":0.0,"t":0.0,"b":0.0}};
+            var config = {};
+            Plotly.newPlot('22ed9055-669a-43f4-93b3-006186475f1d', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_22ed9055669a43f493b3006186475f1d();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_22ed9055669a43f493b3006186475f1d();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Large-Number-of-Slices">Large Number of Slices<a class="anchor-link" href="#Large-Number-of-Slices">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">FSharp.Data</span>
+
+<span class="k">type</span> <span class="nc">DFI</span> <span class="o">=</span> <span class="n">CsvProvider</span><span class="o">&lt;</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/718417069ead87650b90472464c7565dc8c2cb1c/sunburst-coffee-flavors-complete.csv&quot;</span><span class="o">&gt;</span>
+<span class="k">type</span> <span class="nc">DFII</span> <span class="o">=</span> <span class="n">CsvProvider</span><span class="o">&lt;</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/718417069ead87650b90472464c7565dc8c2cb1c/coffee-flavors.csv&quot;</span><span class="o">&gt;</span>
+<span class="k">let</span> <span class="nv">df1</span> <span class="o">=</span> <span class="nn">DFI</span><span class="p">.</span><span class="n">Load</span><span class="o">(</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/718417069ead87650b90472464c7565dc8c2cb1c/sunburst-coffee-flavors-complete.csv&quot;</span><span class="o">)</span>
+<span class="k">let</span> <span class="nv">df2</span> <span class="o">=</span> <span class="nn">DFII</span><span class="p">.</span><span class="n">Load</span><span class="o">(</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/718417069ead87650b90472464c7565dc8c2cb1c/coffee-flavors.csv&quot;</span><span class="o">)</span>
+
+
+<span class="o">[</span> 
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Sunburst</span><span class="o">(</span>
+        <span class="n">Ids</span> <span class="o">=</span> <span class="o">[</span> <span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">df1</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">Ids</span> <span class="o">],</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="o">[</span> <span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">df1</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">Labels</span> <span class="o">],</span>
+        <span class="n">parents</span> <span class="o">=</span> <span class="o">[</span> <span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">df1</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">Parents</span> <span class="o">])</span>
+    <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span> <span class="c1">//Workaround</span>
+        <span class="o">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="o">.</span><span class="n">SetValue</span><span class="o">(</span><span class="s">&quot;domain&quot;</span><span class="o">,</span> <span class="nn">Domain</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Row</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Column</span> <span class="o">=</span> <span class="mi">0</span><span class="o">));</span> <span class="n">x</span><span class="o">)</span> 
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Sunburst</span><span class="o">(</span><span class="n">Ids</span> <span class="o">=</span> <span class="o">[</span> <span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">df2</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">Ids</span> <span class="o">],</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="o">[</span> <span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">df2</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">Labels</span> <span class="o">],</span>
+        <span class="n">parents</span> <span class="o">=</span> <span class="o">[</span> <span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">df2</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">Parents</span> <span class="o">],</span>
+        <span class="n">Maxdepth</span> <span class="o">=</span> <span class="mi">2</span><span class="o">)</span>
+    <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span> <span class="c1">//Workaround</span>
+      <span class="o">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="o">.</span><span class="n">SetValue</span><span class="o">(</span><span class="s">&quot;domain&quot;</span><span class="o">,</span> <span class="nn">Domain</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Row</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Column</span> <span class="o">=</span> <span class="mi">1</span><span class="o">));</span> <span class="n">x</span><span class="o">)</span> 
+<span class="o">]</span> 
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMargin</span> <span class="o">(</span><span class="nn">Margin</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Top</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.,</span> <span class="n">Left</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.,</span> <span class="n">Right</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.,</span> <span class="n">Bottom</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.))</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayoutGrid</span> <span class="o">(</span><span class="nn">LayoutGrid</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Rows</span> <span class="o">=</span> <span class="mi">1</span><span class="o">,</span> <span class="n">Columns</span> <span class="o">=</span> <span class="mi">2</span><span class="o">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="75f5d194-d50c-419b-941d-1b89b7446cb2" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_75f5d194d50c419b941d1b89b7446cb2 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"sunburst","labels":["Aromas","Tastes","Enzymatic","Sugar Browning","Dry Distillation","Bitter","Salt","Sweet","Sour","Flowery","Fruity","Herby","Nutty","Carmelly","Chocolatey","Resinous","Spicy","Carbony","Pungent","Harsh","Sharp","Bland","Mellow","Acidy","Winey","Soury","Floral","Fragrant","Citrus","Berry-like","Alliaceous","Leguminous","Nut-like","Malt-like","Candy-like","Syrup-like","Chocolate-like","Vanilla-like","Turpeny","Medicinal","Warming","Pungent","Smokey","Ashy","Creosol","Phenolic","Caustic","Alkaline","Astringent","Rough","Neutral","Soft","Delicate","Mild","Nippy","Piquant","Tangy","Tart","Hard","Acrid","Coffee Blossom","Tea Rose","Cardamon Caraway","Coriander Seeds","Lemon","Apple","Apricot","Blackberry","Onion","Garlic","Cucumber","Garden Peas","Roasted Peanuts","Walnuts","Balsamic Rice","Toast","Roasted Hazelnut","Roasted Almond","Honey","Maple Syrup","Bakers","Dark Chocolate","Swiss","Butter","Piney","Blackcurrant-like","Camphoric","Cineolic","Cedar","Pepper","Clove","Thyme","Tarry","Pipe Tobacco","Burnt","Charred"],"parents":["","","Aromas","Aromas","Aromas","Tastes","Tastes","Tastes","Tastes","Aromas-Enzymatic","Aromas-Enzymatic","Aromas-Enzymatic","Aromas-Sugar Browning","Aromas-Sugar Browning","Aromas-Sugar Browning","Aromas-Dry Distillation","Aromas-Dry Distillation","Aromas-Dry Distillation","Tastes-Bitter","Tastes-Bitter","Tastes-Salt","Tastes-Salt","Tastes-Sweet","Tastes-Sweet","Tastes-Sour","Tastes-Sour","Enzymatic-Flowery","Enzymatic-Flowery","Enzymatic-Fruity","Enzymatic-Fruity","Enzymatic-Herby","Enzymatic-Herby","Sugar Browning-Nutty","Sugar Browning-Nutty","Sugar Browning-Carmelly","Sugar Browning-Carmelly","Sugar Browning-Chocolatey","Sugar Browning-Chocolatey","Dry Distillation-Resinous","Dry Distillation-Resinous","Dry Distillation-Spicy","Dry Distillation-Spicy","Dry Distillation-Carbony","Dry Distillation-Carbony","Bitter-Pungent","Bitter-Pungent","Bitter-Harsh","Bitter-Harsh","Salt-Sharp","Salt-Sharp","Salt-Bland","Salt-Bland","Sweet-Mellow","Sweet-Mellow","Sweet-Acidy","Sweet-Acidy","Sour-Winey","Sour-Winey","Sour-Soury","Sour-Soury","Flowery-Floral","Flowery-Floral","Flowery-Fragrant","Flowery-Fragrant","Fruity-Citrus","Fruity-Citrus","Fruity-Berry-like","Fruity-Berry-like","Herby-Alliaceous","Herby-Alliaceous","Herby-Leguminous","Herby-Leguminous","Nutty-Nut-like","Nutty-Nut-like","Nutty-Malt-like","Nutty-Malt-like","Carmelly-Candy-like","Carmelly-Candy-like","Carmelly-Syrup-like","Carmelly-Syrup-like","Chocolatey-Chocolate-like","Chocolatey-Chocolate-like","Chocolatey-Vanilla-like","Chocolatey-Vanilla-like","Resinous-Turpeny","Resinous-Turpeny","Resinous-Medicinal","Resinous-Medicinal","Spicy-Warming","Spicy-Warming","Spicy-Pungent","Spicy-Pungent","Carbony-Smokey","Carbony-Smokey","Carbony-Ashy","Carbony-Ashy"],"ids":["Aromas","Tastes","Aromas-Enzymatic","Aromas-Sugar Browning","Aromas-Dry Distillation","Tastes-Bitter","Tastes-Salt","Tastes-Sweet","Tastes-Sour","Enzymatic-Flowery","Enzymatic-Fruity","Enzymatic-Herby","Sugar Browning-Nutty","Sugar Browning-Carmelly","Sugar Browning-Chocolatey","Dry Distillation-Resinous","Dry Distillation-Spicy","Dry Distillation-Carbony","Bitter-Pungent","Bitter-Harsh","Salt-Sharp","Salt-Bland","Sweet-Mellow","Sweet-Acidy","Sour-Winey","Sour-Soury","Flowery-Floral","Flowery-Fragrant","Fruity-Citrus","Fruity-Berry-like","Herby-Alliaceous","Herby-Leguminous","Nutty-Nut-like","Nutty-Malt-like","Carmelly-Candy-like","Carmelly-Syrup-like","Chocolatey-Chocolate-like","Chocolatey-Vanilla-like","Resinous-Turpeny","Resinous-Medicinal","Spicy-Warming","Spicy-Pungent","Carbony-Smokey","Carbony-Ashy","Pungent-Creosol","Pungent-Phenolic","Harsh-Caustic","Harsh-Alkaline","Sharp-Astringent","Sharp-Rough","Bland-Neutral","Bland-Soft","Mellow-Delicate","Mellow-Mild","Acidy-Nippy","Acidy-Piquant","Winey-Tangy","Winey-Tart","Soury-Hard","Soury-Acrid","Floral-Coffee Blossom","Floral-Tea Rose","Fragrant-Cardamon Caraway","Fragrant-Coriander Seeds","Citrus-Lemon","Citrus-Apple","Berry-like-Apricot","Berry-like-Blackberry","Alliaceous-Onion","Alliaceous-Garlic","Leguminous-Cucumber","Leguminous-Garden Peas","Nut-like-Roasted Peanuts","Nut-like-Walnuts","Malt-like-Balsamic Rice","Malt-like-Toast","Candy-like-Roasted Hazelnut","Candy-like-Roasted Almond","Syrup-like-Honey","Syrup-like-Maple Syrup","Chocolate-like-Bakers","Chocolate-like-Dark Chocolate","Vanilla-like-Swiss","Vanilla-like-Butter","Turpeny-Piney","Turpeny-Blackcurrant-like","Medicinal-Camphoric","Medicinal-Cineolic","Warming-Cedar","Warming-Pepper","Pungent-Clove","Pungent-Thyme","Smokey-Tarry","Smokey-Pipe Tobacco","Ashy-Burnt","Ashy-Charred"],"marker":{},"domain":{"row":0,"column":0}},{"type":"sunburst","labels":["Flowery","Fruity","Herby","Nutty","Carmelly","Chocolatey","Resinous","Spicy","Carbony","Pungent","Harsh","Sharp","Bland","Mellow","Acidy","Winey","Soury","Floral","Fragrant","Citrus","Berry-like","Alliaceous","Leguminous","Nut-like","Malt-like","Candy-like","Syrup-like","Chocolate-like","Vanilla-like","Turpeny","Medicinal","Warming","Pungent","Smokey","Ashy","Creosol","Phenolic","Caustic","Alkaline","Astringent","Rough","Neutral","Soft","Delicate","Mild","Nippy","Piquant","Tangy","Tart","Hard","Acrid","Coffee Blossom","Tea Rose","Cardamon Caraway","Coriander Seeds","Lemon","Apple","Apricot","Blackberry","Onion","Garlic","Cucumber","Garden Peas","Roasted Peanuts","Walnuts","Balsamic Rice","Toast","Roasted Hazelnut","Roasted Almond","Honey","Maple Syrup","Bakers","Dark Chocolate","Swiss","Butter","Piney","Blackcurrant-like","Camphoric","Cineolic","Cedar","Pepper","Clove","Thyme","Tarry","Pipe Tobacco","Burnt","Charred"],"parents":["","","","","","","","","","","","","","","","","","Enzymatic-Flowery","Enzymatic-Flowery","Enzymatic-Fruity","Enzymatic-Fruity","Enzymatic-Herby","Enzymatic-Herby","Sugar Browning-Nutty","Sugar Browning-Nutty","Sugar Browning-Carmelly","Sugar Browning-Carmelly","Sugar Browning-Chocolatey","Sugar Browning-Chocolatey","Dry Distillation-Resinous","Dry Distillation-Resinous","Dry Distillation-Spicy","Dry Distillation-Spicy","Dry Distillation-Carbony","Dry Distillation-Carbony","Bitter-Pungent","Bitter-Pungent","Bitter-Harsh","Bitter-Harsh","Salt-Sharp","Salt-Sharp","Salt-Bland","Salt-Bland","Sweet-Mellow","Sweet-Mellow","Sweet-Acidy","Sweet-Acidy","Sour-Winey","Sour-Winey","Sour-Soury","Sour-Soury","Flowery-Floral","Flowery-Floral","Flowery-Fragrant","Flowery-Fragrant","Fruity-Citrus","Fruity-Citrus","Fruity-Berry-like","Fruity-Berry-like","Herby-Alliaceous","Herby-Alliaceous","Herby-Leguminous","Herby-Leguminous","Nutty-Nut-like","Nutty-Nut-like","Nutty-Malt-like","Nutty-Malt-like","Carmelly-Candy-like","Carmelly-Candy-like","Carmelly-Syrup-like","Carmelly-Syrup-like","Chocolatey-Chocolate-like","Chocolatey-Chocolate-like","Chocolatey-Vanilla-like","Chocolatey-Vanilla-like","Resinous-Turpeny","Resinous-Turpeny","Resinous-Medicinal","Resinous-Medicinal","Spicy-Warming","Spicy-Warming","Spicy-Pungent","Spicy-Pungent","Carbony-Smokey","Carbony-Smokey","Carbony-Ashy","Carbony-Ashy"],"ids":["Enzymatic-Flowery","Enzymatic-Fruity","Enzymatic-Herby","Sugar Browning-Nutty","Sugar Browning-Carmelly","Sugar Browning-Chocolatey","Dry Distillation-Resinous","Dry Distillation-Spicy","Dry Distillation-Carbony","Bitter-Pungent","Bitter-Harsh","Salt-Sharp","Salt-Bland","Sweet-Mellow","Sweet-Acidy","Sour-Winey","Sour-Soury","Flowery-Floral","Flowery-Fragrant","Fruity-Citrus","Fruity-Berry-like","Herby-Alliaceous","Herby-Leguminous","Nutty-Nut-like","Nutty-Malt-like","Carmelly-Candy-like","Carmelly-Syrup-like","Chocolatey-Chocolate-like","Chocolatey-Vanilla-like","Resinous-Turpeny","Resinous-Medicinal","Spicy-Warming","Spicy-Pungent","Carbony-Smokey","Carbony-Ashy","Pungent-Creosol","Pungent-Phenolic","Harsh-Caustic","Harsh-Alkaline","Sharp-Astringent","Sharp-Rough","Bland-Neutral","Bland-Soft","Mellow-Delicate","Mellow-Mild","Acidy-Nippy","Acidy-Piquant","Winey-Tangy","Winey-Tart","Soury-Hard","Soury-Acrid","Floral-Coffee Blossom","Floral-Tea Rose","Fragrant-Cardamon Caraway","Fragrant-Coriander Seeds","Citrus-Lemon","Citrus-Apple","Berry-like-Apricot","Berry-like-Blackberry","Alliaceous-Onion","Alliaceous-Garlic","Leguminous-Cucumber","Leguminous-Garden Peas","Nut-like-Roasted Peanuts","Nut-like-Walnuts","Malt-like-Balsamic Rice","Malt-like-Toast","Candy-like-Roasted Hazelnut","Candy-like-Roasted Almond","Syrup-like-Honey","Syrup-like-Maple Syrup","Chocolate-like-Bakers","Chocolate-like-Dark Chocolate","Vanilla-like-Swiss","Vanilla-like-Butter","Turpeny-Piney","Turpeny-Blackcurrant-like","Medicinal-Camphoric","Medicinal-Cineolic","Warming-Cedar","Warming-Pepper","Pungent-Clove","Pungent-Thyme","Smokey-Tarry","Smokey-Pipe Tobacco","Ashy-Burnt","Ashy-Charred"],"maxdepth":2,"marker":{},"domain":{"row":0,"column":1}}];
+            var layout = {"margin":{"l":0.0,"r":0.0,"t":0.0,"b":0.0},"grid":{"rows":1,"columns":2}};
+            var config = {};
+            Plotly.newPlot('75f5d194-d50c-419b-941d-1b89b7446cb2', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_75f5d194d50c419b941d1b89b7446cb2();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_75f5d194d50c419b941d1b89b7446cb2();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Controlling-text-orientation-inside-sunburst-sectors">Controlling text orientation inside sunburst sectors<a class="anchor-link" href="#Controlling-text-orientation-inside-sunburst-sectors">&#182;</a></h1><p>The InsideTextOrientation attribute controls the orientation of text inside sectors. With "Auto" the texts may automatically be rotated to fit with the maximum size inside the slice. Using "Horizontal" (resp. "radial", "tangential") forces text to be horizontal (resp. radial or tangential). Note that plotly may reduce the font size in order to fit the text with the requested orientation.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.LayoutObjects</span>
+
+<span class="k">type</span> <span class="nc">DFI</span> <span class="o">=</span> <span class="n">CsvProvider</span><span class="o">&lt;</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/718417069ead87650b90472464c7565dc8c2cb1c/coffee-flavors.csv&quot;</span><span class="o">&gt;</span>
+<span class="k">let</span> <span class="nv">df1</span> <span class="o">=</span> <span class="nn">DFI</span><span class="p">.</span><span class="n">Load</span><span class="o">(</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/718417069ead87650b90472464c7565dc8c2cb1c/coffee-flavors.csv&quot;</span><span class="o">)</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Sunburst</span><span class="o">(</span>
+        <span class="n">Ids</span><span class="o">=[</span><span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">df1</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">Ids</span><span class="o">],</span> 
+        <span class="n">labels</span><span class="o">=[</span><span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">df1</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">Labels</span><span class="o">],</span> 
+        <span class="n">parents</span><span class="o">=[</span><span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">df1</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">Parents</span><span class="o">],</span> 
+        <span class="n">Maxdepth</span> <span class="o">=</span> <span class="mi">2</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="o">.</span><span class="n">SetValue</span><span class="o">(</span><span class="s">&quot;insidetextorientation&quot;</span><span class="o">,</span> <span class="s">&quot;radial&quot;</span><span class="o">);</span> <span class="n">x</span><span class="o">)</span> <span class="c1">//Workaround</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span><span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Margin</span> <span class="o">=</span> <span class="nn">Margin</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Top</span> <span class="o">=</span> <span class="mi">10</span><span class="o">.,</span> <span class="n">Left</span> <span class="o">=</span> <span class="mi">10</span><span class="o">.,</span> <span class="n">Right</span> <span class="o">=</span> <span class="mi">10</span><span class="o">.,</span> <span class="n">Bottom</span> <span class="o">=</span> <span class="mi">10</span><span class="o">.)))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[6]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="c1021c44-6e81-4cfe-83c6-a950785e236a" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_c1021c446e814cfe83c6a950785e236a = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"sunburst","labels":["Flowery","Fruity","Herby","Nutty","Carmelly","Chocolatey","Resinous","Spicy","Carbony","Pungent","Harsh","Sharp","Bland","Mellow","Acidy","Winey","Soury","Floral","Fragrant","Citrus","Berry-like","Alliaceous","Leguminous","Nut-like","Malt-like","Candy-like","Syrup-like","Chocolate-like","Vanilla-like","Turpeny","Medicinal","Warming","Pungent","Smokey","Ashy","Creosol","Phenolic","Caustic","Alkaline","Astringent","Rough","Neutral","Soft","Delicate","Mild","Nippy","Piquant","Tangy","Tart","Hard","Acrid","Coffee Blossom","Tea Rose","Cardamon Caraway","Coriander Seeds","Lemon","Apple","Apricot","Blackberry","Onion","Garlic","Cucumber","Garden Peas","Roasted Peanuts","Walnuts","Balsamic Rice","Toast","Roasted Hazelnut","Roasted Almond","Honey","Maple Syrup","Bakers","Dark Chocolate","Swiss","Butter","Piney","Blackcurrant-like","Camphoric","Cineolic","Cedar","Pepper","Clove","Thyme","Tarry","Pipe Tobacco","Burnt","Charred"],"parents":["","","","","","","","","","","","","","","","","","Enzymatic-Flowery","Enzymatic-Flowery","Enzymatic-Fruity","Enzymatic-Fruity","Enzymatic-Herby","Enzymatic-Herby","Sugar Browning-Nutty","Sugar Browning-Nutty","Sugar Browning-Carmelly","Sugar Browning-Carmelly","Sugar Browning-Chocolatey","Sugar Browning-Chocolatey","Dry Distillation-Resinous","Dry Distillation-Resinous","Dry Distillation-Spicy","Dry Distillation-Spicy","Dry Distillation-Carbony","Dry Distillation-Carbony","Bitter-Pungent","Bitter-Pungent","Bitter-Harsh","Bitter-Harsh","Salt-Sharp","Salt-Sharp","Salt-Bland","Salt-Bland","Sweet-Mellow","Sweet-Mellow","Sweet-Acidy","Sweet-Acidy","Sour-Winey","Sour-Winey","Sour-Soury","Sour-Soury","Flowery-Floral","Flowery-Floral","Flowery-Fragrant","Flowery-Fragrant","Fruity-Citrus","Fruity-Citrus","Fruity-Berry-like","Fruity-Berry-like","Herby-Alliaceous","Herby-Alliaceous","Herby-Leguminous","Herby-Leguminous","Nutty-Nut-like","Nutty-Nut-like","Nutty-Malt-like","Nutty-Malt-like","Carmelly-Candy-like","Carmelly-Candy-like","Carmelly-Syrup-like","Carmelly-Syrup-like","Chocolatey-Chocolate-like","Chocolatey-Chocolate-like","Chocolatey-Vanilla-like","Chocolatey-Vanilla-like","Resinous-Turpeny","Resinous-Turpeny","Resinous-Medicinal","Resinous-Medicinal","Spicy-Warming","Spicy-Warming","Spicy-Pungent","Spicy-Pungent","Carbony-Smokey","Carbony-Smokey","Carbony-Ashy","Carbony-Ashy"],"ids":["Enzymatic-Flowery","Enzymatic-Fruity","Enzymatic-Herby","Sugar Browning-Nutty","Sugar Browning-Carmelly","Sugar Browning-Chocolatey","Dry Distillation-Resinous","Dry Distillation-Spicy","Dry Distillation-Carbony","Bitter-Pungent","Bitter-Harsh","Salt-Sharp","Salt-Bland","Sweet-Mellow","Sweet-Acidy","Sour-Winey","Sour-Soury","Flowery-Floral","Flowery-Fragrant","Fruity-Citrus","Fruity-Berry-like","Herby-Alliaceous","Herby-Leguminous","Nutty-Nut-like","Nutty-Malt-like","Carmelly-Candy-like","Carmelly-Syrup-like","Chocolatey-Chocolate-like","Chocolatey-Vanilla-like","Resinous-Turpeny","Resinous-Medicinal","Spicy-Warming","Spicy-Pungent","Carbony-Smokey","Carbony-Ashy","Pungent-Creosol","Pungent-Phenolic","Harsh-Caustic","Harsh-Alkaline","Sharp-Astringent","Sharp-Rough","Bland-Neutral","Bland-Soft","Mellow-Delicate","Mellow-Mild","Acidy-Nippy","Acidy-Piquant","Winey-Tangy","Winey-Tart","Soury-Hard","Soury-Acrid","Floral-Coffee Blossom","Floral-Tea Rose","Fragrant-Cardamon Caraway","Fragrant-Coriander Seeds","Citrus-Lemon","Citrus-Apple","Berry-like-Apricot","Berry-like-Blackberry","Alliaceous-Onion","Alliaceous-Garlic","Leguminous-Cucumber","Leguminous-Garden Peas","Nut-like-Roasted Peanuts","Nut-like-Walnuts","Malt-like-Balsamic Rice","Malt-like-Toast","Candy-like-Roasted Hazelnut","Candy-like-Roasted Almond","Syrup-like-Honey","Syrup-like-Maple Syrup","Chocolate-like-Bakers","Chocolate-like-Dark Chocolate","Vanilla-like-Swiss","Vanilla-like-Butter","Turpeny-Piney","Turpeny-Blackcurrant-like","Medicinal-Camphoric","Medicinal-Cineolic","Warming-Cedar","Warming-Pepper","Pungent-Clove","Pungent-Thyme","Smokey-Tarry","Smokey-Pipe Tobacco","Ashy-Burnt","Ashy-Charred"],"maxdepth":2,"marker":{},"insidetextorientation":"radial"}];
+            var layout = {"margin":{"l":10.0,"r":10.0,"t":10.0,"b":10.0}};
+            var config = {};
+            Plotly.newPlot('c1021c44-6e81-4cfe-83c6-a950785e236a', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_c1021c446e814cfe83c6a950785e236a();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_c1021c446e814cfe83c6a950785e236a();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Controlling-text-fontsize-with-uniformtext">Controlling text fontsize with uniformtext<a class="anchor-link" href="#Controlling-text-fontsize-with-uniformtext">&#182;</a></h1><p>If you want all the text labels to have the same size, you can use the uniformtext layout parameter. The minsize attribute sets the font size, and the mode attribute sets what happens for labels which cannot fit with the desired fontsize: either hide them or show them with overflow.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">type</span> <span class="nc">DFI</span> <span class="o">=</span> <span class="n">CsvProvider</span><span class="o">&lt;</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/718417069ead87650b90472464c7565dc8c2cb1c/sunburst-coffee-flavors-complete.csv&quot;</span><span class="o">&gt;</span>
+<span class="k">let</span> <span class="nv">df1</span> <span class="o">=</span> <span class="nn">DFI</span><span class="p">.</span><span class="n">Load</span><span class="o">(</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/718417069ead87650b90472464c7565dc8c2cb1c/sunburst-coffee-flavors-complete.csv&quot;</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">layout</span> <span class="o">=</span> <span class="c1">//Workaround</span>
+    <span class="k">let</span> <span class="nv">tmp</span> <span class="o">=</span> <span class="n">Layout</span><span class="bp">()</span>
+    <span class="n">tmp</span><span class="o">?</span><span class="n">uniformtext</span> <span class="o">&lt;-</span> <span class="o">{|</span> <span class="n">minsize</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span> <span class="n">mode</span> <span class="o">=</span> <span class="s">&quot;hide&quot;</span> <span class="o">|}</span>
+    <span class="n">tmp</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Sunburst</span><span class="o">(</span>
+        <span class="n">Ids</span><span class="o">=[</span><span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">df1</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">Ids</span><span class="o">],</span> 
+        <span class="n">labels</span><span class="o">=[</span><span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">df1</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">Labels</span><span class="o">],</span> 
+        <span class="n">parents</span><span class="o">=[</span><span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">df1</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">Parents</span><span class="o">])</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span><span class="n">layout</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[7]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="12144693-b118-4ac9-89b4-87c53135f247" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_12144693b1184ac989b487c53135f247 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"sunburst","labels":["Aromas","Tastes","Enzymatic","Sugar Browning","Dry Distillation","Bitter","Salt","Sweet","Sour","Flowery","Fruity","Herby","Nutty","Carmelly","Chocolatey","Resinous","Spicy","Carbony","Pungent","Harsh","Sharp","Bland","Mellow","Acidy","Winey","Soury","Floral","Fragrant","Citrus","Berry-like","Alliaceous","Leguminous","Nut-like","Malt-like","Candy-like","Syrup-like","Chocolate-like","Vanilla-like","Turpeny","Medicinal","Warming","Pungent","Smokey","Ashy","Creosol","Phenolic","Caustic","Alkaline","Astringent","Rough","Neutral","Soft","Delicate","Mild","Nippy","Piquant","Tangy","Tart","Hard","Acrid","Coffee Blossom","Tea Rose","Cardamon Caraway","Coriander Seeds","Lemon","Apple","Apricot","Blackberry","Onion","Garlic","Cucumber","Garden Peas","Roasted Peanuts","Walnuts","Balsamic Rice","Toast","Roasted Hazelnut","Roasted Almond","Honey","Maple Syrup","Bakers","Dark Chocolate","Swiss","Butter","Piney","Blackcurrant-like","Camphoric","Cineolic","Cedar","Pepper","Clove","Thyme","Tarry","Pipe Tobacco","Burnt","Charred"],"parents":["","","Aromas","Aromas","Aromas","Tastes","Tastes","Tastes","Tastes","Aromas-Enzymatic","Aromas-Enzymatic","Aromas-Enzymatic","Aromas-Sugar Browning","Aromas-Sugar Browning","Aromas-Sugar Browning","Aromas-Dry Distillation","Aromas-Dry Distillation","Aromas-Dry Distillation","Tastes-Bitter","Tastes-Bitter","Tastes-Salt","Tastes-Salt","Tastes-Sweet","Tastes-Sweet","Tastes-Sour","Tastes-Sour","Enzymatic-Flowery","Enzymatic-Flowery","Enzymatic-Fruity","Enzymatic-Fruity","Enzymatic-Herby","Enzymatic-Herby","Sugar Browning-Nutty","Sugar Browning-Nutty","Sugar Browning-Carmelly","Sugar Browning-Carmelly","Sugar Browning-Chocolatey","Sugar Browning-Chocolatey","Dry Distillation-Resinous","Dry Distillation-Resinous","Dry Distillation-Spicy","Dry Distillation-Spicy","Dry Distillation-Carbony","Dry Distillation-Carbony","Bitter-Pungent","Bitter-Pungent","Bitter-Harsh","Bitter-Harsh","Salt-Sharp","Salt-Sharp","Salt-Bland","Salt-Bland","Sweet-Mellow","Sweet-Mellow","Sweet-Acidy","Sweet-Acidy","Sour-Winey","Sour-Winey","Sour-Soury","Sour-Soury","Flowery-Floral","Flowery-Floral","Flowery-Fragrant","Flowery-Fragrant","Fruity-Citrus","Fruity-Citrus","Fruity-Berry-like","Fruity-Berry-like","Herby-Alliaceous","Herby-Alliaceous","Herby-Leguminous","Herby-Leguminous","Nutty-Nut-like","Nutty-Nut-like","Nutty-Malt-like","Nutty-Malt-like","Carmelly-Candy-like","Carmelly-Candy-like","Carmelly-Syrup-like","Carmelly-Syrup-like","Chocolatey-Chocolate-like","Chocolatey-Chocolate-like","Chocolatey-Vanilla-like","Chocolatey-Vanilla-like","Resinous-Turpeny","Resinous-Turpeny","Resinous-Medicinal","Resinous-Medicinal","Spicy-Warming","Spicy-Warming","Spicy-Pungent","Spicy-Pungent","Carbony-Smokey","Carbony-Smokey","Carbony-Ashy","Carbony-Ashy"],"ids":["Aromas","Tastes","Aromas-Enzymatic","Aromas-Sugar Browning","Aromas-Dry Distillation","Tastes-Bitter","Tastes-Salt","Tastes-Sweet","Tastes-Sour","Enzymatic-Flowery","Enzymatic-Fruity","Enzymatic-Herby","Sugar Browning-Nutty","Sugar Browning-Carmelly","Sugar Browning-Chocolatey","Dry Distillation-Resinous","Dry Distillation-Spicy","Dry Distillation-Carbony","Bitter-Pungent","Bitter-Harsh","Salt-Sharp","Salt-Bland","Sweet-Mellow","Sweet-Acidy","Sour-Winey","Sour-Soury","Flowery-Floral","Flowery-Fragrant","Fruity-Citrus","Fruity-Berry-like","Herby-Alliaceous","Herby-Leguminous","Nutty-Nut-like","Nutty-Malt-like","Carmelly-Candy-like","Carmelly-Syrup-like","Chocolatey-Chocolate-like","Chocolatey-Vanilla-like","Resinous-Turpeny","Resinous-Medicinal","Spicy-Warming","Spicy-Pungent","Carbony-Smokey","Carbony-Ashy","Pungent-Creosol","Pungent-Phenolic","Harsh-Caustic","Harsh-Alkaline","Sharp-Astringent","Sharp-Rough","Bland-Neutral","Bland-Soft","Mellow-Delicate","Mellow-Mild","Acidy-Nippy","Acidy-Piquant","Winey-Tangy","Winey-Tart","Soury-Hard","Soury-Acrid","Floral-Coffee Blossom","Floral-Tea Rose","Fragrant-Cardamon Caraway","Fragrant-Coriander Seeds","Citrus-Lemon","Citrus-Apple","Berry-like-Apricot","Berry-like-Blackberry","Alliaceous-Onion","Alliaceous-Garlic","Leguminous-Cucumber","Leguminous-Garden Peas","Nut-like-Roasted Peanuts","Nut-like-Walnuts","Malt-like-Balsamic Rice","Malt-like-Toast","Candy-like-Roasted Hazelnut","Candy-like-Roasted Almond","Syrup-like-Honey","Syrup-like-Maple Syrup","Chocolate-like-Bakers","Chocolate-like-Dark Chocolate","Vanilla-like-Swiss","Vanilla-like-Butter","Turpeny-Piney","Turpeny-Blackcurrant-like","Medicinal-Camphoric","Medicinal-Cineolic","Warming-Cedar","Warming-Pepper","Pungent-Clove","Pungent-Thyme","Smokey-Tarry","Smokey-Pipe Tobacco","Ashy-Burnt","Ashy-Charred"],"marker":{}}];
+            var layout = {"uniformtext":{"minsize":10,"mode":"hide"}};
+            var config = {};
+            Plotly.newPlot('12144693-b118-4ac9-89b4-87c53135f247', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_12144693b1184ac989b487c53135f247();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_12144693b1184ac989b487c53135f247();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Sunburst-chart-with-a-continuous-colorscale-(not-finished)">Sunburst chart with a continuous colorscale (not finished)<a class="anchor-link" href="#Sunburst-chart-with-a-continuous-colorscale-(not-finished)">&#182;</a></h1><p>The example below visualizes a breakdown of sales (corresponding to sector width) and call success rate (corresponding to sector color) by region, county and salesperson level. For example, when exploring the data you can see that although the East region is behaving poorly, the Tyler county is still above average -- however, its performance is reduced by the poor success rate of salesperson GT.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="c1">// open Plotly.NET</span>
+<span class="c1">// open FSharp.Data</span>
+
+<span class="c1">// type DFI = CsvProvider&lt;&quot;https://raw.githubusercontent.com/plotly/datasets/master/sales_success.csv&quot;&gt;</span>
+<span class="c1">// let df1 = DFI.Load(&quot;https://raw.githubusercontent.com/plotly/datasets/master/sales_success.csv&quot;)</span>
+<span class="c1">// type Record = {region: string; county: string; salesperson: string; calls: int; sales: int}</span>
+
+<span class="c1">// let buildHierarchicalDataframe = </span>
+<span class="c1">//     let ids = [ for row in df1.Rows do {region = row.Item2; county = row.Item3; salesperson = row.Item4; calls = row.Item5; sales = row.Item6} ]</span>
+<span class="c1">//     ids</span>
+
+<span class="c1">// let regions = [for x in df1.Rows do x.Item2, &quot;total&quot;] |&gt; Set.ofList</span>
+<span class="c1">// let counties = [for x in df1.Rows do x.Item3, x.Item2] |&gt; Set.ofList</span>
+<span class="c1">// let salesperson = [for x in df1.Rows do x.Item4, x.Item3] |&gt; Set.ofList</span>
+
+<span class="c1">// let byRegion = [ for region in regions do fst region, snd region, List.sumBy (fun (x: Record) -&gt; if x.region = fst region then x.calls else 0) buildHierarchicalDataframe]</span>
+<span class="c1">// let byCounties = [ for county in counties do fst county, snd county, List.sumBy (fun (x: Record) -&gt; if x.county = fst county then x.calls else 0) buildHierarchicalDataframe]</span>
+<span class="c1">// let bySalesperson = [ for sp in salesperson do fst sp, snd sp, List.sumBy (fun (x: Record) -&gt; if x.salesperson = fst sp then x.calls else 0) buildHierarchicalDataframe]</span>
+<span class="c1">// let data = List.append (List.append (List.append byRegion byCounties) bySalesperson)  [&quot;total&quot;, &quot;&quot;, List.sumBy (fun x -&gt; x.calls) buildHierarchicalDataframe] |&gt; Array.ofList</span>
+<span class="c1">// let ids = [for x, _, _ in data do x]</span>
+<span class="c1">// let parents = [for _, y, _ in data do y]</span>
+<span class="c1">// let values = [for _, _, z in data do z |&gt; float]</span>
+<span class="c1">// [</span>
+<span class="c1">//     Chart.Sunburst(Ids = ids, labels = ids, parents = parents, Values = values, Branchvalues = StyleParam.BranchValues.Total)</span>
+<span class="c1">//     |&gt; GenericChart.mapTrace //Workaround</span>
+<span class="c1">//             (fun x -&gt; x.SetValue(&quot;domain&quot;, Domain.init (Row = 0, Column = 0)); x) </span>
+<span class="c1">//     Chart.Sunburst(Ids = ids, labels = ids, parents = parents, Values = values, Branchvalues = StyleParam.BranchValues.Total, Maxdepth = 2)</span>
+<span class="c1">//     |&gt; GenericChart.mapTrace //Workaround</span>
+<span class="c1">//             (fun x -&gt; x.SetValue(&quot;domain&quot;, Domain.init (Row = 0, Column = 1)); x) </span>
+<span class="c1">// ]</span>
+<span class="c1">// |&gt;Chart.combine</span>
+<span class="c1">// |&gt; Chart.withLayoutGridStyle(Rows=1,Columns=2)</span>
+<span class="c1">// |&gt; Chart.withSize(Width=1100)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}

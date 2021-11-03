@@ -1,0 +1,605 @@
+---
+description: How to make funnel-chart plots in F# with Plotly.
+display_as: financial
+language: fsharp
+layout: base
+name: Funnel Chart
+order: 4
+page_type: example_index
+permalink: fsharp/funnel-charts/
+thumbnail: thumbnail/funnel.jpg
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Newtonsoft.Json, 12.0.3&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET,  2.0.0-preview.10&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive,  2.0.0-preview.10&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-6095.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '6095.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>Newtonsoft.Json, 12.0.3</span></li><li><span>Plotly.NET, 2.0.0-preview.10</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.10</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h1><p>Funnel charts are often used to represent data in different stages of a business process. It’s an important mechanism in Business Intelligence to identify potential problem areas of a process. For example, it’s used to observe the revenue or loss in a sales process for each stage, and displays values that are decreasing progressively. Each stage is illustrated as a percentage of the total of all values.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Basic-Funnel-Chart">Basic Funnel Chart<a class="anchor-link" href="#Basic-Funnel-Chart">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">y</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Website visit&quot;</span><span class="o">;</span> <span class="s">&quot;Downloads&quot;</span><span class="o">;</span> <span class="s">&quot;Potential customers&quot;</span><span class="o">;</span> <span class="s">&quot;Requested price&quot;</span><span class="o">;</span> <span class="s">&quot;invoice sent&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="o">[</span><span class="mi">39</span><span class="o">.;</span> <span class="mi">27</span><span class="o">.</span><span class="mi">4</span><span class="o">;</span> <span class="mi">20</span><span class="o">.</span><span class="mi">6</span><span class="o">;</span> <span class="mi">11</span><span class="o">.;</span> <span class="mi">2</span><span class="o">.]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Funnel</span><span class="o">(</span><span class="n">x</span><span class="o">,</span><span class="n">y</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarginSize</span><span class="o">(</span><span class="n">Left</span><span class="o">=</span><span class="mi">150</span><span class="o">.)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="9001b3fe-1203-490d-af73-aa36dda558b0" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_9001b3fe1203490daf73aa36dda558b0 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-2.4.2.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"funnel","x":[39.0,27.4,20.6,11.0,2.0],"y":["Website visit","Downloads","Potential customers","Requested price","invoice sent"],"marker":{}}];
+            var layout = {"margin":{"l":150.0}};
+            var config = {};
+            Plotly.newPlot('9001b3fe-1203-490d-af73-aa36dda558b0', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_9001b3fe1203490daf73aa36dda558b0();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_9001b3fe1203490daf73aa36dda558b0();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Setting-Marker-Size-and-Color">Setting Marker Size and Color<a class="anchor-link" href="#Setting-Marker-Size-and-Color">&#182;</a></h1><p>This example uses TextPosition and TextInfo to determine information appears on the graph, and shows how to customize the bars.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+
+<span class="k">let</span> <span class="nv">y</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Website visit&quot;</span><span class="o">;</span> <span class="s">&quot;Downloads&quot;</span><span class="o">;</span> <span class="s">&quot;Potential customers&quot;</span><span class="o">;</span> <span class="s">&quot;Requested price&quot;</span><span class="o">;</span> <span class="s">&quot;invoice sent&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="o">[</span><span class="mi">39</span><span class="o">.;</span> <span class="mi">27</span><span class="o">.</span><span class="mi">4</span><span class="o">;</span> <span class="mi">20</span><span class="o">.</span><span class="mi">6</span><span class="o">;</span> <span class="mi">11</span><span class="o">.;</span> <span class="mi">2</span><span class="o">.]</span>
+
+<span class="k">let</span> <span class="nv">colors</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;deepskyblue&quot;</span><span class="o">;</span><span class="s">&quot;lightsalmon&quot;</span><span class="o">;</span> <span class="s">&quot;tan&quot;</span><span class="o">;</span> <span class="s">&quot;teal&quot;</span><span class="o">;</span> <span class="s">&quot;silver&quot;</span><span class="o">]</span>
+                <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="n">c</span><span class="o">)</span>
+                <span class="o">|&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromColors</span>
+
+<span class="k">let</span> <span class="nv">lineColors</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;wheat&quot;</span><span class="o">;</span><span class="s">&quot;wheat&quot;</span><span class="o">;</span> <span class="s">&quot;blue&quot;</span><span class="o">;</span> <span class="s">&quot;wheat&quot;</span><span class="o">;</span> <span class="s">&quot;wheat&quot;</span><span class="o">]</span>
+                    <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="n">c</span><span class="o">)</span>
+                    <span class="o">|&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromColors</span>
+
+<span class="k">let</span> <span class="nv">connector</span> <span class="o">=</span>
+    <span class="nn">FunnelConnector</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span>
+        <span class="n">Line</span> <span class="o">=</span> <span class="nn">Line</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Color</span> <span class="o">=</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;royalblue&quot;</span><span class="o">,</span> <span class="n">Dash</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">DrawingStyle</span><span class="p">.</span><span class="n">Dash</span><span class="o">,</span> <span class="n">Width</span> <span class="o">=</span> <span class="mi">3</span><span class="o">.)</span>
+    <span class="o">)</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Funnel</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">TextPosition</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">TextPosition</span><span class="p">.</span><span class="n">Inside</span><span class="o">,</span> <span class="n">Opacity</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.</span><span class="mi">65</span><span class="o">,</span> <span class="n">Connector</span> <span class="o">=</span> <span class="n">connector</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span>
+    <span class="o">(</span><span class="k">fun</span> <span class="n">t</span> <span class="o">-&gt;</span>
+        <span class="n">t</span><span class="o">?</span><span class="n">textinfo</span> <span class="o">&lt;-</span> <span class="s">&quot;value+percent initial&quot;</span>
+        <span class="n">t</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarkerStyle</span> <span class="o">(</span><span class="n">Color</span> <span class="o">=</span> <span class="n">colors</span><span class="o">,</span> <span class="n">Outline</span> <span class="o">=</span> <span class="nn">Line</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Color</span> <span class="o">=</span> <span class="n">lineColors</span><span class="o">,</span> <span class="n">Width</span> <span class="o">=</span> <span class="mi">3</span><span class="o">.))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="f4558afc-221f-481f-8208-1ecbf62d3794" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_f4558afc221f481f82081ecbf62d3794 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-2.4.2.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"funnel","x":[39.0,27.4,20.6,11.0,2.0],"y":["Website visit","Downloads","Potential customers","Requested price","invoice sent"],"connector":{"line":{"color":"royalblue","width":3.0,"dash":"dash"}},"opacity":0.65,"marker":{"color":["deepskyblue","lightsalmon","tan","teal","silver"],"line":{"color":["wheat","wheat","blue","wheat","wheat"],"width":3.0}},"textposition":"inside","textinfo":"value+percent initial"}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('f4558afc-221f-481f-8208-1ecbf62d3794', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_f4558afc221f481f82081ecbf62d3794();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_f4558afc221f481f82081ecbf62d3794();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Stacked-Funnel-Plot">Stacked Funnel Plot<a class="anchor-link" href="#Stacked-Funnel-Plot">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">y</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Website visit&quot;</span><span class="o">;</span> <span class="s">&quot;Downloads&quot;</span><span class="o">;</span> <span class="s">&quot;Potential customers&quot;</span><span class="o">;</span> <span class="s">&quot;Requested price&quot;</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">chart1</span> <span class="o">=</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">Funnel</span><span class="o">([</span><span class="mi">120</span><span class="o">;</span> <span class="mi">60</span><span class="o">;</span> <span class="mi">30</span><span class="o">;</span> <span class="mi">20</span><span class="o">],</span><span class="n">y</span><span class="o">,</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;Montreal&quot;</span><span class="o">)</span>
+                <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="k">fun</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">?</span><span class="n">textinfo</span> <span class="o">&lt;-</span> <span class="s">&quot;value+percent initial&quot;</span><span class="o">;</span><span class="n">t</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">chart2</span> <span class="o">=</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">Funnel</span><span class="o">(</span>
+                    <span class="o">[</span> <span class="mi">100</span><span class="o">;</span> <span class="mi">60</span><span class="o">;</span> <span class="mi">40</span><span class="o">;</span> <span class="mi">30</span><span class="o">;</span> <span class="mi">20</span> <span class="o">],</span>
+                    <span class="n">y</span><span class="o">,</span>
+                    <span class="n">TextPosition</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">TextPosition</span><span class="p">.</span><span class="n">Inside</span><span class="o">,</span>
+                    <span class="n">Orientation</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">Horizontal</span><span class="o">,</span>
+                    <span class="n">Name</span> <span class="o">=</span> <span class="s">&quot;Toronto&quot;</span>
+                <span class="o">)|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="k">fun</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">?</span><span class="n">textinfo</span> <span class="o">&lt;-</span> <span class="s">&quot;value+percent previous&quot;</span><span class="o">;</span><span class="n">t</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">final</span> <span class="o">=</span> <span class="n">y</span><span class="o">@</span> <span class="o">[</span><span class="s">&quot;Finalized&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">chart3</span> <span class="o">=</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">Funnel</span><span class="o">(</span>
+                    <span class="o">[</span> <span class="mi">90</span><span class="o">;</span> <span class="mi">70</span><span class="o">;</span> <span class="mi">50</span><span class="o">;</span> <span class="mi">30</span><span class="o">;</span> <span class="mi">10</span><span class="o">;</span> <span class="mi">5</span><span class="o">],</span>
+                    <span class="n">final</span><span class="o">,</span>
+                    <span class="n">TextPosition</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">TextPosition</span><span class="p">.</span><span class="n">Outside</span><span class="o">,</span>
+                    <span class="n">Orientation</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Orientation</span><span class="p">.</span><span class="n">Horizontal</span><span class="o">,</span>
+                    <span class="n">Name</span> <span class="o">=</span> <span class="s">&quot;Vancouver&quot;</span>
+                <span class="o">)</span> <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="k">fun</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">?</span><span class="n">textinfo</span> <span class="o">&lt;-</span> <span class="s">&quot;value+percent total&quot;</span><span class="o">;</span><span class="n">t</span><span class="o">)</span>
+
+<span class="o">[</span><span class="n">chart1</span><span class="o">;</span><span class="n">chart2</span><span class="o">;</span><span class="n">chart3</span><span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarginSize</span><span class="o">(</span><span class="n">Left</span><span class="o">=</span><span class="mi">150</span><span class="o">.)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withSize</span><span class="o">(</span><span class="n">Width</span><span class="o">=</span><span class="mi">800</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span><span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">PlotBGColor</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;#e5ecf6&quot;</span><span class="o">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="e81baad7-566d-44a0-a3ea-374fbceed9a6" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_e81baad7566d44a0a3ea374fbceed9a6 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-2.4.2.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"funnel","x":[120,60,30,20],"y":["Website visit","Downloads","Potential customers","Requested price"],"name":"Montreal","marker":{},"textinfo":"value+percent initial"},{"type":"funnel","x":[100,60,40,30,20],"y":["Website visit","Downloads","Potential customers","Requested price"],"orientation":"h","name":"Toronto","marker":{},"textposition":"inside","textinfo":"value+percent previous"},{"type":"funnel","x":[90,70,50,30,10,5],"y":["Website visit","Downloads","Potential customers","Requested price","Finalized"],"orientation":"h","name":"Vancouver","marker":{},"textposition":"outside","textinfo":"value+percent total"}];
+            var layout = {"margin":{"l":150.0},"width":800,"plot_bgcolor":"#e5ecf6"};
+            var config = {};
+            Plotly.newPlot('e81baad7-566d-44a0-a3ea-374fbceed9a6', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_e81baad7566d44a0a3ea374fbceed9a6();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_e81baad7566d44a0a3ea374fbceed9a6();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Basic-Area-Funnel-Plot">Basic Area Funnel Plot<a class="anchor-link" href="#Basic-Area-Funnel-Plot">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">FunnelArea</span><span class="o">(</span><span class="n">Text</span><span class="o">=[</span><span class="s">&quot;The 1st&quot;</span><span class="o">;</span><span class="s">&quot;The 2nd&quot;</span><span class="o">;</span> <span class="s">&quot;The 3rd&quot;</span><span class="o">;</span> <span class="s">&quot;The 4th&quot;</span><span class="o">;</span> <span class="s">&quot;The 5th&quot;</span><span class="o">],</span><span class="n">Values</span><span class="o">=[</span><span class="mi">5</span><span class="o">;</span> <span class="mi">4</span><span class="o">;</span> <span class="mi">3</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">1</span><span class="o">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="f22cb862-f732-4869-96ce-60a154207d55" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_f22cb862f732486996ce60a154207d55 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-2.4.2.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"funnelarea","values":[5,4,3,2,1],"marker":{},"domain":{},"text":["The 1st","The 2nd","The 3rd","The 4th","The 5th"]}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('f22cb862-f732-4869-96ce-60a154207d55', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_f22cb862f732486996ce60a154207d55();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_f22cb862f732486996ce60a154207d55();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Set-Marker-Size-and-Color-in-Area-Funnel-Plots">Set Marker Size and Color in Area Funnel Plots<a class="anchor-link" href="#Set-Marker-Size-and-Color-in-Area-Funnel-Plots">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">colors</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;deepskyblue&quot;</span><span class="o">;</span><span class="s">&quot;lightsalmon&quot;</span><span class="o">;</span> <span class="s">&quot;tan&quot;</span><span class="o">;</span> <span class="s">&quot;teal&quot;</span><span class="o">;</span> <span class="s">&quot;silver&quot;</span><span class="o">]</span>
+                <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="n">c</span><span class="o">)</span>
+                
+<span class="k">let</span> <span class="nv">lineColors</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;wheat&quot;</span><span class="o">;</span><span class="s">&quot;wheat&quot;</span><span class="o">;</span> <span class="s">&quot;blue&quot;</span><span class="o">;</span> <span class="s">&quot;wheat&quot;</span><span class="o">;</span> <span class="s">&quot;wheat&quot;</span><span class="o">]</span>
+                    <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="n">c</span><span class="o">)</span>
+                    <span class="o">|&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromColors</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">FunnelArea</span><span class="o">(</span>
+    <span class="n">Text</span> <span class="o">=</span>
+        <span class="o">[</span> <span class="s">&quot;The 1st&quot;</span>
+          <span class="s">&quot;The 2nd&quot;</span>
+          <span class="s">&quot;The 3rd&quot;</span>
+          <span class="s">&quot;The 4th&quot;</span>
+          <span class="s">&quot;The 5th&quot;</span> <span class="o">],</span>
+    <span class="n">Values</span> <span class="o">=</span> <span class="o">[</span> <span class="mi">5</span><span class="o">;</span> <span class="mi">4</span><span class="o">;</span> <span class="mi">3</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">1</span> <span class="o">],</span>
+    <span class="n">Insidetextfont</span> <span class="o">=</span>
+        <span class="nn">Font</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Family</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">FontFamily</span><span class="p">.</span><span class="n">Old_Standard_TT</span><span class="o">,</span> <span class="n">Size</span> <span class="o">=</span> <span class="mi">13</span><span class="o">.,</span> <span class="n">Color</span> <span class="o">=</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;black&quot;</span><span class="o">),</span>
+    <span class="n">Opacity</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.</span><span class="mi">65</span>
+<span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarkerStyle</span> <span class="o">(</span><span class="n">Colors</span> <span class="o">=</span> <span class="n">colors</span><span class="o">,</span> <span class="n">Outline</span> <span class="o">=</span> <span class="nn">Line</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Color</span> <span class="o">=</span> <span class="n">lineColors</span><span class="o">,</span> <span class="n">Width</span> <span class="o">=</span> <span class="mi">4</span><span class="o">.))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[6]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="88b3b84d-b6df-4049-8a99-e4f790c60759" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_88b3b84db6df40498a99e4f790c60759 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-2.4.2.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"funnelarea","values":[5,4,3,2,1],"insidetextfont":{"family":"Old Standard TT","size":13.0,"color":"black"},"opacity":0.65,"marker":{"colors":["deepskyblue","lightsalmon","tan","teal","silver"],"line":{"color":["wheat","wheat","blue","wheat","wheat"],"width":4.0}},"domain":{},"text":["The 1st","The 2nd","The 3rd","The 4th","The 5th"]}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('88b3b84d-b6df-4049-8a99-e4f790c60759', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_88b3b84db6df40498a99e4f790c60759();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_88b3b84db6df40498a99e4f790c60759();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}

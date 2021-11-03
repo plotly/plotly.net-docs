@@ -1,0 +1,1370 @@
+---
+description: How to make Bar Charts in F# with Plotly.
+display_as: basic
+language: fsharp
+layout: base
+name: Bar Charts
+order: 3
+page_type: example_index
+permalink: fsharp/bar-charts/
+thumbnail: thumbnail/bar.jpg
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET,  2.0.0-preview.8&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive,  2.0.0-preview.8&quot;</span>
+<span class="k">open</span> <span class="nn">Plotly.NET</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-3178.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '3178.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>Plotly.NET, 2.0.0-preview.8</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.8</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Basic-Bar-Chart">Basic Bar Chart<a class="anchor-link" href="#Basic-Bar-Chart">&#182;</a></h1><p>you can use F# arrays to construct your bar charts</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">animals</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;giraffes&quot;</span><span class="o">;</span> <span class="s">&quot;orangutans&quot;</span><span class="o">;</span> <span class="s">&quot;monkeys&quot;</span><span class="o">];</span>
+<span class="k">let</span> <span class="nv">sfValues</span> <span class="o">=</span> <span class="o">[</span><span class="mi">20</span><span class="o">;</span> <span class="mi">14</span><span class="o">;</span> <span class="mi">23</span><span class="o">]</span>
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span> <span class="o">(</span><span class="n">animals</span><span class="o">,</span> <span class="n">sfValues</span><span class="o">);</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="5bc05a93-4822-450e-8322-257dddc2be28" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_5bc05a934822450e8322257dddc2be28 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":["giraffes","orangutans","monkeys"],"y":[20,14,23],"marker":{}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('5bc05a93-4822-450e-8322-257dddc2be28', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_5bc05a934822450e8322257dddc2be28();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_5bc05a934822450e8322257dddc2be28();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Grouped-Bar-Chart">Grouped Bar Chart<a class="anchor-link" href="#Grouped-Bar-Chart">&#182;</a></h1><p>Chart.combine for grouping the charts</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">animals</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;giraffes&quot;</span><span class="o">;</span> <span class="s">&quot;orangutans&quot;</span><span class="o">;</span> <span class="s">&quot;monkeys&quot;</span><span class="o">];</span>
+<span class="k">let</span> <span class="nv">sfValues</span> <span class="o">=</span> <span class="o">[</span><span class="mi">20</span><span class="o">;</span> <span class="mi">14</span><span class="o">;</span> <span class="mi">23</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">laValues</span> <span class="o">=</span> <span class="o">[</span><span class="mi">12</span><span class="o">;</span> <span class="mi">18</span><span class="o">;</span> <span class="mi">29</span><span class="o">]</span>
+
+<span class="o">[</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span> <span class="o">(</span><span class="n">animals</span><span class="o">,</span> <span class="n">sfValues</span><span class="o">,</span> <span class="n">Name</span><span class="o">=</span><span class="s">&quot;SF Zoo&quot;</span><span class="o">);</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span> <span class="o">(</span><span class="n">animals</span><span class="o">,</span> <span class="n">laValues</span><span class="o">,</span> <span class="n">Name</span><span class="o">=</span><span class="s">&quot;LA Zoo&quot;</span><span class="o">)</span>
+<span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="f6f70d41-c9e3-454a-b121-8165fff28dec" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_f6f70d41c9e3454ab1218165fff28dec = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":["giraffes","orangutans","monkeys"],"y":[20,14,23],"marker":{},"name":"SF Zoo"},{"type":"bar","x":["giraffes","orangutans","monkeys"],"y":[12,18,29],"marker":{},"name":"LA Zoo"}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('f6f70d41-c9e3-454a-b121-8165fff28dec', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_f6f70d41c9e3454ab1218165fff28dec();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_f6f70d41c9e3454ab1218165fff28dec();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Stacked-Bar-Chart">Stacked Bar Chart<a class="anchor-link" href="#Stacked-Bar-Chart">&#182;</a></h1><p>Chart.StackedColumn for constructing stacked bars as shown below</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">animals</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;giraffes&quot;</span><span class="o">;</span> <span class="s">&quot;orangutans&quot;</span><span class="o">;</span> <span class="s">&quot;monkeys&quot;</span><span class="o">];</span>
+<span class="k">let</span> <span class="nv">sfValues</span> <span class="o">=</span> <span class="o">[</span><span class="mi">20</span><span class="o">;</span> <span class="mi">14</span><span class="o">;</span> <span class="mi">23</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">laValues</span> <span class="o">=</span> <span class="o">[</span><span class="mi">12</span><span class="o">;</span> <span class="mi">18</span><span class="o">;</span> <span class="mi">29</span><span class="o">]</span>
+
+<span class="o">[</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">StackedColumn</span> <span class="o">(</span><span class="n">animals</span><span class="o">,</span> <span class="n">sfValues</span><span class="o">,</span> <span class="n">Name</span><span class="o">=</span><span class="s">&quot;SF Zoo&quot;</span><span class="o">);</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">StackedColumn</span> <span class="o">(</span><span class="n">animals</span><span class="o">,</span> <span class="n">laValues</span><span class="o">,</span> <span class="n">Name</span><span class="o">=</span><span class="s">&quot;LA Zoo&quot;</span><span class="o">)</span>
+<span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="46996810-cc4e-4fe2-8589-5abf76816e65" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_46996810cc4e4fe285895abf76816e65 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":["giraffes","orangutans","monkeys"],"y":[20,14,23],"marker":{},"name":"SF Zoo"},{"type":"bar","x":["giraffes","orangutans","monkeys"],"y":[12,18,29],"marker":{},"name":"LA Zoo"}];
+            var layout = {"barmode":"stack"};
+            var config = {};
+            Plotly.newPlot('46996810-cc4e-4fe2-8589-5abf76816e65', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_46996810cc4e4fe285895abf76816e65();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_46996810cc4e4fe285895abf76816e65();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Bar-Chart-with-Hover-Text">Bar Chart with Hover Text<a class="anchor-link" href="#Bar-Chart-with-Hover-Text">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+
+<span class="k">let</span> <span class="nv">products</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Product A&quot;</span><span class="o">;</span> <span class="s">&quot;Product B&quot;</span><span class="o">;</span> <span class="s">&quot;Product C&quot;</span><span class="o">];</span>
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;27% market share&quot;</span><span class="o">;</span> <span class="s">&quot;24% market share&quot;</span><span class="o">;</span> <span class="s">&quot;19% market share&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">sfValues</span> <span class="o">=</span> <span class="o">[</span><span class="mi">20</span><span class="o">;</span> <span class="mi">14</span><span class="o">;</span> <span class="mi">23</span><span class="o">]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span> <span class="o">(</span>
+    <span class="n">products</span><span class="o">,</span>
+    <span class="n">sfValues</span><span class="o">,</span>
+    <span class="n">Labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span>
+    <span class="n">Opacity</span><span class="o">=</span><span class="mi">0</span><span class="o">.</span><span class="mi">6</span>
+<span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarker</span> <span class="o">(</span>
+    <span class="nn">Marker</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span>
+        <span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgb(158,202,225)&quot;</span><span class="o">,</span> 
+        <span class="n">Line</span><span class="o">=</span><span class="nn">Line</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Width</span><span class="o">=</span><span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span> <span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgb(8,48,107)&quot;</span><span class="o">)</span>
+    <span class="o">)</span>
+<span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withTitle</span> <span class="o">(</span><span class="s">&quot;January 2013 Sales Report&quot;</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="bc1de4fa-6f4c-49a0-975c-762810078769" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_bc1de4fa6f4c49a0975c762810078769 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":["Product A","Product B","Product C"],"y":[20,14,23],"marker":{"color":"rgb(158,202,225)","line":{"color":"rgb(8,48,107)","width":1.5}},"opacity":0.6,"text":["27% market share","24% market share","19% market share"]}];
+            var layout = {"title":{"text":"January 2013 Sales Report"}};
+            var config = {};
+            Plotly.newPlot('bc1de4fa-6f4c-49a0-975c-762810078769', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_bc1de4fa6f4c49a0975c762810078769();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_bc1de4fa6f4c49a0975c762810078769();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Bar-Chart-with-Direct-Labels">Bar Chart with Direct Labels<a class="anchor-link" href="#Bar-Chart-with-Direct-Labels">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">products</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Product A&quot;</span><span class="o">;</span> <span class="s">&quot;Product B&quot;</span><span class="o">;</span> <span class="s">&quot;Product C&quot;</span><span class="o">];</span>
+<span class="k">let</span> <span class="nv">sfValues</span> <span class="o">=</span> <span class="o">[</span><span class="mi">20</span><span class="o">;</span> <span class="mi">14</span><span class="o">;</span> <span class="mi">23</span><span class="o">]</span>
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span> <span class="o">(</span>    <span class="n">products</span><span class="o">,</span>
+    <span class="n">sfValues</span><span class="o">,</span>
+    <span class="n">Labels</span><span class="o">=</span> <span class="n">sfValues</span><span class="o">,</span>
+    <span class="n">TextPosition</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">TextPosition</span><span class="p">.</span><span class="n">Auto</span>
+<span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[6]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="19313241-269f-4f5f-b09d-4631508e4013" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_19313241269f4f5fb09d4631508e4013 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":["Product A","Product B","Product C"],"y":[20,14,23],"marker":{},"text":[20,14,23],"textposition":"auto"}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('19313241-269f-4f5f-b09d-4631508e4013', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_19313241269f4f5fb09d4631508e4013();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_19313241269f4f5fb09d4631508e4013();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Rotated-Bar-Chart-Labels">Rotated Bar Chart Labels<a class="anchor-link" href="#Rotated-Bar-Chart-Labels">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.LayoutObjects</span>
+
+<span class="k">let</span> <span class="nv">months</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Jan&quot;</span><span class="o">;</span> <span class="s">&quot;Feb&quot;</span><span class="o">;</span> <span class="s">&quot;Mar&quot;</span><span class="o">;</span> <span class="s">&quot;Apr&quot;</span><span class="o">;</span> <span class="s">&quot;May&quot;</span><span class="o">;</span> <span class="s">&quot;Jun&quot;</span><span class="o">;</span>
+              <span class="s">&quot;Jul&quot;</span><span class="o">;</span> <span class="s">&quot;Aug&quot;</span><span class="o">;</span> <span class="s">&quot;Sep&quot;</span><span class="o">;</span> <span class="s">&quot;Oct&quot;</span><span class="o">;</span> <span class="s">&quot;Nov&quot;</span><span class="o">;</span> <span class="s">&quot;Dec&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">primaryProduct</span> <span class="o">=</span> <span class="o">[</span><span class="mi">20</span><span class="o">;</span> <span class="mi">14</span><span class="o">;</span> <span class="mi">25</span><span class="o">;</span> <span class="mi">16</span><span class="o">;</span> <span class="mi">18</span><span class="o">;</span> <span class="mi">22</span><span class="o">;</span> <span class="mi">19</span><span class="o">;</span> <span class="mi">15</span><span class="o">;</span> <span class="mi">12</span><span class="o">;</span> <span class="mi">16</span><span class="o">;</span> <span class="mi">14</span><span class="o">;</span> <span class="mi">17</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">secondProduct</span> <span class="o">=</span> <span class="o">[</span><span class="mi">19</span><span class="o">;</span> <span class="mi">14</span><span class="o">;</span> <span class="mi">22</span><span class="o">;</span> <span class="mi">14</span><span class="o">;</span> <span class="mi">16</span><span class="o">;</span> <span class="mi">19</span><span class="o">;</span> <span class="mi">15</span><span class="o">;</span> <span class="mi">14</span><span class="o">;</span> <span class="mi">10</span><span class="o">;</span> <span class="mi">12</span><span class="o">;</span> <span class="mi">12</span><span class="o">;</span> <span class="mi">16</span><span class="o">]</span>
+
+<span class="o">[</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span> <span class="o">(</span><span class="n">months</span><span class="o">,</span> <span class="n">primaryProduct</span><span class="o">,</span> <span class="n">Name</span><span class="o">=</span><span class="s">&quot;Primary Product&quot;</span><span class="o">)</span>
+    <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarker</span> <span class="o">(</span><span class="nn">Marker</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;indianred&quot;</span><span class="o">));</span>
+
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span> <span class="o">(</span><span class="n">months</span><span class="o">,</span> <span class="n">secondProduct</span><span class="o">,</span> <span class="n">Name</span><span class="o">=</span><span class="s">&quot;Second Product&quot;</span><span class="o">)</span>
+    <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarker</span> <span class="o">(</span><span class="nn">Marker</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;lightSalmon&quot;</span><span class="o">))</span>
+<span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withXAxis</span><span class="o">(</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">TickAngle</span><span class="o">=</span> <span class="o">-</span><span class="mi">45</span><span class="o">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[7]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="3772d375-4581-49a8-bbf6-5dbbb677e490" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_3772d375458149a8bbf65dbbb677e490 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"y":[20,14,25,16,18,22,19,15,12,16,14,17],"marker":{"color":"indianred"},"name":"Primary Product"},{"type":"bar","x":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"y":[19,14,22,14,16,19,15,14,10,12,12,16],"marker":{"color":"lightSalmon"},"name":"Second Product"}];
+            var layout = {"xaxis":{"tickangle":-45}};
+            var config = {};
+            Plotly.newPlot('3772d375-4581-49a8-bbf6-5dbbb677e490', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_3772d375458149a8bbf65dbbb677e490();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_3772d375458149a8bbf65dbbb677e490();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Customizing-Individual-Bar-Colors">Customizing Individual Bar Colors<a class="anchor-link" href="#Customizing-Individual-Bar-Colors">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+
+<span class="k">let</span> <span class="nv">featureKeys</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Feature A&quot;</span><span class="o">;</span> <span class="s">&quot;Feature B&quot;</span><span class="o">;</span> <span class="s">&quot;Feature C&quot;</span><span class="o">;</span>
+                   <span class="s">&quot;Feature D&quot;</span><span class="o">;</span> <span class="s">&quot;Feature E&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">featureValues</span> <span class="o">=</span> <span class="o">[</span><span class="mi">20</span><span class="o">;</span> <span class="mi">14</span><span class="o">;</span> <span class="mi">23</span><span class="o">;</span> <span class="mi">25</span><span class="o">;</span> <span class="mi">22</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">colors</span> <span class="o">=</span> 
+    <span class="o">[</span><span class="mi">1</span><span class="o">..</span><span class="mi">5</span><span class="o">]</span>
+    <span class="o">|&gt;</span> <span class="nn">List</span><span class="p">.</span><span class="n">mapi</span> <span class="o">(</span><span class="k">fun</span> <span class="n">i</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">then</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;crimson&quot;</span> <span class="k">else</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;lightslategray&quot;</span> <span class="o">)</span>
+    <span class="o">|&gt;</span> <span class="nn">List</span><span class="p">.</span><span class="n">toSeq</span>
+
+<span class="k">let</span> <span class="nv">marker</span> <span class="o">=</span> <span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Colors</span> <span class="o">=</span> <span class="n">colors</span><span class="o">);</span>
+<span class="n">marker</span><span class="o">?</span><span class="n">color</span><span class="o">&lt;-</span><span class="n">colors</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span> <span class="o">(</span><span class="n">featureKeys</span><span class="o">,</span> <span class="n">featureValues</span><span class="o">,</span> <span class="n">Marker</span><span class="o">=</span><span class="n">marker</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[8]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="6896fca8-c7c7-4630-9830-05d45f4f3493" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_6896fca8c7c74630983005d45f4f3493 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":["Feature A","Feature B","Feature C","Feature D","Feature E"],"y":[20,14,23,25,22],"marker":{"color":["lightslategray","crimson","lightslategray","lightslategray","lightslategray"]}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('6896fca8-c7c7-4630-9830-05d45f4f3493', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_6896fca8c7c74630983005d45f4f3493();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_6896fca8c7c74630983005d45f4f3493();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Customizing-Individual-Bar-Widths">Customizing Individual Bar Widths<a class="anchor-link" href="#Customizing-Individual-Bar-Widths">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">featureKeys</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="o">.;</span> <span class="mi">2</span><span class="o">.;</span> <span class="mi">3</span><span class="o">.;</span> <span class="mi">5</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">10</span><span class="o">.]</span>
+<span class="k">let</span> <span class="nv">featureValues</span> <span class="o">=</span> <span class="o">[</span><span class="mi">10</span><span class="o">;</span> <span class="mi">8</span><span class="o">;</span> <span class="mi">6</span><span class="o">;</span> <span class="mi">4</span><span class="o">;</span> <span class="mi">2</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">width</span> <span class="o">=</span> <span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="mi">8</span><span class="o">;</span> <span class="mi">0</span><span class="o">.</span><span class="mi">8</span><span class="o">;</span> <span class="mi">0</span><span class="o">.</span><span class="mi">8</span><span class="o">;</span> <span class="mi">3</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">4</span><span class="o">.]</span>
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span> <span class="o">(</span><span class="n">featureKeys</span><span class="o">,</span> 
+              <span class="n">featureValues</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarker</span><span class="o">(</span><span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">MultiSizes</span><span class="o">=</span> <span class="n">width</span><span class="o">))</span>
+
+<span class="c1">//|&gt; Chart.withLineStyle(Width = width) Doesnt accept float list</span>
+
+<span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="k">fun</span> <span class="n">t</span><span class="o">-&gt;</span> 
+                                <span class="n">t</span><span class="o">?</span><span class="n">width</span><span class="o">&lt;-</span><span class="n">width</span><span class="o">;</span>
+                                <span class="n">t</span><span class="o">)</span>  <span class="c1">// workaround</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[9]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="a650db69-1dfe-4d7e-ae87-f6571a36d3ec" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_a650db691dfe4d7eae87f6571a36d3ec = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[1.0,2.0,3.0,5.5,10.0],"y":[10,8,6,4,2],"marker":{"size":[0.8,0.8,0.8,3.5,4.0]},"width":[0.8,0.8,0.8,3.5,4.0]}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('a650db69-1dfe-4d7e-ae87-f6571a36d3ec', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_a650db691dfe4d7eae87f6571a36d3ec();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_a650db691dfe4d7eae87f6571a36d3ec();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Bar charts with custom widths can be used to make mekko charts (also known as marimekko charts, mosaic plots, or variwide charts).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[|</span><span class="s">&quot;apples&quot;</span><span class="o">;</span> <span class="s">&quot;oranges&quot;</span><span class="o">;</span> <span class="s">&quot;pears&quot;</span><span class="o">;</span> <span class="s">&quot;bananas&quot;</span><span class="o">|]</span>
+<span class="k">let</span> <span class="nv">widths</span> <span class="o">=</span> <span class="o">[|</span><span class="mi">10</span><span class="o">.;</span> <span class="mi">20</span><span class="o">.;</span> <span class="mi">20</span><span class="o">.;</span> <span class="mi">50</span><span class="o">.|]</span>
+
+<span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> 
+   <span class="k">new</span> <span class="n">Map</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">,</span><span class="kt">float</span><span class="bp">[]</span><span class="o">&gt;([</span>
+        <span class="s">&quot;South&quot;</span><span class="o">,</span> <span class="o">[|</span><span class="mi">50</span><span class="o">.;</span><span class="mi">80</span><span class="o">.;</span><span class="mi">60</span><span class="o">.;</span><span class="mi">70</span><span class="o">.|]</span>
+        <span class="s">&quot;North&quot;</span><span class="o">,</span> <span class="o">[|</span><span class="mi">50</span><span class="o">.;</span> <span class="mi">20</span><span class="o">.;</span><span class="mi">40</span><span class="o">.;</span><span class="mi">30</span><span class="o">.|]]</span>
+   <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">cumSum</span> <span class="n">x</span><span class="o">=</span>
+   <span class="o">(</span><span class="nn">Array</span><span class="p">.</span><span class="n">scan</span> <span class="o">(+)</span> <span class="mi">0</span><span class="o">.</span> <span class="n">x</span><span class="o">).[</span><span class="mi">1</span><span class="o">..]</span>
+
+<span class="k">let</span> <span class="nv">tickVals</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">map2</span> <span class="o">(</span><span class="k">fun</span> <span class="n">x</span> <span class="n">y</span><span class="o">-&gt;</span> <span class="n">x</span><span class="o">-</span><span class="n">y</span><span class="o">/</span><span class="mi">2</span><span class="o">.)</span> <span class="o">(</span><span class="n">cumSum</span><span class="o">(</span><span class="n">widths</span><span class="o">))</span> <span class="n">widths</span>
+<span class="k">let</span> <span class="nv">ticks</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">map2</span> <span class="o">(</span><span class="k">fun</span> <span class="n">l</span> <span class="n">w</span> <span class="o">-&gt;</span> <span class="o">$</span><span class="s">&quot;{l} &lt;br&gt; {w}&quot;</span><span class="o">)</span> <span class="n">labels</span> <span class="n">widths</span>
+<span class="k">let</span> <span class="nv">textLabels</span> <span class="n">key</span><span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">map2</span> <span class="o">(</span><span class="k">fun</span> <span class="n">h</span> <span class="n">w</span> <span class="o">-&gt;</span> <span class="o">$</span><span class="s">&quot;{h} x {w} = &lt;br&gt;&quot;</span><span class="o">+</span> <span class="kt">string</span> <span class="o">(</span><span class="n">h</span><span class="o">*</span><span class="n">w</span><span class="o">))</span>  <span class="n">data</span><span class="o">.[</span><span class="n">key</span><span class="o">]</span> <span class="n">widths</span>
+
+<span class="o">[</span> 
+   <span class="k">for</span> <span class="n">kvp</span> <span class="k">in</span> <span class="n">data</span> <span class="o">-&gt;</span>               
+               <span class="k">let</span> <span class="nv">keys</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">map2</span> <span class="o">(</span><span class="k">fun</span> <span class="n">x</span> <span class="n">y</span><span class="o">-&gt;</span> <span class="n">x</span><span class="o">-</span><span class="n">y</span><span class="o">)</span> <span class="o">(</span><span class="n">cumSum</span><span class="o">(</span><span class="n">widths</span><span class="o">))</span> <span class="n">widths</span>
+               <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">values</span><span class="o">=</span><span class="n">kvp</span><span class="o">.</span><span class="n">Value</span><span class="o">,</span><span class="n">keys</span><span class="o">=</span><span class="n">keys</span><span class="o">,</span><span class="n">Marker</span><span class="o">=</span><span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Line</span><span class="o">=</span><span class="nn">Line</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Color</span><span class="o">=</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;white&quot;</span><span class="o">,</span><span class="n">Width</span><span class="o">=</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">)),</span><span class="n">Labels</span><span class="o">=</span><span class="n">textLabels</span> <span class="n">kvp</span><span class="o">.</span><span class="n">Key</span><span class="o">)</span>
+               <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="k">fun</span> <span class="n">t</span><span class="o">-&gt;</span> 
+                                                
+                                                <span class="n">t</span><span class="o">.</span><span class="n">SetValue</span><span class="o">(</span><span class="s">&quot;width&quot;</span><span class="o">,</span> <span class="n">widths</span><span class="o">)</span>
+                                                <span class="n">t</span><span class="o">.</span><span class="n">SetValue</span><span class="o">(</span><span class="s">&quot;offset&quot;</span><span class="o">,</span> <span class="mi">0</span><span class="o">.)</span>
+                                                <span class="n">t</span><span class="o">.</span><span class="n">SetValue</span><span class="o">(</span><span class="s">&quot;name&quot;</span><span class="o">,</span> <span class="n">kvp</span><span class="o">.</span><span class="n">Key</span><span class="o">)</span>
+                                                <span class="n">t</span><span class="o">.</span><span class="n">SetValue</span><span class="o">(</span><span class="s">&quot;textangle&quot;</span><span class="o">,</span> <span class="mi">0</span><span class="o">)</span>
+                                                <span class="n">t</span><span class="o">.</span><span class="n">SetValue</span><span class="o">(</span><span class="s">&quot;textposition&quot;</span><span class="o">,</span> <span class="s">&quot;inside&quot;</span><span class="o">)</span>
+                                                <span class="n">t</span><span class="o">)</span>  <span class="c1">// workaround </span>
+<span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span><span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">BarMode</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">BarMode</span><span class="p">.</span><span class="n">Stack</span><span class="o">))</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withXAxis</span><span class="o">(</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">TickVals</span><span class="o">=</span><span class="n">tickVals</span><span class="o">,</span><span class="n">TickText</span><span class="o">=</span><span class="n">ticks</span><span class="o">,</span><span class="n">ShowGrid</span><span class="o">=</span><span class="k">true</span><span class="o">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[10]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="6607429e-fdfa-4076-861b-f03f5d7da706" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_6607429efdfa4076861bf03f5d7da706 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[0.0,10.0,30.0,50.0],"y":[50.0,20.0,40.0,30.0],"marker":{"line":{"color":"white","width":0.5}},"text":["50 x 10 = <br>500","20 x 20 = <br>400","40 x 20 = <br>800","30 x 50 = <br>1500"],"width":[10.0,20.0,20.0,50.0],"offset":0.0,"name":"North","textangle":0,"textposition":"inside"},{"type":"bar","x":[0.0,10.0,30.0,50.0],"y":[50.0,80.0,60.0,70.0],"marker":{"line":{"color":"white","width":0.5}},"text":["50 x 10 = <br>500","80 x 20 = <br>1600","60 x 20 = <br>1200","70 x 50 = <br>3500"],"width":[10.0,20.0,20.0,50.0],"offset":0.0,"name":"South","textangle":0,"textposition":"inside"}];
+            var layout = {"barmode":"stack","xaxis":{"tickvals":[5.0,20.0,40.0,75.0],"ticktext":["apples <br> 10","oranges <br> 20","pears <br> 20","bananas <br> 50"],"showgrid":true}};
+            var config = {};
+            Plotly.newPlot('6607429e-fdfa-4076-861b-f03f5d7da706', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_6607429efdfa4076861bf03f5d7da706();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_6607429efdfa4076861bf03f5d7da706();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Customizing-Individual-Bar-Base">Customizing Individual Bar Base<a class="anchor-link" href="#Customizing-Individual-Bar-Base">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">years</span> <span class="o">=</span> <span class="o">[</span> <span class="s">&quot;2016&quot;</span><span class="o">;</span> <span class="s">&quot;2017&quot;</span><span class="o">;</span> <span class="s">&quot;2018&quot;</span> <span class="o">]</span>
+
+<span class="o">[</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">years</span><span class="o">,</span> <span class="o">[</span><span class="mi">500</span><span class="o">;</span> <span class="mi">600</span><span class="o">;</span> <span class="mi">700</span><span class="o">],</span> <span class="n">Name</span><span class="o">=</span><span class="s">&quot;expenses&quot;</span><span class="o">,</span> <span class="n">Marker</span><span class="o">=</span><span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;crimson&quot;</span><span class="o">))</span>
+        <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="k">fun</span> <span class="n">t</span><span class="o">-&gt;</span> 
+                        <span class="n">t</span><span class="o">.</span><span class="n">SetValue</span><span class="o">(</span><span class="s">&quot;base&quot;</span><span class="o">,[-</span><span class="mi">500</span><span class="o">;-</span><span class="mi">600</span><span class="o">;-</span><span class="mi">700</span><span class="o">])</span><span class="c1">// workaround</span>
+                        <span class="n">t</span><span class="o">)</span> 
+
+    <span class="o">;</span><span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">years</span><span class="o">,</span> <span class="o">[</span><span class="mi">300</span><span class="o">;</span> <span class="mi">400</span><span class="o">;</span> <span class="mi">700</span><span class="o">],</span> <span class="n">Name</span><span class="o">=</span><span class="s">&quot;revenue&quot;</span><span class="o">,</span> <span class="n">Marker</span><span class="o">=</span><span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;lightslategrey&quot;</span><span class="o">))</span>
+         <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="k">fun</span> <span class="n">t</span><span class="o">-&gt;</span> 
+                            <span class="n">t</span><span class="o">.</span><span class="n">SetValue</span><span class="o">(</span><span class="s">&quot;base&quot;</span><span class="o">,</span><span class="mi">0</span><span class="o">)</span>
+                            <span class="n">t</span><span class="o">)</span>  <span class="c1">// workaround</span>
+<span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[11]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="61c10406-19bb-48a0-85ca-bf905644f208" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_61c1040619bb48a085cabf905644f208 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":["2016","2017","2018"],"y":[500,600,700],"marker":{"color":"crimson"},"name":"expenses","base":[-500,-600,-700]},{"type":"bar","x":["2016","2017","2018"],"y":[300,400,700],"marker":{"color":"lightslategrey"},"name":"revenue","base":0}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('61c10406-19bb-48a0-85ca-bf905644f208', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_61c1040619bb48a085cabf905644f208();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_61c1040619bb48a085cabf905644f208();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Bar-Chart-with-Relative-Barmode">Bar Chart with Relative Barmode<a class="anchor-link" href="#Bar-Chart-with-Relative-Barmode">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>With "relative" barmode, the bars are stacked on top of one another, with negative values below the axis, positive values above.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">3</span><span class="o">;</span> <span class="mi">4</span><span class="o">]</span>
+
+<span class="o">[</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">keys</span><span class="o">=</span><span class="n">x</span><span class="o">,</span> <span class="n">values</span><span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="o">.;</span> <span class="mi">4</span><span class="o">.;</span> <span class="mi">9</span><span class="o">.;</span> <span class="mi">16</span><span class="o">.])</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">keys</span><span class="o">=</span><span class="n">x</span><span class="o">,</span> <span class="n">values</span><span class="o">=</span> <span class="o">[</span><span class="mi">6</span><span class="o">.;</span> <span class="o">-</span><span class="mi">8</span><span class="o">.;</span> <span class="o">-</span><span class="mi">4</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">8</span><span class="o">.])</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">keys</span><span class="o">=</span><span class="n">x</span><span class="o">,</span> <span class="n">values</span><span class="o">=</span> <span class="o">[-</span><span class="mi">15</span><span class="o">.;</span> <span class="o">-</span><span class="mi">3</span><span class="o">.;</span> <span class="mi">4</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="o">-</span><span class="mi">8</span><span class="o">.])</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">keys</span><span class="o">=</span><span class="n">x</span><span class="o">,</span> <span class="n">values</span><span class="o">=</span> <span class="o">[-</span><span class="mi">1</span><span class="o">.;</span> <span class="mi">3</span><span class="o">.;</span> <span class="o">-</span><span class="mi">3</span><span class="o">.;</span> <span class="o">-</span><span class="mi">4</span><span class="o">.])</span>
+<span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span><span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">BarMode</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">BarMode</span><span class="p">.</span><span class="n">Relative</span><span class="o">,</span><span class="n">Title</span><span class="o">=</span><span class="nn">Title</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="s">&quot;Relative BarMode&quot;</span><span class="o">)))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[12]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="891b1ea0-d474-408e-bfd0-ba2ea1c39858" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_891b1ea0d474408ebfd0ba2ea1c39858 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[1,2,3,4],"y":[1.0,4.0,9.0,16.0],"marker":{}},{"type":"bar","x":[1,2,3,4],"y":[6.0,-8.0,-4.5,8.0],"marker":{}},{"type":"bar","x":[1,2,3,4],"y":[-15.0,-3.0,4.5,-8.0],"marker":{}},{"type":"bar","x":[1,2,3,4],"y":[-1.0,3.0,-3.0,-4.0],"marker":{}}];
+            var layout = {"title":{"text":"Relative BarMode"},"barmode":"relative"};
+            var config = {};
+            Plotly.newPlot('891b1ea0-d474-408e-bfd0-ba2ea1c39858', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_891b1ea0d474408ebfd0ba2ea1c39858();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_891b1ea0d474408ebfd0ba2ea1c39858();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Bar-Chart-with-Sorted-or-Ordered-Categories">Bar Chart with Sorted or Ordered Categories<a class="anchor-link" href="#Bar-Chart-with-Sorted-or-Ordered-Categories">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Set CategoryOrder to CategoryOrder.CategoryAscending or CategoryDescending for the alphanumerical order of the category names or TotalAscending or TotalDescending for numerical order of values. CategoryOrder for more information. Note that sorting the bars by a particular trace isn"t possible right now - it"s only possible to sort by the total values. Of course, you can always sort your data before plotting it if you need more customization.</p>
+<p>This example orders the bar chart alphabetically with CategoryOrder= StyleParam.CategoryOrder.CategoryAscending</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="o">[</span><span class="sc">&#39;b&#39;</span><span class="o">;</span> <span class="sc">&#39;a&#39;</span><span class="o">;</span> <span class="sc">&#39;c&#39;</span><span class="o">;</span> <span class="sc">&#39;d&#39;</span><span class="o">]</span>
+
+<span class="o">[</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="o">[</span><span class="mi">2</span><span class="o">.;</span><span class="mi">5</span><span class="o">.;</span><span class="mi">1</span><span class="o">.;</span><span class="mi">9</span><span class="o">.],</span> <span class="n">Name</span> <span class="o">=</span> <span class="s">&quot;Montreal&quot;</span><span class="o">)</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="o">[</span><span class="mi">1</span><span class="o">.;</span><span class="mi">4</span><span class="o">.;</span><span class="mi">9</span><span class="o">.;</span><span class="mi">16</span><span class="o">.],</span> <span class="n">Name</span> <span class="o">=</span> <span class="s">&quot;Ottawa&quot;</span><span class="o">)</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="o">[</span><span class="mi">6</span><span class="o">.;</span><span class="mi">8</span><span class="o">.;</span><span class="mi">4</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span><span class="mi">8</span><span class="o">.],</span> <span class="n">Name</span> <span class="o">=</span> <span class="s">&quot;Toronto&quot;</span><span class="o">)</span>
+<span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span><span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">BarMode</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">BarMode</span><span class="p">.</span><span class="n">Stack</span><span class="o">))</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withXAxis</span><span class="o">(</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">CategoryOrder</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">CategoryOrder</span><span class="p">.</span><span class="n">CategoryAscending</span><span class="o">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[13]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="171e3d0a-c674-4e13-9ad1-b7eb32cdd45e" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_171e3d0ac6744e139ad1b7eb32cdd45e = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":["b","a","c","d"],"y":[2.0,5.0,1.0,9.0],"marker":{},"name":"Montreal"},{"type":"bar","x":["b","a","c","d"],"y":[1.0,4.0,9.0,16.0],"marker":{},"name":"Ottawa"},{"type":"bar","x":["b","a","c","d"],"y":[6.0,8.0,4.5,8.0],"marker":{},"name":"Toronto"}];
+            var layout = {"barmode":"stack","xaxis":{"categoryorder":"category ascending"}};
+            var config = {};
+            Plotly.newPlot('171e3d0a-c674-4e13-9ad1-b7eb32cdd45e', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_171e3d0ac6744e139ad1b7eb32cdd45e();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_171e3d0ac6744e139ad1b7eb32cdd45e();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This example shows how to customise sort ordering by defining CategoryOrder to StyleParam.CategoryOrder.Array to derive the ordering from the attribute CategoryArray.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="o">[</span><span class="sc">&#39;b&#39;</span><span class="o">;</span> <span class="sc">&#39;a&#39;</span><span class="o">;</span> <span class="sc">&#39;c&#39;</span><span class="o">;</span> <span class="sc">&#39;d&#39;</span><span class="o">]</span>
+
+<span class="o">[</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="o">[</span><span class="mi">2</span><span class="o">.;</span><span class="mi">5</span><span class="o">.;</span><span class="mi">1</span><span class="o">.;</span><span class="mi">9</span><span class="o">.],</span> <span class="n">Name</span> <span class="o">=</span> <span class="s">&quot;Montreal&quot;</span><span class="o">)</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="o">[</span><span class="mi">1</span><span class="o">.;</span><span class="mi">4</span><span class="o">.;</span><span class="mi">9</span><span class="o">.;</span><span class="mi">16</span><span class="o">.],</span> <span class="n">Name</span> <span class="o">=</span> <span class="s">&quot;Ottawa&quot;</span><span class="o">)</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="o">[</span><span class="mi">6</span><span class="o">.;</span><span class="mi">8</span><span class="o">.;</span><span class="mi">4</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span><span class="mi">8</span><span class="o">.],</span> <span class="n">Name</span> <span class="o">=</span> <span class="s">&quot;Toronto&quot;</span><span class="o">)</span>
+<span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span><span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">BarMode</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">BarMode</span><span class="p">.</span><span class="n">Stack</span><span class="o">))</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withXAxis</span><span class="o">(</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">CategoryOrder</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">CategoryOrder</span><span class="p">.</span><span class="n">Array</span><span class="o">,</span><span class="n">CategoryArray</span><span class="o">=[</span><span class="sc">&#39;d&#39;</span><span class="o">;</span><span class="sc">&#39;a&#39;</span><span class="o">;</span><span class="sc">&#39;c&#39;</span><span class="o">;</span><span class="sc">&#39;b&#39;</span><span class="o">]))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[14]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="dfc0203d-20cc-484b-abd9-28ec4d16c196" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_dfc0203d20cc484babd928ec4d16c196 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":["b","a","c","d"],"y":[2.0,5.0,1.0,9.0],"marker":{},"name":"Montreal"},{"type":"bar","x":["b","a","c","d"],"y":[1.0,4.0,9.0,16.0],"marker":{},"name":"Ottawa"},{"type":"bar","x":["b","a","c","d"],"y":[6.0,8.0,4.5,8.0],"marker":{},"name":"Toronto"}];
+            var layout = {"barmode":"stack","xaxis":{"categoryorder":"array","categoryarray":["d","a","c","b"]}};
+            var config = {};
+            Plotly.newPlot('dfc0203d-20cc-484b-abd9-28ec4d16c196', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_dfc0203d20cc484babd928ec4d16c196();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_dfc0203d20cc484babd928ec4d16c196();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>This example orders the bar chart by descending value with CategoryOrder=StyleParam.CategoryOrder.TotalDescending</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="o">[</span><span class="sc">&#39;b&#39;</span><span class="o">;</span> <span class="sc">&#39;a&#39;</span><span class="o">;</span> <span class="sc">&#39;c&#39;</span><span class="o">;</span> <span class="sc">&#39;d&#39;</span><span class="o">]</span>
+
+<span class="o">[</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="o">[</span><span class="mi">2</span><span class="o">.;</span><span class="mi">5</span><span class="o">.;</span><span class="mi">1</span><span class="o">.;</span><span class="mi">9</span><span class="o">.],</span> <span class="n">Name</span> <span class="o">=</span> <span class="s">&quot;Montreal&quot;</span><span class="o">)</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="o">[</span><span class="mi">1</span><span class="o">.;</span><span class="mi">4</span><span class="o">.;</span><span class="mi">9</span><span class="o">.;</span><span class="mi">16</span><span class="o">.],</span> <span class="n">Name</span> <span class="o">=</span> <span class="s">&quot;Ottawa&quot;</span><span class="o">)</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="o">[</span><span class="mi">6</span><span class="o">.;</span><span class="mi">8</span><span class="o">.;</span><span class="mi">4</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span><span class="mi">8</span><span class="o">.],</span> <span class="n">Name</span> <span class="o">=</span> <span class="s">&quot;Toronto&quot;</span><span class="o">)</span>
+<span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span><span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">BarMode</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">BarMode</span><span class="p">.</span><span class="n">Stack</span><span class="o">))</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withXAxis</span><span class="o">(</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">CategoryOrder</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">CategoryOrder</span><span class="p">.</span><span class="n">TotalDescending</span><span class="o">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[15]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="da0f0806-9b25-44db-a4fb-ddef533d4831" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_da0f08069b2544dba4fbddef533d4831 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":["b","a","c","d"],"y":[2.0,5.0,1.0,9.0],"marker":{},"name":"Montreal"},{"type":"bar","x":["b","a","c","d"],"y":[1.0,4.0,9.0,16.0],"marker":{},"name":"Ottawa"},{"type":"bar","x":["b","a","c","d"],"y":[6.0,8.0,4.5,8.0],"marker":{},"name":"Toronto"}];
+            var layout = {"barmode":"stack","xaxis":{"categoryorder":"total descending"}};
+            var config = {};
+            Plotly.newPlot('da0f0806-9b25-44db-a4fb-ddef533d4831', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_da0f08069b2544dba4fbddef533d4831();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_da0f08069b2544dba4fbddef533d4831();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Horizontal-Bar-Charts">Horizontal Bar Charts<a class="anchor-link" href="#Horizontal-Bar-Charts">&#182;</a></h1><p>See examples of horizontal bar charts here.</p>
+<h1 id="Bar-Charts-With-Multicategory-Axis-Type">Bar Charts With Multicategory Axis Type<a class="anchor-link" href="#Bar-Charts-With-Multicategory-Axis-Type">&#182;</a></h1><p>If your plots have arrays for x or y, then the axis type is automatically inferred to be multicategory.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">x</span> <span class="o">:</span><span class="n">Object</span> <span class="kt">list</span> <span class="o">=</span> <span class="o">[[</span><span class="s">&quot;BB+&quot;</span><span class="o">;</span> <span class="s">&quot;BB+&quot;</span><span class="o">;</span> <span class="s">&quot;BB+&quot;</span><span class="o">;</span> <span class="s">&quot;BB&quot;</span><span class="o">;</span> <span class="s">&quot;BB&quot;</span><span class="o">;</span> <span class="s">&quot;BB&quot;</span><span class="o">];[</span><span class="mi">16</span><span class="o">;</span> <span class="mi">17</span><span class="o">;</span> <span class="mi">18</span><span class="o">;</span> <span class="mi">16</span><span class="o">;</span> <span class="mi">17</span><span class="o">;</span> <span class="mi">18</span><span class="o">;]]</span>
+
+<span class="o">[</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">keys</span><span class="o">=</span><span class="bp">[]</span><span class="o">,</span> <span class="n">values</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="o">;</span><span class="mi">2</span><span class="o">;</span><span class="mi">3</span><span class="o">;</span><span class="mi">4</span><span class="o">;</span><span class="mi">5</span><span class="o">;</span><span class="mi">6</span><span class="o">])</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Column</span><span class="o">(</span><span class="n">keys</span><span class="o">=</span><span class="bp">[]</span><span class="o">,</span> <span class="n">values</span> <span class="o">=</span> <span class="o">[</span><span class="mi">6</span><span class="o">;</span><span class="mi">5</span><span class="o">;</span><span class="mi">4</span><span class="o">;</span><span class="mi">3</span><span class="o">;</span><span class="mi">2</span><span class="o">;</span><span class="mi">1</span><span class="o">])</span>
+<span class="o">]</span> 
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span> 
+<span class="c1">// |&gt; Chart.withX_Axis(Axis.LinearAxis.init(Tickvals = [&quot;BB+&quot;; &quot;BB+&quot;; &quot;BB+&quot;; &quot;BB&quot;; &quot;BB&quot;; &quot;BB&quot;]))</span>
+<span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="k">fun</span> <span class="n">t</span><span class="o">-&gt;</span> 
+                                <span class="n">t</span><span class="o">?</span><span class="n">x</span><span class="o">&lt;-</span><span class="n">x</span> <span class="c1">// workaround</span>
+                                <span class="n">t</span><span class="o">)</span> 
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span> <span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">BarMode</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">BarMode</span><span class="p">.</span><span class="n">Stack</span><span class="o">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[16]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="28790493-1c23-4111-a08e-0ebe5ded56d6" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_287904931c234111a08e0ebe5ded56d6 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[["BB+","BB+","BB+","BB","BB","BB"],[16,17,18,16,17,18]],"y":[1,2,3,4,5,6],"marker":{}},{"type":"bar","x":[["BB+","BB+","BB+","BB","BB","BB"],[16,17,18,16,17,18]],"y":[6,5,4,3,2,1],"marker":{}}];
+            var layout = {"barmode":"stack"};
+            var config = {};
+            Plotly.newPlot('28790493-1c23-4111-a08e-0ebe5ded56d6', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_287904931c234111a08e0ebe5ded56d6();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_287904931c234111a08e0ebe5ded56d6();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}

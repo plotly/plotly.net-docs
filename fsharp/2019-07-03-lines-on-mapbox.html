@@ -1,0 +1,362 @@
+---
+description: How to draw a line on Map in F# with Plotly.
+display_as: maps
+language: fsharp
+layout: base
+name: Lines on Mapbox
+order: 2
+page_type: u-guide
+permalink: fsharp/lines-on-mapbox/
+thumbnail: thumbnail/line_mapbox.jpg
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET,2.0.0-preview.8&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive,2.0.0-preview.8&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: FSharp.Data&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-7868.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '7868.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>FSharp.Data, 4.2.4</span></li><li><span>Plotly.NET, 2.0.0-preview.8</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.8</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Mapbox-Access-Token-and-Base-Map-Configuration">Mapbox Access Token and Base Map Configuration<a class="anchor-link" href="#Mapbox-Access-Token-and-Base-Map-Configuration">&#182;</a></h1><p>To plot on Mapbox maps with Plotly you may need a Mapbox account and a public <a href="url" target="https://www.mapbox.com/studio">Mapbox Access Token</a>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Lines-on-Mapbox-maps">Lines on Mapbox maps<a class="anchor-link" href="#Lines-on-Mapbox-maps">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">FSharp.Data</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.LayoutObjects</span>
+
+<span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="nn">CsvFile</span><span class="p">.</span><span class="n">Load</span><span class="o">(</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/master/us-cities-top-1k.csv&quot;</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">getData</span> <span class="n">state</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Rows</span> 
+                        <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">filter</span> <span class="o">(</span><span class="k">fun</span> <span class="n">row</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">GetColumn</span><span class="o">(</span><span class="s">&quot;State&quot;</span><span class="o">)</span> <span class="o">=</span> <span class="n">state</span><span class="o">)</span>
+                        <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">row</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">GetColumn</span><span class="o">(</span><span class="s">&quot;lon&quot;</span><span class="o">),</span><span class="n">row</span><span class="o">.</span><span class="n">GetColumn</span><span class="o">(</span><span class="s">&quot;lat&quot;</span><span class="o">))</span>
+
+<span class="k">let</span> <span class="nv">newyorkData</span> <span class="o">=</span> <span class="n">getData</span> <span class="s">&quot;New York&quot;</span>
+<span class="k">let</span> <span class="nv">ohioData</span> <span class="o">=</span> <span class="n">getData</span> <span class="s">&quot;Ohio&quot;</span>
+
+<span class="o">[</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">LineMapbox</span><span class="o">(</span><span class="n">newyorkData</span><span class="o">,</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;New York&quot;</span><span class="o">)</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">LineMapbox</span><span class="o">(</span><span class="n">ohioData</span><span class="o">,</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;Ohio&quot;</span><span class="o">)</span>
+<span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMapbox</span><span class="o">(</span><span class="n">mapBox</span> <span class="o">=</span> <span class="nn">Mapbox</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Style</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">MapboxStyle</span><span class="p">.</span><span class="n">StamenTerrain</span><span class="o">,</span><span class="n">Center</span><span class="o">=(-</span><span class="mi">80</span><span class="o">.,</span><span class="mi">41</span><span class="o">.),</span><span class="n">Zoom</span><span class="o">=</span><span class="mi">3</span><span class="o">.))</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarginSize</span><span class="o">(</span><span class="n">Left</span><span class="o">=</span><span class="mi">0</span><span class="o">,</span><span class="n">Right</span><span class="o">=</span><span class="mi">0</span><span class="o">,</span><span class="n">Top</span><span class="o">=</span><span class="mi">0</span><span class="o">,</span><span class="n">Bottom</span><span class="o">=</span><span class="mi">0</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="c585f39c-8ee7-45ca-9714-789f7af001bb" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_c585f39c8ee745ca9714789f7af001bb = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scattermapbox","mode":"lines","lon":["-78.8783689","-73.8370786","-73.93956870000001","-75.9179738","-73.7562317","-77.61092190000001","-73.8987469","-79.03773879999999","-73.6187397","-73.78235490000002","-73.69178509999999","-76.1474244","-73.7084645","-73.58318349999999","-73.76290970000001","-75.232664","-74.00594129999999"],"lat":["42.8864468","40.9125992","42.8142432","42.0986867","42.65257929999999","43.16103","40.9312099","43.0962143","40.706212799999996","40.9114882","42.7284117","43.0481221","40.664269899999994","40.65760220000001","41.0339862","43.100903","40.7127837"],"name":"New York","line":{},"marker":{}},{"type":"scattermapbox","mode":"lines","lon":["-81.6943605","-84.1052256","-82.59932940000002","-84.16882740000001","-82.9987942","-81.48455849999999","-83.09296440000001","-84.56031870000001","-81.72290859999998","-84.5120196","-83.555212","-80.6495194","-82.51544709999999","-83.11407709999999","-83.6499321","-81.83569","-84.1916069","-81.5267873","-80.81841659999999","-84.1246608","-84.5613355","-83.8088171","-81.339552","-82.10764859999999","-84.39827629999999","-82.4012642","-82.9290696","-81.51900529999999","-82.18237459999999","-84.0632685","-81.7981908","-81.378447","-81.556235"],"lat":["41.499320000000004","40.742551","39.71367539999999","39.6895036","39.9611755","41.133944899999996","39.881451899999995","39.345467299999996","41.404774200000006","39.103118200000004","41.6639383","41.0997803","40.758390000000006","40.0992294","41.04422","41.3144966","39.758947799999994","41.5931049","41.237556899999994","39.843947","39.3995008","39.9242266","41.666157299999995","41.36837979999999","39.5150576","40.0581205","40.126174299999995","41.081444700000006","41.452819","39.7092262","41.481993200000005","40.7989473","41.5200518"],"name":"Ohio","line":{},"marker":{}}];
+            var layout = {"mapbox":{"style":"stamen-terrain","center":{"lon":-80.0,"lat":41.0},"zoom":3.0},"margin":{"l":0,"r":0,"t":0,"b":0}};
+            var config = {};
+            Plotly.newPlot('c585f39c-8ee7-45ca-9714-789f7af001bb', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_c585f39c8ee745ca9714789f7af001bb();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_c585f39c8ee745ca9714789f7af001bb();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Lines-on-Mapbox-maps-using-ScatterMapbox-traces">Lines on Mapbox maps using ScatterMapbox traces<a class="anchor-link" href="#Lines-on-Mapbox-maps-using-ScatterMapbox-traces">&#182;</a></h1><p>This example uses Chart.ScatterMapbox and sets the mode attribute to a combination of markers and line.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">[</span> 
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">ScatterMapbox</span><span class="o">(</span><span class="n">longitudes</span> <span class="o">=</span> <span class="o">[</span> <span class="mi">10</span><span class="o">;</span> <span class="mi">20</span><span class="o">;</span> <span class="mi">30</span> <span class="o">],</span> <span class="n">latitudes</span> <span class="o">=</span> <span class="o">[</span> <span class="mi">10</span><span class="o">;</span> <span class="mi">20</span><span class="o">;</span> <span class="mi">30</span> <span class="o">],</span> <span class="n">mode</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Mode</span><span class="p">.</span><span class="n">Lines_Markers</span><span class="o">)</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">ScatterMapbox</span><span class="o">(</span><span class="n">longitudes</span> <span class="o">=</span> <span class="o">[</span> <span class="o">-</span><span class="mi">50</span><span class="o">;</span> <span class="o">-</span><span class="mi">60</span><span class="o">;</span> <span class="mi">40</span> <span class="o">],</span> <span class="n">latitudes</span> <span class="o">=</span> <span class="o">[</span> <span class="mi">30</span><span class="o">;</span> <span class="mi">10</span><span class="o">;</span> <span class="o">-</span><span class="mi">20</span> <span class="o">],</span> <span class="n">mode</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Mode</span><span class="p">.</span><span class="n">Lines_Markers</span><span class="o">)</span> 
+<span class="o">]</span>
+
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarkerStyle</span> <span class="o">(</span><span class="n">Size</span> <span class="o">=</span> <span class="mi">10</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarginSize</span> <span class="o">(</span><span class="n">Left</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Right</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Top</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Bottom</span> <span class="o">=</span> <span class="mi">0</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMapbox</span> <span class="o">(</span><span class="nn">Mapbox</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Center</span> <span class="o">=</span> <span class="o">(</span><span class="mi">10</span><span class="o">.,</span> <span class="mi">10</span><span class="o">.),</span> <span class="n">Style</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">MapboxStyle</span><span class="p">.</span><span class="n">StamenTerrain</span><span class="o">,</span> <span class="n">Zoom</span> <span class="o">=</span> <span class="mi">1</span><span class="o">.))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="08a24bb6-50dd-4b51-82f9-2529e4e34c97" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_08a24bb650dd4b5182f92529e4e34c97 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scattermapbox","mode":"lines+markers","lon":[10,20,30],"lat":[10,20,30],"line":{},"marker":{"size":10}},{"type":"scattermapbox","mode":"lines+markers","lon":[-50,-60,40],"lat":[30,10,-20],"line":{},"marker":{"size":10}}];
+            var layout = {"margin":{"l":0,"r":0,"t":0,"b":0},"mapbox":{"style":"stamen-terrain","center":{"lon":10.0,"lat":10.0},"zoom":1.0}};
+            var config = {};
+            Plotly.newPlot('08a24bb6-50dd-4b51-82f9-2529e4e34c97', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_08a24bb650dd4b5182f92529e4e34c97();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_08a24bb650dd4b5182f92529e4e34c97();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}

@@ -1,0 +1,387 @@
+---
+description: How to format axes of 3D Cone plots in F# with Plotly.
+display_as: 3d_charts
+language: fsharp
+layout: base
+name: 3D Cone Plots
+order: 9
+page_type: u-guide
+permalink: fsharp/3d-cone/
+thumbnail: thumbnail/3dcone.png
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET, 2.0.0-preview.6&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive, 2.0.0-preview.6&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: FSharp.Data, 4.2.2&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-1913.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '1913.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>FSharp.Data, 4.2.2</span></li><li><span>Plotly.NET, 2.0.0-preview.6</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.6</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Basic-3D-Cone">Basic 3D Cone<a class="anchor-link" href="#Basic-3D-Cone">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">System</span>
+<span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">cone3d</span> <span class="o">=</span>
+    <span class="nn">Trace3d</span><span class="p">.</span><span class="n">initCone</span>
+        <span class="o">(</span><span class="k">fun</span> <span class="n">cone3d</span> <span class="o">-&gt;</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">x</span> <span class="o">&lt;-</span> <span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">y</span> <span class="o">&lt;-</span> <span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">z</span> <span class="o">&lt;-</span> <span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">u</span> <span class="o">&lt;-</span> <span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">v</span> <span class="o">&lt;-</span> <span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">w</span> <span class="o">&lt;-</span> <span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">colorscale</span><span class="o">&lt;-</span><span class="s">&quot;Blues&quot;</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">sizemode</span><span class="o">&lt;-</span><span class="s">&quot;absolute&quot;</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">sizeref</span><span class="o">&lt;-</span> <span class="mi">20</span><span class="o">,</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">anchor</span><span class="o">&lt;-</span><span class="s">&quot;tip&quot;</span>
+            <span class="n">cone3d</span>
+            <span class="o">)</span>
+    <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">ofTraceObject</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="n">cone3d</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="f09938c5-180e-4ffc-81fe-1b8712f464ce" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_f09938c5180e4ffc81fe1b8712f464ce = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"cone","x":[1],"y":[1],"z":[1],"u":[1],"v":[1],"w":[0],"colorscale":"Blues","sizemode":"absolute","anchor":"tip","sizeref":{"Item1":20,"Item2":null}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('f09938c5-180e-4ffc-81fe-1b8712f464ce', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_f09938c5180e4ffc81fe1b8712f464ce();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_f09938c5180e4ffc81fe1b8712f464ce();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Multiple-3D-Cones">Multiple 3D Cones<a class="anchor-link" href="#Multiple-3D-Cones">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">System</span>
+<span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+
+<span class="k">let</span> <span class="nv">cone3d</span> <span class="o">=</span>
+    <span class="nn">Trace3d</span><span class="p">.</span><span class="n">initCone</span>
+        <span class="o">(</span><span class="k">fun</span> <span class="n">cone3d</span> <span class="o">-&gt;</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">x</span><span class="o">&lt;-[</span><span class="mi">1</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">3</span><span class="o">]</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">y</span><span class="o">&lt;-[</span><span class="mi">1</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">3</span><span class="o">]</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">z</span><span class="o">&lt;-[</span><span class="mi">1</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">3</span><span class="o">]</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">u</span><span class="o">&lt;-[</span><span class="mi">1</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">]</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">v</span><span class="o">&lt;-[</span><span class="mi">0</span><span class="o">;</span> <span class="mi">3</span><span class="o">;</span> <span class="mi">0</span><span class="o">]</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">w</span><span class="o">&lt;-[</span><span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">2</span><span class="o">]</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">sizemode</span><span class="o">&lt;-</span><span class="s">&quot;absolute&quot;</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">sizeref</span><span class="o">&lt;-</span><span class="mi">2</span>
+            <span class="n">cone3d</span><span class="o">?</span><span class="n">anchor</span><span class="o">&lt;-</span><span class="s">&quot;tip&quot;</span>
+            <span class="n">cone3d</span>
+            <span class="o">)</span>
+    <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">ofTraceObject</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="n">cone3d</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="6706ffeb-9f28-4611-a8bf-ae315dd00c24" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_6706ffeb9f284611a8bfae315dd00c24 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"cone","x":[1,2,3],"y":[1,2,3],"z":[1,2,3],"u":[1,0,0],"v":[0,3,0],"w":[0,0,2],"sizemode":"absolute","sizeref":2,"anchor":"tip"}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('6706ffeb-9f28-4611-a8bf-ae315dd00c24', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_6706ffeb9f284611a8bfae315dd00c24();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_6706ffeb9f284611a8bfae315dd00c24();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}

@@ -1,0 +1,409 @@
+---
+description: How to make Bar Charts in C# with Plotly.
+display_as: basic
+language: csharp
+layout: base
+name: Bar Charts
+order: 3
+page_type: example_index
+permalink: csharp/bar-charts/
+thumbnail: thumbnail/bar.jpg
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="err">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET,  2.0.0-preview.8&quot;</span>
+<span class="err">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive,  2.0.0-preview.8&quot;</span>
+<span class="k">using</span> <span class="nn">Plotly.NET</span><span class="p">;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-12821.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '12821.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>Plotly.NET, 2.0.0-preview.8</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.8</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Basic-Bar-Chart">Basic Bar Chart<a class="anchor-link" href="#Basic-Bar-Chart">&#182;</a></h1><p>you can use C# arrays to construct your bar charts</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="kt">var</span> <span class="n">animals</span> <span class="p">=</span> <span class="k">new</span>  <span class="p">[]</span> <span class="p">{</span><span class="s">&quot;giraffes&quot;</span><span class="p">,</span> <span class="s">&quot;orangutans&quot;</span><span class="p">,</span> <span class="s">&quot;monkeys&quot;</span><span class="p">};</span>
+<span class="kt">var</span> <span class="n">sfValues</span> <span class="p">=</span> <span class="k">new</span>  <span class="p">[]</span> <span class="p">{</span><span class="m">20</span><span class="p">,</span> <span class="m">14</span><span class="p">,</span> <span class="m">23</span><span class="p">};</span>
+<span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;(</span><span class="n">animals</span><span class="p">,</span> <span class="n">sfValues</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="348fddfd-7446-4bd8-b7c3-df8dbfa999fb" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_348fddfd74464bd8b7c3df8dbfa999fb = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":["giraffes","orangutans","monkeys"],"y":[20,14,23],"marker":{}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('348fddfd-7446-4bd8-b7c3-df8dbfa999fb', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_348fddfd74464bd8b7c3df8dbfa999fb();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_348fddfd74464bd8b7c3df8dbfa999fb();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Grouped-Bar-Chart">Grouped Bar Chart<a class="anchor-link" href="#Grouped-Bar-Chart">&#182;</a></h1><p>Chart.combine for grouping the charts</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="kt">var</span> <span class="n">animals</span> <span class="p">=</span> <span class="k">new</span>  <span class="p">[]</span> <span class="p">{</span><span class="s">&quot;giraffes&quot;</span><span class="p">,</span> <span class="s">&quot;orangutans&quot;</span><span class="p">,</span> <span class="s">&quot;monkeys&quot;</span><span class="p">};</span>
+<span class="kt">var</span> <span class="n">sfValues</span> <span class="p">=</span> <span class="k">new</span>  <span class="p">[]</span> <span class="p">{</span><span class="m">20</span><span class="p">,</span> <span class="m">14</span><span class="p">,</span> <span class="m">23</span><span class="p">};</span>
+<span class="kt">var</span> <span class="n">laValues</span> <span class="p">=</span> <span class="k">new</span>  <span class="p">[]</span> <span class="p">{</span><span class="m">12</span><span class="p">,</span> <span class="m">18</span><span class="p">,</span> <span class="m">29</span><span class="p">};</span>
+
+<span class="n">Chart</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="k">new</span> <span class="p">[]</span> <span class="p">{</span>
+    <span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;(</span><span class="n">animals</span><span class="p">,</span> <span class="n">sfValues</span><span class="p">,</span><span class="s">&quot;SF Zoo&quot;</span><span class="p">),</span>
+    <span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">.</span><span class="n">Column</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;(</span><span class="n">animals</span><span class="p">,</span> <span class="n">laValues</span><span class="p">,</span> <span class="s">&quot;LA Zoo&quot;</span><span class="p">)</span>
+<span class="p">})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="d9eccda9-8732-4f09-a862-55906d63d36f" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_d9eccda987324f09a86255906d63d36f = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":["giraffes","orangutans","monkeys"],"y":[20,14,23],"marker":{},"name":"SF Zoo"},{"type":"bar","x":["giraffes","orangutans","monkeys"],"y":[12,18,29],"marker":{},"name":"LA Zoo"}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('d9eccda9-8732-4f09-a862-55906d63d36f', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_d9eccda987324f09a86255906d63d36f();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_d9eccda987324f09a86255906d63d36f();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Stacked-Bar-Chart">Stacked Bar Chart<a class="anchor-link" href="#Stacked-Bar-Chart">&#182;</a></h1><p>Chart.StackedColumn for constructing stacked bars as shown below</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-csharp"><pre><span></span><span class="kt">var</span> <span class="n">animals</span> <span class="p">=</span> <span class="k">new</span> <span class="p">[]</span> <span class="p">{</span><span class="s">&quot;giraffes&quot;</span><span class="p">,</span> <span class="s">&quot;orangutans&quot;</span><span class="p">,</span> <span class="s">&quot;monkeys&quot;</span><span class="p">};</span>
+<span class="kt">var</span> <span class="n">sfValues</span> <span class="p">=</span> <span class="k">new</span> <span class="p">[]</span> <span class="p">{</span><span class="m">20</span><span class="p">,</span> <span class="m">14</span><span class="p">,</span> <span class="m">23</span><span class="p">};</span>
+<span class="kt">var</span> <span class="n">laValues</span> <span class="p">=</span> <span class="k">new</span> <span class="p">[]</span> <span class="p">{</span><span class="m">12</span><span class="p">,</span> <span class="m">18</span><span class="p">,</span> <span class="m">29</span><span class="p">};</span>
+
+<span class="n">Chart</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="k">new</span> <span class="p">[]</span>
+<span class="p">{</span>
+    <span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">.</span><span class="n">StackedColumn</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;(</span><span class="n">animals</span><span class="p">,</span> <span class="n">sfValues</span><span class="p">,</span> <span class="s">&quot;SF Zoo&quot;</span><span class="p">),</span>
+    <span class="n">Chart2D</span><span class="p">.</span><span class="n">Chart</span><span class="p">.</span><span class="n">StackedColumn</span><span class="p">&lt;</span><span class="kt">string</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">string</span><span class="p">&gt;(</span><span class="n">animals</span><span class="p">,</span> <span class="n">laValues</span><span class="p">,</span> <span class="s">&quot;LA Zoo&quot;</span><span class="p">)</span>
+<span class="p">})</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="19c16904-1b39-44d8-9fa3-891b0e557aa7" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_19c169041b3944d89fa3891b0e557aa7 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":["giraffes","orangutans","monkeys"],"y":[20,14,23],"marker":{},"name":"SF Zoo"},{"type":"bar","x":["giraffes","orangutans","monkeys"],"y":[12,18,29],"marker":{},"name":"LA Zoo"}];
+            var layout = {"barmode":"stack"};
+            var config = {};
+            Plotly.newPlot('19c16904-1b39-44d8-9fa3-891b0e557aa7', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_19c169041b3944d89fa3891b0e557aa7();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_19c169041b3944d89fa3891b0e557aa7();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}

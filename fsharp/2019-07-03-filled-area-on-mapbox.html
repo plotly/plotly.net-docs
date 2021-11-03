@@ -1,0 +1,467 @@
+---
+description: How to make an area on Map F# with Plotly.
+display_as: maps
+language: fsharp
+layout: base
+name: Filled Area on Maps
+order: 3
+page_type: u-guide
+permalink: fsharp/filled-area-on-mapbox/
+thumbnail: thumbnail/area.jpg
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET,2.0.0-preview.8&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive,2.0.0-preview.8&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-5919.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '5919.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>Plotly.NET, 2.0.0-preview.8</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.8</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Mapbox-Access-Token-and-Base-Map-Configuration">Mapbox Access Token and Base Map Configuration<a class="anchor-link" href="#Mapbox-Access-Token-and-Base-Map-Configuration">&#182;</a></h1><p>To plot on Mapbox maps with Plotly you may need a Mapbox account and a public <a href="url" target="https://www.mapbox.com/studio">Mapbox Access Token</a>.</p>
+<p>There are three different ways to show a filled area in a Mapbox map:</p>
+<ol>
+<li>Use a Scattermapbox trace and set fill attribute to 'ToSelf'</li>
+<li>Use a Mapbox layout (i.e. by minimally using an empty Scattermapbox trace) and add a GeoJSON layer</li>
+<li>Use the Choroplethmapbox trace type</li>
+</ol>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Filled-Scattermapbox-Trace">Filled Scattermapbox Trace<a class="anchor-link" href="#Filled-Scattermapbox-Trace">&#182;</a></h1><p>The following example uses Scattermapbox and sets fill = 'ToSelf'</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.LayoutObjects</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">ScatterMapbox</span><span class="o">(</span>
+    <span class="n">longitudes</span> <span class="o">=</span> <span class="o">[</span> <span class="o">-</span><span class="mi">74</span><span class="o">;</span> <span class="o">-</span><span class="mi">70</span><span class="o">;</span> <span class="o">-</span><span class="mi">70</span><span class="o">;</span> <span class="o">-</span><span class="mi">74</span> <span class="o">],</span>
+    <span class="n">latitudes</span> <span class="o">=</span> <span class="o">[</span> <span class="mi">47</span><span class="o">;</span> <span class="mi">47</span><span class="o">;</span> <span class="mi">45</span><span class="o">;</span> <span class="mi">45</span> <span class="o">],</span>
+    <span class="n">Fill</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Fill</span><span class="p">.</span><span class="n">ToSelf</span><span class="o">,</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Mode</span><span class="p">.</span><span class="n">Lines_Markers</span>
+<span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarkerStyle</span> <span class="o">(</span><span class="n">Size</span> <span class="o">=</span> <span class="mi">10</span><span class="o">,</span> <span class="n">Color</span> <span class="o">=</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;orange&quot;</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarginSize</span> <span class="o">(</span><span class="n">Left</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Right</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Top</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Bottom</span> <span class="o">=</span> <span class="mi">0</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMapbox</span> <span class="o">(</span><span class="nn">Mapbox</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Center</span> <span class="o">=</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.,</span> <span class="mi">46</span><span class="o">.),</span> <span class="n">Style</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">MapboxStyle</span><span class="p">.</span><span class="n">StamenTerrain</span><span class="o">,</span> <span class="n">Zoom</span> <span class="o">=</span> <span class="mi">5</span><span class="o">.))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="6cc78d1f-8ffd-4802-93d7-a4dfcb80f4e9" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_6cc78d1f8ffd480293d7a4dfcb80f4e9 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scattermapbox","mode":"lines+markers","lon":[-74,-70,-70,-74],"lat":[47,47,45,45],"fill":"toself","line":{},"marker":{"size":10,"color":"orange"}}];
+            var layout = {"margin":{"l":0,"r":0,"t":0,"b":0},"mapbox":{"style":"stamen-terrain","center":{"lon":-73.0,"lat":46.0},"zoom":5.0}};
+            var config = {};
+            Plotly.newPlot('6cc78d1f-8ffd-4802-93d7-a4dfcb80f4e9', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_6cc78d1f8ffd480293d7a4dfcb80f4e9();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_6cc78d1f8ffd480293d7a4dfcb80f4e9();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Multiple-Filled-Areas-with-a-Scattermapbox-trace">Multiple Filled Areas with a Scattermapbox trace<a class="anchor-link" href="#Multiple-Filled-Areas-with-a-Scattermapbox-trace">&#182;</a></h1><p>The following example shows how to use NaN in your data to draw multiple filled areas. Such gaps in trace data are unconnected by default, but this can be controlled via the connectgaps attribute.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.LayoutObjects</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">ScatterMapbox</span><span class="o">(</span>
+    <span class="n">longitudes</span> <span class="o">=</span> <span class="o">[</span> <span class="o">-</span><span class="mi">10</span><span class="o">.;</span> <span class="o">-</span><span class="mi">10</span><span class="o">.;</span> <span class="mi">8</span><span class="o">.;</span> <span class="mi">8</span><span class="o">.;</span> <span class="o">-</span><span class="mi">10</span><span class="o">.;</span> <span class="nn">Double</span><span class="p">.</span><span class="n">NaN</span><span class="o">;</span> <span class="mi">30</span><span class="o">.;</span> <span class="mi">30</span><span class="o">.;</span> <span class="mi">50</span><span class="o">.;</span> <span class="mi">50</span><span class="o">.;</span> <span class="mi">30</span><span class="o">.;</span> <span class="nn">Double</span><span class="p">.</span><span class="n">NaN</span><span class="o">;</span> <span class="mi">100</span><span class="o">.;</span> <span class="mi">100</span><span class="o">.;</span> <span class="mi">80</span><span class="o">.;</span> <span class="mi">80</span><span class="o">.;</span> <span class="mi">100</span><span class="o">.</span> <span class="o">],</span>
+    <span class="n">latitudes</span> <span class="o">=</span> <span class="o">[</span> <span class="mi">30</span><span class="o">.;</span> <span class="mi">6</span><span class="o">.;</span> <span class="mi">6</span><span class="o">.;</span> <span class="mi">30</span><span class="o">.;</span> <span class="mi">30</span><span class="o">.;</span>    <span class="nn">Double</span><span class="p">.</span><span class="n">NaN</span><span class="o">;</span> <span class="mi">20</span><span class="o">.;</span> <span class="mi">30</span><span class="o">.;</span> <span class="mi">30</span><span class="o">.;</span> <span class="mi">20</span><span class="o">.;</span> <span class="mi">20</span><span class="o">.;</span> <span class="nn">Double</span><span class="p">.</span><span class="n">NaN</span><span class="o">;</span> <span class="mi">40</span><span class="o">.;</span> <span class="mi">50</span><span class="o">.;</span> <span class="mi">50</span><span class="o">.;</span> <span class="mi">40</span><span class="o">.;</span> <span class="mi">40</span><span class="o">.],</span>
+    <span class="n">Fill</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Fill</span><span class="p">.</span><span class="n">ToSelf</span><span class="o">,</span>
+    <span class="n">mode</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Mode</span><span class="p">.</span><span class="n">Lines_Markers</span>
+<span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarginSize</span> <span class="o">(</span><span class="n">Left</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Right</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Top</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Bottom</span> <span class="o">=</span> <span class="mi">0</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMapbox</span> <span class="o">(</span><span class="nn">Mapbox</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Center</span> <span class="o">=</span> <span class="o">(</span><span class="mi">30</span><span class="o">.,</span> <span class="mi">30</span><span class="o">.),</span> <span class="n">Style</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">MapboxStyle</span><span class="p">.</span><span class="n">StamenTerrain</span><span class="o">,</span> <span class="n">Zoom</span> <span class="o">=</span> <span class="mi">2</span><span class="o">.))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="958c66f9-3d56-47df-8e57-2caf9a741b53" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_958c66f93d5647df8e572caf9a741b53 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scattermapbox","mode":"lines+markers","lon":[-10.0,-10.0,8.0,8.0,-10.0,"NaN",30.0,30.0,50.0,50.0,30.0,"NaN",100.0,100.0,80.0,80.0,100.0],"lat":[30.0,6.0,6.0,30.0,30.0,"NaN",20.0,30.0,30.0,20.0,20.0,"NaN",40.0,50.0,50.0,40.0,40.0],"fill":"toself","line":{},"marker":{}}];
+            var layout = {"margin":{"l":0,"r":0,"t":0,"b":0},"mapbox":{"style":"stamen-terrain","center":{"lon":30.0,"lat":30.0},"zoom":2.0}};
+            var config = {};
+            Plotly.newPlot('958c66f9-3d56-47df-8e57-2caf9a741b53', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_958c66f93d5647df8e572caf9a741b53();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_958c66f93d5647df8e572caf9a741b53();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="GeoJSON-Layers">GeoJSON Layers<a class="anchor-link" href="#GeoJSON-Layers">&#182;</a></h1><p>In this map we add a GeoJSON layer.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.LayoutObjects</span>
+
+<span class="k">let</span> <span class="nv">coorindates</span> <span class="o">=</span> <span class="o">[(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">606352888</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">507489991</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">606133883</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">50687600</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">605905904</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">506773980</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">603533905</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">505698946</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">602475870</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">506856969</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">600031904</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">505696003</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">599379992</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">505389066</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">599119902</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">505632008</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">598896977</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">505514039</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">598783894</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">505617001</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">591308727</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">516246185</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">591380782</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">516280145</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">596778656</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">518690062</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">602796770</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">521348046</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">612239983</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">525564037</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">612422919</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">525642061</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">617229085</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">527751983</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">617279234</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">527774160</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">617304713</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">527741334</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">617492052</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">527498362</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">617533258</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">527512253</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">618074188</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">526759105</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">618271651</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">526500673</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">618446320</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">526287943</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">618968507</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">525698560</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">619388002</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">525216750</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">619532966</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">525064183</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">619686662</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">524889290</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">619787038</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">524770086</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">619925742</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">524584939</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">619954486</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">524557690</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">620122362</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">524377961</span><span class="o">);</span>
+                            <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">620201713</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">524298907</span><span class="o">);</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">620775593</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">523650879</span><span class="o">)]</span>
+
+<span class="k">let</span> <span class="nv">layers</span> <span class="o">=</span>
+    <span class="nn">MapboxLayer</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span>
+        <span class="n">SourceType</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">MapboxLayerSourceType</span><span class="p">.</span><span class="n">Vector</span><span class="o">,</span>
+        <span class="n">Type</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">MapboxLayerType</span><span class="p">.</span><span class="n">Fill</span><span class="o">,</span>
+        <span class="n">Coordinates</span> <span class="o">=</span> <span class="n">coorindates</span><span class="o">,</span>
+        <span class="n">Below</span> <span class="o">=</span> <span class="s">&quot;traces&quot;</span><span class="o">,</span>
+        <span class="n">Color</span> <span class="o">=</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;royalblue&quot;</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">mapBox</span> <span class="o">=</span>
+    <span class="nn">Mapbox</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span>
+        <span class="n">Center</span> <span class="o">=</span> <span class="o">(-</span><span class="mi">73</span><span class="o">.</span><span class="mi">605</span><span class="o">,</span> <span class="mi">45</span><span class="o">.</span><span class="mi">51</span><span class="o">),</span>
+        <span class="n">Style</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">MapboxStyle</span><span class="p">.</span><span class="n">StamenTerrain</span><span class="o">,</span>
+        <span class="n">Zoom</span> <span class="o">=</span> <span class="mi">12</span><span class="o">.,</span>
+        <span class="n">Layers</span> <span class="o">=</span> <span class="o">[</span> <span class="n">layers</span> <span class="o">]</span>
+    <span class="o">)</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">ScatterMapbox</span><span class="o">(</span><span class="n">longitudes</span> <span class="o">=</span> <span class="o">[</span> <span class="o">-</span><span class="mi">73</span><span class="o">.</span><span class="mi">605</span> <span class="o">],</span> <span class="n">latitudes</span> <span class="o">=</span> <span class="o">[</span> <span class="mi">45</span><span class="o">.</span><span class="mi">51</span> <span class="o">],</span> <span class="n">mode</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Mode</span><span class="p">.</span><span class="n">Markers</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarkerStyle</span> <span class="o">(</span><span class="n">Size</span> <span class="o">=</span> <span class="mi">20</span><span class="o">,</span> <span class="n">Color</span> <span class="o">=</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;cyan&quot;</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarginSize</span> <span class="o">(</span><span class="n">Left</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Right</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Top</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Bottom</span> <span class="o">=</span> <span class="mi">0</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMapbox</span> <span class="n">mapBox</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="eb4eeade-ebbd-4eb4-9b6d-460499042468" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_eb4eeadeebbd4eb49b6d460499042468 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scattermapbox","mode":"markers","lon":[-73.605],"lat":[45.51],"line":{},"marker":{"size":20,"color":"cyan"}}];
+            var layout = {"margin":{"l":0,"r":0,"t":0,"b":0},"mapbox":{"style":"stamen-terrain","center":{"lon":-73.605,"lat":45.51},"zoom":12.0,"layers":[{"sourcetype":"vector","type":"fill","coordinates":[{"Item1":-73.606352888,"Item2":45.507489991},{"Item1":-73.606133883,"Item2":45.506876},{"Item1":-73.605905904,"Item2":45.50677398},{"Item1":-73.603533905,"Item2":45.505698946},{"Item1":-73.60247587,"Item2":45.506856969},{"Item1":-73.600031904,"Item2":45.505696003},{"Item1":-73.599379992,"Item2":45.505389066},{"Item1":-73.599119902,"Item2":45.505632008},{"Item1":-73.598896977,"Item2":45.505514039},{"Item1":-73.598783894,"Item2":45.505617001},{"Item1":-73.591308727,"Item2":45.516246185},{"Item1":-73.591380782,"Item2":45.516280145},{"Item1":-73.596778656,"Item2":45.518690062},{"Item1":-73.60279677,"Item2":45.521348046},{"Item1":-73.612239983,"Item2":45.525564037},{"Item1":-73.612422919,"Item2":45.525642061},{"Item1":-73.617229085,"Item2":45.527751983},{"Item1":-73.617279234,"Item2":45.52777416},{"Item1":-73.617304713,"Item2":45.527741334},{"Item1":-73.617492052,"Item2":45.527498362},{"Item1":-73.617533258,"Item2":45.527512253},{"Item1":-73.618074188,"Item2":45.526759105},{"Item1":-73.618271651,"Item2":45.526500673},{"Item1":-73.61844632,"Item2":45.526287943},{"Item1":-73.618968507,"Item2":45.52569856},{"Item1":-73.619388002,"Item2":45.52521675},{"Item1":-73.619532966,"Item2":45.525064183},{"Item1":-73.619686662,"Item2":45.52488929},{"Item1":-73.619787038,"Item2":45.524770086},{"Item1":-73.619925742,"Item2":45.524584939},{"Item1":-73.619954486,"Item2":45.52455769},{"Item1":-73.620122362,"Item2":45.524377961},{"Item1":-73.620201713,"Item2":45.524298907},{"Item1":-73.620775593,"Item2":45.523650879}],"below":"traces","color":"royalblue"}]}};
+            var config = {};
+            Plotly.newPlot('eb4eeade-ebbd-4eb4-9b6d-460499042468', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_eb4eeadeebbd4eb49b6d460499042468();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_eb4eeadeebbd4eb49b6d460499042468();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}

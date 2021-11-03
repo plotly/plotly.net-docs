@@ -1,0 +1,771 @@
+---
+description: How to make Treemap Charts in F# with Plotly.
+display_as: basic
+language: fsharp
+layout: base
+name: Treemap Charts
+order: 13
+page_type: u-guide
+permalink: fsharp/treemaps/
+thumbnail: thumbnail/treemap.png
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET, 2.0.0-preview.8&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive, 2.0.0-preview.8&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Deedle&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: FSharp.Data&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-12273.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '12273.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>Deedle, 2.4.3</span></li><li><span>FSharp.Data, 4.2.4</span></li><li><span>Plotly.NET, 2.0.0-preview.8</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.8</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Treemap charts visualize hierarchical data using nested rectangles. The input data format is the same as for Sunburst Charts and Icicle Charts: the hierarchy is defined by labels and parents attributes. Click on one sector to zoom in/out, which also displays a pathbar in the upper-left corner of your treemap. To zoom out you can use the path bar as well.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Basic-Treemap">Basic Treemap<a class="anchor-link" href="#Basic-Treemap">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Eve&quot;</span><span class="o">;</span><span class="s">&quot;Cain&quot;</span><span class="o">;</span> <span class="s">&quot;Seth&quot;</span><span class="o">;</span> <span class="s">&quot;Enos&quot;</span><span class="o">;</span> <span class="s">&quot;Noam&quot;</span><span class="o">;</span> <span class="s">&quot;Abel&quot;</span><span class="o">;</span> <span class="s">&quot;Awan&quot;</span><span class="o">;</span> <span class="s">&quot;Enoch&quot;</span><span class="o">;</span> <span class="s">&quot;Azura&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">parents</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Seth&quot;</span><span class="o">;</span> <span class="s">&quot;Seth&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Awan&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">]</span> 
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Treemap</span><span class="o">(</span><span class="n">labels</span><span class="o">,</span><span class="n">parents</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarginSize</span><span class="o">(</span><span class="n">Top</span><span class="o">=</span><span class="mi">50</span><span class="o">,</span><span class="n">Left</span><span class="o">=</span><span class="mi">25</span><span class="o">,</span><span class="n">Right</span><span class="o">=</span><span class="mi">25</span><span class="o">,</span><span class="n">Bottom</span><span class="o">=</span><span class="mi">25</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="ca662ad3-fa79-46cc-a9c5-d83da70caf85" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_ca662ad3fa7946cca9c5d83da70caf85 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"treemap","labels":["Eve","Cain","Seth","Enos","Noam","Abel","Awan","Enoch","Azura"],"parents":["","Eve","Eve","Seth","Seth","Eve","Eve","Awan","Eve"],"marker":{}}];
+            var layout = {"margin":{"l":25,"r":25,"t":50,"b":25}};
+            var config = {};
+            Plotly.newPlot('ca662ad3-fa79-46cc-a9c5-d83da70caf85', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_ca662ad3fa7946cca9c5d83da70caf85();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_ca662ad3fa7946cca9c5d83da70caf85();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Set-Different-Attributes-in-Treemap">Set Different Attributes in Treemap<a class="anchor-link" href="#Set-Different-Attributes-in-Treemap">&#182;</a></h1><p>This example uses the following attributes:</p>
+<ul>
+<li>Values: sets the values associated with each of the sectors.</li>
+<li>Text: determines which trace information appear on the graph that can be 'text', 'value', 'current path', 'percent root', 'percent entry', and 'percent parent', or any combination of them.</li>
+<li>PathBar: a main extra feature of treemap to display the current path of the visible portion of the hierarchical map. It may also be useful for zooming out of the graph.</li>
+<li>Branchvalues: determines how the items in values are summed. When set to "total", items in values are taken to be value of all its descendants. In the example below Eva = 65, which is equal to 14 + 12 + 10 + 2 + 6 + 6 + 1 + 4. When set to "remainder", items in values corresponding to the root and the branches sectors are taken to be the extra part not part of the sum of the values at their leaves.</li>
+</ul>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.LayoutObjects</span>
+
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Cain&quot;</span><span class="o">;</span> <span class="s">&quot;Seth&quot;</span><span class="o">;</span> <span class="s">&quot;Enos&quot;</span><span class="o">;</span> <span class="s">&quot;Noam&quot;</span><span class="o">;</span> <span class="s">&quot;Abel&quot;</span><span class="o">;</span> <span class="s">&quot;Awan&quot;</span><span class="o">;</span> <span class="s">&quot;Enoch&quot;</span><span class="o">;</span> <span class="s">&quot;Azura&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">parents</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Seth&quot;</span><span class="o">;</span> <span class="s">&quot;Seth&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Awan&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">values1</span> <span class="o">=</span> <span class="o">[</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">14</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">12</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">6</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">6</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">4</span><span class="o">.</span><span class="mi">0</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">values2</span> <span class="o">=</span> <span class="o">[</span><span class="mi">65</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">14</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">12</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">6</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">6</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">4</span><span class="o">.</span><span class="mi">0</span><span class="o">]</span>
+
+<span class="o">[</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Treemap</span><span class="o">(</span><span class="n">labels</span><span class="o">,</span>
+            <span class="n">parents</span><span class="o">,</span>
+            <span class="n">Values</span> <span class="o">=</span> <span class="n">values1</span><span class="o">,</span>                  
+            <span class="n">Text</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;label+value+percent parent+percent entry+percent root&quot;</span><span class="o">],</span>
+            <span class="n">Color</span> <span class="o">=</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;lightgray&quot;</span> <span class="o">)</span>
+        <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">((</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="o">.</span><span class="n">SetValue</span><span class="o">(</span><span class="s">&quot;domain&quot;</span><span class="o">,</span> <span class="nn">Domain</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Row</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Column</span> <span class="o">=</span> <span class="mi">0</span><span class="o">));</span> <span class="n">x</span><span class="o">)</span> <span class="o">)</span> <span class="c1">//Workaround</span>
+
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Treemap</span><span class="o">(</span><span class="n">labels</span><span class="o">,</span>
+            <span class="n">parents</span><span class="o">,</span>
+            <span class="n">Branchvalues</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">BranchValues</span><span class="p">.</span><span class="n">Total</span><span class="o">,</span>
+            <span class="n">Values</span> <span class="o">=</span> <span class="n">values2</span><span class="o">,</span> 
+            <span class="n">Text</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;label+value+percent parent+percent entry&quot;</span><span class="o">],</span>
+            <span class="n">Color</span> <span class="o">=</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;lightgray&quot;</span><span class="o">)</span> 
+            <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">((</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="o">.</span><span class="n">SetValue</span><span class="o">(</span><span class="s">&quot;domain&quot;</span><span class="o">,</span> <span class="nn">Domain</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Row</span> <span class="o">=</span> <span class="mi">0</span><span class="o">,</span> <span class="n">Column</span> <span class="o">=</span> <span class="mi">1</span><span class="o">));</span> <span class="n">x</span><span class="o">)</span> <span class="o">)</span> <span class="c1">//Workaround</span>
+<span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayoutGridStyle</span><span class="o">(</span><span class="n">Rows</span><span class="o">=</span><span class="mi">1</span><span class="o">,</span><span class="n">Columns</span><span class="o">=</span><span class="mi">2</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarginSize</span><span class="o">(</span><span class="n">Top</span><span class="o">=</span><span class="mi">50</span><span class="o">,</span><span class="n">Left</span><span class="o">=</span><span class="mi">25</span><span class="o">,</span><span class="n">Right</span><span class="o">=</span><span class="mi">25</span><span class="o">,</span><span class="n">Bottom</span><span class="o">=</span><span class="mi">25</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="dd463d2f-3854-47f6-85c1-574f389b366a" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_dd463d2f385447f685c1574f389b366a = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"treemap","labels":["Eve","Cain","Seth","Enos","Noam","Abel","Awan","Enoch","Azura"],"parents":["","Eve","Eve","Seth","Seth","Eve","Eve","Awan","Eve"],"values":[10.0,14.0,12.0,10.0,2.0,6.0,6.0,1.0,4.0],"text":["label+value+percent parent+percent entry+percent root"],"marker":{"color":"lightgray"},"domain":{"row":0,"column":0}},{"type":"treemap","labels":["Eve","Cain","Seth","Enos","Noam","Abel","Awan","Enoch","Azura"],"parents":["","Eve","Eve","Seth","Seth","Eve","Eve","Awan","Eve"],"values":[65.0,14.0,12.0,10.0,2.0,6.0,6.0,1.0,4.0],"text":["label+value+percent parent+percent entry"],"branchvalues":"total","marker":{"color":"lightgray"},"domain":{"row":0,"column":1}}];
+            var layout = {"grid":{"rows":1,"columns":2},"margin":{"l":25,"r":25,"t":50,"b":25}};
+            var config = {};
+            Plotly.newPlot('dd463d2f-3854-47f6-85c1-574f389b366a', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_dd463d2f385447f685c1574f389b366a();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_dd463d2f385447f685c1574f389b366a();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Set-Color-of-Treemap-Sectors">Set Color of Treemap Sectors<a class="anchor-link" href="#Set-Color-of-Treemap-Sectors">&#182;</a></h1><p>There are three different ways to change the color of the sectors in Treemap:</p>
+<ol>
+<li>Marker Color through Color property, </li>
+<li>ColorWay </li>
+<li>Colorscale</li>
+</ol>
+<p>The following examples show how to use each of them.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Marker-Colors-(Not-Working)">Marker Colors (Not Working)<a class="anchor-link" href="#Marker-Colors-(Not-Working)">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">values</span> <span class="o">=</span> <span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">11</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">12</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">13</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">14</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">15</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">20</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">30</span><span class="o">.</span><span class="mi">0</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;container&quot;</span><span class="o">;</span> <span class="s">&quot;A1&quot;</span><span class="o">;</span> <span class="s">&quot;A2&quot;</span><span class="o">;</span> <span class="s">&quot;A3&quot;</span><span class="o">;</span> <span class="s">&quot;A4&quot;</span><span class="o">;</span> <span class="s">&quot;A5&quot;</span><span class="o">;</span> <span class="s">&quot;B1&quot;</span><span class="o">;</span> <span class="s">&quot;B2&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">parents</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;&quot;</span><span class="o">;</span> <span class="s">&quot;container&quot;</span><span class="o">;</span> <span class="s">&quot;A1&quot;</span><span class="o">;</span> <span class="s">&quot;A2&quot;</span><span class="o">;</span> <span class="s">&quot;A3&quot;</span><span class="o">;</span> <span class="s">&quot;A4&quot;</span><span class="o">;</span> <span class="s">&quot;container&quot;</span><span class="o">;</span> <span class="s">&quot;B1&quot;</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">markerColors</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;pink&quot;</span><span class="o">;</span> <span class="s">&quot;royalblue&quot;</span><span class="o">;</span> <span class="s">&quot;lightgray&quot;</span><span class="o">;</span> <span class="s">&quot;purple&quot;</span><span class="o">;</span> 
+                        <span class="s">&quot;cyan&quot;</span><span class="o">;</span> <span class="s">&quot;lightgray&quot;</span><span class="o">;</span> <span class="s">&quot;lightblue&quot;</span><span class="o">;</span> <span class="s">&quot;lightgreen&quot;</span><span class="o">]</span>
+                        <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">c</span><span class="o">-&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="n">c</span><span class="o">)</span>
+                        <span class="o">|&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromColors</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Treemap</span><span class="o">(</span><span class="n">labels</span><span class="o">,</span>
+              <span class="n">parents</span><span class="o">,</span>
+              <span class="n">Values</span> <span class="o">=</span> <span class="n">values</span><span class="o">,</span> 
+              <span class="n">Color</span> <span class="o">=</span> <span class="n">markerColors</span><span class="o">)</span> 
+
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarginSize</span><span class="o">(</span><span class="n">Top</span><span class="o">=</span><span class="mi">50</span><span class="o">,</span><span class="n">Left</span><span class="o">=</span><span class="mi">25</span><span class="o">,</span><span class="n">Right</span><span class="o">=</span><span class="mi">25</span><span class="o">,</span><span class="n">Bottom</span><span class="o">=</span><span class="mi">25</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="b6d3b8dc-ff0b-42cf-9921-ece0c8886750" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_b6d3b8dcff0b42cf9921ece0c8886750 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"treemap","labels":["container","A1","A2","A3","A4","A5","B1","B2"],"parents":["","container","A1","A2","A3","A4","container","B1"],"values":[0.0,11.0,12.0,13.0,14.0,15.0,20.0,30.0],"marker":{"color":["pink","royalblue","lightgray","purple","cyan","lightgray","lightblue","lightgreen"]}}];
+            var layout = {"margin":{"l":25,"r":25,"t":50,"b":25}};
+            var config = {};
+            Plotly.newPlot('b6d3b8dc-ff0b-42cf-9921-ece0c8886750', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_b6d3b8dcff0b42cf9921ece0c8886750();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_b6d3b8dcff0b42cf9921ece0c8886750();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="TreemapColorWay">TreemapColorWay<a class="anchor-link" href="#TreemapColorWay">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;container&quot;</span><span class="o">;</span> <span class="s">&quot;A1&quot;</span><span class="o">;</span> <span class="s">&quot;A2&quot;</span><span class="o">;</span> <span class="s">&quot;A3&quot;</span><span class="o">;</span> <span class="s">&quot;A4&quot;</span><span class="o">;</span> <span class="s">&quot;A5&quot;</span><span class="o">;</span> <span class="s">&quot;B1&quot;</span><span class="o">;</span> <span class="s">&quot;B2&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">parents</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;&quot;</span><span class="o">;</span> <span class="s">&quot;container&quot;</span><span class="o">;</span> <span class="s">&quot;A1&quot;</span><span class="o">;</span> <span class="s">&quot;A2&quot;</span><span class="o">;</span> <span class="s">&quot;A3&quot;</span><span class="o">;</span> <span class="s">&quot;A4&quot;</span><span class="o">;</span> <span class="s">&quot;container&quot;</span><span class="o">;</span> <span class="s">&quot;B1&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">values</span> <span class="o">=</span> <span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">11</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">12</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">13</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">14</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">15</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">20</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">30</span><span class="o">.</span><span class="mi">0</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">markerColor</span> <span class="o">=</span> <span class="o">[</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;pink&quot;</span><span class="o">;</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;lightgray&quot;</span><span class="o">]</span> <span class="o">|&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromColors</span>
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Treemap</span><span class="o">(</span><span class="n">labels</span><span class="o">,</span>
+              <span class="n">parents</span><span class="o">,</span>
+              <span class="n">Values</span> <span class="o">=</span> <span class="n">values</span><span class="o">)</span> 
+              
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span><span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">TreeMapColorWay</span><span class="o">=</span> <span class="n">markerColor</span><span class="o">))</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarginSize</span><span class="o">(</span><span class="n">Top</span><span class="o">=</span><span class="mi">50</span><span class="o">,</span><span class="n">Left</span><span class="o">=</span><span class="mi">25</span><span class="o">,</span><span class="n">Right</span><span class="o">=</span><span class="mi">25</span><span class="o">,</span><span class="n">Bottom</span><span class="o">=</span><span class="mi">25</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="70367883-63e6-4c88-8a9b-fa0ca8029443" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_7036788363e64c888a9bfa0ca8029443 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"treemap","labels":["container","A1","A2","A3","A4","A5","B1","B2"],"parents":["","container","A1","A2","A3","A4","container","B1"],"values":[0.0,11.0,12.0,13.0,14.0,15.0,20.0,30.0],"marker":{}}];
+            var layout = {"treemapcolorway":["pink","lightgray"],"margin":{"l":25,"r":25,"t":50,"b":25}};
+            var config = {};
+            Plotly.newPlot('70367883-63e6-4c88-8a9b-fa0ca8029443', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_7036788363e64c888a9bfa0ca8029443();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_7036788363e64c888a9bfa0ca8029443();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Colorscale-(Not-Working)">Colorscale (Not Working)<a class="anchor-link" href="#Colorscale-(Not-Working)">&#182;</a></h2>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">values</span> <span class="o">=</span> <span class="o">[</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">11</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">12</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">13</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">14</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">15</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">20</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">30</span><span class="o">.</span><span class="mi">0</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;container&quot;</span><span class="o">;</span> <span class="s">&quot;A1&quot;</span><span class="o">;</span> <span class="s">&quot;A2&quot;</span><span class="o">;</span> <span class="s">&quot;A3&quot;</span><span class="o">;</span> <span class="s">&quot;A4&quot;</span><span class="o">;</span> <span class="s">&quot;A5&quot;</span><span class="o">;</span> <span class="s">&quot;B1&quot;</span><span class="o">;</span> <span class="s">&quot;B2&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">parents</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;&quot;</span><span class="o">;</span> <span class="s">&quot;container&quot;</span><span class="o">;</span> <span class="s">&quot;A1&quot;</span><span class="o">;</span> <span class="s">&quot;A2&quot;</span><span class="o">;</span> <span class="s">&quot;A3&quot;</span><span class="o">;</span> <span class="s">&quot;A4&quot;</span><span class="o">;</span> <span class="s">&quot;container&quot;</span><span class="o">;</span> <span class="s">&quot;B1&quot;</span><span class="o">]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Treemap</span><span class="o">(</span><span class="n">labels</span><span class="o">,</span>
+              <span class="n">parents</span><span class="o">,</span>
+              <span class="n">Values</span> <span class="o">=</span> <span class="n">values</span> <span class="o">)</span> 
+<span class="c1">//|&gt; Chart.withLayout(Layout.init(Colorscale= DefaultColorScales.init(Diverging=StyleParam.Colorscale.Viridis)))</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarginSize</span><span class="o">(</span><span class="n">Top</span><span class="o">=</span><span class="mi">50</span><span class="o">,</span><span class="n">Left</span><span class="o">=</span><span class="mi">25</span><span class="o">,</span><span class="n">Right</span><span class="o">=</span><span class="mi">25</span><span class="o">,</span><span class="n">Bottom</span><span class="o">=</span><span class="mi">25</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[6]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="b1c1de36-504e-43f5-ae17-f594ff56fa72" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_b1c1de36504e43f5ae17f594ff56fa72 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"treemap","labels":["container","A1","A2","A3","A4","A5","B1","B2"],"parents":["","container","A1","A2","A3","A4","container","B1"],"values":[0.0,11.0,12.0,13.0,14.0,15.0,20.0,30.0],"marker":{}}];
+            var layout = {"margin":{"l":25,"r":25,"t":50,"b":25}};
+            var config = {};
+            Plotly.newPlot('b1c1de36-504e-43f5-ae17-f594ff56fa72', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_b1c1de36504e43f5ae17f594ff56fa72();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_b1c1de36504e43f5ae17f594ff56fa72();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Nested-Layers-in-Treemap">Nested Layers in Treemap<a class="anchor-link" href="#Nested-Layers-in-Treemap">&#182;</a></h1><p>The following example uses hierarchical data that includes layers and grouping. Treemap and Sunburst charts reveal insights into the data, and the format of your hierarchical data. maxdepth attribute sets the number of rendered sectors from the given level.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">FSharp.Data</span>
+
+<span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="nn">CsvFile</span><span class="p">.</span><span class="n">Load</span><span class="o">(</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/96c0bd/sunburst-coffee-flavors-complete.csv&quot;</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">Ids</span> <span class="o">=</span> <span class="o">[</span><span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">data</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">GetColumn</span><span class="o">(</span><span class="s">&quot;ids&quot;</span><span class="o">)]</span>
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">data</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">GetColumn</span><span class="o">(</span><span class="s">&quot;labels&quot;</span><span class="o">)]</span>
+<span class="k">let</span> <span class="nv">parents</span> <span class="o">=</span> <span class="o">[</span><span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">data</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">GetColumn</span><span class="o">(</span><span class="s">&quot;parents&quot;</span><span class="o">)]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Treemap</span><span class="o">(</span><span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span>            
+            <span class="n">parents</span><span class="o">=</span><span class="n">parents</span><span class="o">,</span>
+            <span class="n">Ids</span><span class="o">=</span><span class="n">Ids</span><span class="o">,</span>
+            <span class="n">Maxdepth</span><span class="o">=</span><span class="mi">3</span><span class="o">)</span> 
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarginSize</span><span class="o">(</span><span class="n">Top</span><span class="o">=</span><span class="mi">50</span><span class="o">,</span><span class="n">Left</span><span class="o">=</span><span class="mi">25</span><span class="o">,</span><span class="n">Right</span><span class="o">=</span><span class="mi">25</span><span class="o">,</span><span class="n">Bottom</span><span class="o">=</span><span class="mi">25</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[7]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="a4c02830-94cf-4d1e-85bf-e69d4df054d5" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_a4c0283094cf4d1e85bfe69d4df054d5 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"treemap","labels":["Coffee Flavors","Aromas","Tastes","Enzymatic","Sugar Browning","Dry Distillation","Bitter","Salt","Sweet","Sour","Flowery","Fruity","Herby","Nutty","Carmelly","Chocolatey","Resinous","Spicy","Carbony","Pungent","Harsh","Sharp","Bland","Mellow","Acidy","Winey","Soury","Floral","Fragrant","Citrus","Berry-like","Alliaceous","Leguminous","Nut-like","Malt-like","Candy-like","Syrup-like","Chocolate-like","Vanilla-like","Turpeny","Medicinal","Warming","Pungent","Smokey","Ashy","Creosol","Phenolic","Caustic","Alkaline","Astringent","Rough","Neutral","Soft","Delicate","Mild","Nippy","Piquant","Tangy","Tart","Hard","Acrid","Coffee Blossom","Tea Rose","Cardamon Caraway","Coriander Seeds","Lemon","Apple","Apricot","Blackberry","Onion","Garlic","Cucumber","Garden Peas","Roasted Peanuts","Walnuts","Balsamic Rice","Toast","Roasted Hazelnut","Roasted Almond","Honey","Maple Syrup","Bakers","Dark Chocolate","Swiss","Butter","Piney","Blackcurrant-like","Camphoric","Cineolic","Cedar","Pepper","Clove","Thyme","Tarry","Pipe Tobacco","Burnt","Charred"],"parents":["","Coffee","Coffee","Aromas","Aromas","Aromas","Tastes","Tastes","Tastes","Tastes","Aromas-Enzymatic","Aromas-Enzymatic","Aromas-Enzymatic","Aromas-Sugar Browning","Aromas-Sugar Browning","Aromas-Sugar Browning","Aromas-Dry Distillation","Aromas-Dry Distillation","Aromas-Dry Distillation","Tastes-Bitter","Tastes-Bitter","Tastes-Salt","Tastes-Salt","Tastes-Sweet","Tastes-Sweet","Tastes-Sour","Tastes-Sour","Enzymatic-Flowery","Enzymatic-Flowery","Enzymatic-Fruity","Enzymatic-Fruity","Enzymatic-Herby","Enzymatic-Herby","Sugar Browning-Nutty","Sugar Browning-Nutty","Sugar Browning-Carmelly","Sugar Browning-Carmelly","Sugar Browning-Chocolatey","Sugar Browning-Chocolatey","Dry Distillation-Resinous","Dry Distillation-Resinous","Dry Distillation-Spicy","Dry Distillation-Spicy","Dry Distillation-Carbony","Dry Distillation-Carbony","Bitter-Pungent","Bitter-Pungent","Bitter-Harsh","Bitter-Harsh","Salt-Sharp","Salt-Sharp","Salt-Bland","Salt-Bland","Sweet-Mellow","Sweet-Mellow","Sweet-Acidy","Sweet-Acidy","Sour-Winey","Sour-Winey","Sour-Soury","Sour-Soury","Flowery-Floral","Flowery-Floral","Flowery-Fragrant","Flowery-Fragrant","Fruity-Citrus","Fruity-Citrus","Fruity-Berry-like","Fruity-Berry-like","Herby-Alliaceous","Herby-Alliaceous","Herby-Leguminous","Herby-Leguminous","Nutty-Nut-like","Nutty-Nut-like","Nutty-Malt-like","Nutty-Malt-like","Carmelly-Candy-like","Carmelly-Candy-like","Carmelly-Syrup-like","Carmelly-Syrup-like","Chocolatey-Chocolate-like","Chocolatey-Chocolate-like","Chocolatey-Vanilla-like","Chocolatey-Vanilla-like","Resinous-Turpeny","Resinous-Turpeny","Resinous-Medicinal","Resinous-Medicinal","Spicy-Warming","Spicy-Warming","Spicy-Pungent","Spicy-Pungent","Carbony-Smokey","Carbony-Smokey","Carbony-Ashy","Carbony-Ashy"],"ids":["Coffee","Aromas","Tastes","Aromas-Enzymatic","Aromas-Sugar Browning","Aromas-Dry Distillation","Tastes-Bitter","Tastes-Salt","Tastes-Sweet","Tastes-Sour","Enzymatic-Flowery","Enzymatic-Fruity","Enzymatic-Herby","Sugar Browning-Nutty","Sugar Browning-Carmelly","Sugar Browning-Chocolatey","Dry Distillation-Resinous","Dry Distillation-Spicy","Dry Distillation-Carbony","Bitter-Pungent","Bitter-Harsh","Salt-Sharp","Salt-Bland","Sweet-Mellow","Sweet-Acidy","Sour-Winey","Sour-Soury","Flowery-Floral","Flowery-Fragrant","Fruity-Citrus","Fruity-Berry-like","Herby-Alliaceous","Herby-Leguminous","Nutty-Nut-like","Nutty-Malt-like","Carmelly-Candy-like","Carmelly-Syrup-like","Chocolatey-Chocolate-like","Chocolatey-Vanilla-like","Resinous-Turpeny","Resinous-Medicinal","Spicy-Warming","Spicy-Pungent","Carbony-Smokey","Carbony-Ashy","Pungent-Creosol","Pungent-Phenolic","Harsh-Caustic","Harsh-Alkaline","Sharp-Astringent","Sharp-Rough","Bland-Neutral","Bland-Soft","Mellow-Delicate","Mellow-Mild","Acidy-Nippy","Acidy-Piquant","Winey-Tangy","Winey-Tart","Soury-Hard","Soury-Acrid","Floral-Coffee Blossom","Floral-Tea Rose","Fragrant-Cardamon Caraway","Fragrant-Coriander Seeds","Citrus-Lemon","Citrus-Apple","Berry-like-Apricot","Berry-like-Blackberry","Alliaceous-Onion","Alliaceous-Garlic","Leguminous-Cucumber","Leguminous-Garden Peas","Nut-like-Roasted Peanuts","Nut-like-Walnuts","Malt-like-Balsamic Rice","Malt-like-Toast","Candy-like-Roasted Hazelnut","Candy-like-Roasted Almond","Syrup-like-Honey","Syrup-like-Maple Syrup","Chocolate-like-Bakers","Chocolate-like-Dark Chocolate","Vanilla-like-Swiss","Vanilla-like-Butter","Turpeny-Piney","Turpeny-Blackcurrant-like","Medicinal-Camphoric","Medicinal-Cineolic","Warming-Cedar","Warming-Pepper","Pungent-Clove","Pungent-Thyme","Smokey-Tarry","Smokey-Pipe Tobacco","Ashy-Burnt","Ashy-Charred"],"maxdepth":3,"marker":{}}];
+            var layout = {"margin":{"l":25,"r":25,"t":50,"b":25}};
+            var config = {};
+            Plotly.newPlot('a4c02830-94cf-4d1e-85bf-e69d4df054d5', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_a4c0283094cf4d1e85bfe69d4df054d5();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_a4c0283094cf4d1e85bfe69d4df054d5();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Controlling-text-fontsize-with-uniformtext">Controlling text fontsize with uniformtext<a class="anchor-link" href="#Controlling-text-fontsize-with-uniformtext">&#182;</a></h1><p>If you want all the text labels to have the same size, you can use the uniformtext layout parameter. The minsize attribute sets the font size, and the mode attribute sets what happens for labels which cannot fit with the desired fontsize: either hide them or show them with overflow.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">FSharp.Data</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+
+<span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="nn">CsvFile</span><span class="p">.</span><span class="n">Load</span><span class="o">(</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/96c0bd/sunburst-coffee-flavors-complete.csv&quot;</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">Ids</span> <span class="o">=</span> <span class="o">[</span><span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">data</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">GetColumn</span><span class="o">(</span><span class="s">&quot;ids&quot;</span><span class="o">)]</span>
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">data</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">GetColumn</span><span class="o">(</span><span class="s">&quot;labels&quot;</span><span class="o">)]</span>
+<span class="k">let</span> <span class="nv">parents</span> <span class="o">=</span> <span class="o">[</span><span class="k">for</span> <span class="n">row</span> <span class="k">in</span> <span class="n">data</span><span class="o">.</span><span class="n">Rows</span> <span class="o">-&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">GetColumn</span><span class="o">(</span><span class="s">&quot;parents&quot;</span><span class="o">)]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Treemap</span><span class="o">(</span><span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span>            
+            <span class="n">parents</span><span class="o">=</span><span class="n">parents</span><span class="o">,</span>
+            <span class="n">Ids</span><span class="o">=</span><span class="n">Ids</span><span class="o">,</span>            
+            <span class="n">PathBar</span><span class="o">=</span><span class="nn">Pathbar</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Textfont</span><span class="o">=</span><span class="nn">Font</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Size</span><span class="o">=</span><span class="mi">15</span><span class="o">.)))</span> 
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span><span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+                            <span class="n">UniformText</span><span class="o">=</span><span class="nn">UniformText</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">MinSize</span><span class="o">=</span><span class="mi">10</span><span class="o">,</span><span class="n">Mode</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">UniformTextMode</span><span class="p">.</span><span class="n">Hide</span><span class="o">),</span>
+                            <span class="n">Margin</span> <span class="o">=</span> <span class="nn">Margin</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Top</span><span class="o">=</span><span class="mi">50</span><span class="o">,</span><span class="n">Left</span><span class="o">=</span><span class="mi">25</span><span class="o">,</span><span class="n">Right</span><span class="o">=</span><span class="mi">25</span><span class="o">,</span><span class="n">Bottom</span><span class="o">=</span><span class="mi">25</span><span class="o">)))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[8]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="6a2a19a1-ae96-487e-ac24-1803d9004133" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_6a2a19a1ae96487eac241803d9004133 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"treemap","labels":["Coffee Flavors","Aromas","Tastes","Enzymatic","Sugar Browning","Dry Distillation","Bitter","Salt","Sweet","Sour","Flowery","Fruity","Herby","Nutty","Carmelly","Chocolatey","Resinous","Spicy","Carbony","Pungent","Harsh","Sharp","Bland","Mellow","Acidy","Winey","Soury","Floral","Fragrant","Citrus","Berry-like","Alliaceous","Leguminous","Nut-like","Malt-like","Candy-like","Syrup-like","Chocolate-like","Vanilla-like","Turpeny","Medicinal","Warming","Pungent","Smokey","Ashy","Creosol","Phenolic","Caustic","Alkaline","Astringent","Rough","Neutral","Soft","Delicate","Mild","Nippy","Piquant","Tangy","Tart","Hard","Acrid","Coffee Blossom","Tea Rose","Cardamon Caraway","Coriander Seeds","Lemon","Apple","Apricot","Blackberry","Onion","Garlic","Cucumber","Garden Peas","Roasted Peanuts","Walnuts","Balsamic Rice","Toast","Roasted Hazelnut","Roasted Almond","Honey","Maple Syrup","Bakers","Dark Chocolate","Swiss","Butter","Piney","Blackcurrant-like","Camphoric","Cineolic","Cedar","Pepper","Clove","Thyme","Tarry","Pipe Tobacco","Burnt","Charred"],"parents":["","Coffee","Coffee","Aromas","Aromas","Aromas","Tastes","Tastes","Tastes","Tastes","Aromas-Enzymatic","Aromas-Enzymatic","Aromas-Enzymatic","Aromas-Sugar Browning","Aromas-Sugar Browning","Aromas-Sugar Browning","Aromas-Dry Distillation","Aromas-Dry Distillation","Aromas-Dry Distillation","Tastes-Bitter","Tastes-Bitter","Tastes-Salt","Tastes-Salt","Tastes-Sweet","Tastes-Sweet","Tastes-Sour","Tastes-Sour","Enzymatic-Flowery","Enzymatic-Flowery","Enzymatic-Fruity","Enzymatic-Fruity","Enzymatic-Herby","Enzymatic-Herby","Sugar Browning-Nutty","Sugar Browning-Nutty","Sugar Browning-Carmelly","Sugar Browning-Carmelly","Sugar Browning-Chocolatey","Sugar Browning-Chocolatey","Dry Distillation-Resinous","Dry Distillation-Resinous","Dry Distillation-Spicy","Dry Distillation-Spicy","Dry Distillation-Carbony","Dry Distillation-Carbony","Bitter-Pungent","Bitter-Pungent","Bitter-Harsh","Bitter-Harsh","Salt-Sharp","Salt-Sharp","Salt-Bland","Salt-Bland","Sweet-Mellow","Sweet-Mellow","Sweet-Acidy","Sweet-Acidy","Sour-Winey","Sour-Winey","Sour-Soury","Sour-Soury","Flowery-Floral","Flowery-Floral","Flowery-Fragrant","Flowery-Fragrant","Fruity-Citrus","Fruity-Citrus","Fruity-Berry-like","Fruity-Berry-like","Herby-Alliaceous","Herby-Alliaceous","Herby-Leguminous","Herby-Leguminous","Nutty-Nut-like","Nutty-Nut-like","Nutty-Malt-like","Nutty-Malt-like","Carmelly-Candy-like","Carmelly-Candy-like","Carmelly-Syrup-like","Carmelly-Syrup-like","Chocolatey-Chocolate-like","Chocolatey-Chocolate-like","Chocolatey-Vanilla-like","Chocolatey-Vanilla-like","Resinous-Turpeny","Resinous-Turpeny","Resinous-Medicinal","Resinous-Medicinal","Spicy-Warming","Spicy-Warming","Spicy-Pungent","Spicy-Pungent","Carbony-Smokey","Carbony-Smokey","Carbony-Ashy","Carbony-Ashy"],"ids":["Coffee","Aromas","Tastes","Aromas-Enzymatic","Aromas-Sugar Browning","Aromas-Dry Distillation","Tastes-Bitter","Tastes-Salt","Tastes-Sweet","Tastes-Sour","Enzymatic-Flowery","Enzymatic-Fruity","Enzymatic-Herby","Sugar Browning-Nutty","Sugar Browning-Carmelly","Sugar Browning-Chocolatey","Dry Distillation-Resinous","Dry Distillation-Spicy","Dry Distillation-Carbony","Bitter-Pungent","Bitter-Harsh","Salt-Sharp","Salt-Bland","Sweet-Mellow","Sweet-Acidy","Sour-Winey","Sour-Soury","Flowery-Floral","Flowery-Fragrant","Fruity-Citrus","Fruity-Berry-like","Herby-Alliaceous","Herby-Leguminous","Nutty-Nut-like","Nutty-Malt-like","Carmelly-Candy-like","Carmelly-Syrup-like","Chocolatey-Chocolate-like","Chocolatey-Vanilla-like","Resinous-Turpeny","Resinous-Medicinal","Spicy-Warming","Spicy-Pungent","Carbony-Smokey","Carbony-Ashy","Pungent-Creosol","Pungent-Phenolic","Harsh-Caustic","Harsh-Alkaline","Sharp-Astringent","Sharp-Rough","Bland-Neutral","Bland-Soft","Mellow-Delicate","Mellow-Mild","Acidy-Nippy","Acidy-Piquant","Winey-Tangy","Winey-Tart","Soury-Hard","Soury-Acrid","Floral-Coffee Blossom","Floral-Tea Rose","Fragrant-Cardamon Caraway","Fragrant-Coriander Seeds","Citrus-Lemon","Citrus-Apple","Berry-like-Apricot","Berry-like-Blackberry","Alliaceous-Onion","Alliaceous-Garlic","Leguminous-Cucumber","Leguminous-Garden Peas","Nut-like-Roasted Peanuts","Nut-like-Walnuts","Malt-like-Balsamic Rice","Malt-like-Toast","Candy-like-Roasted Hazelnut","Candy-like-Roasted Almond","Syrup-like-Honey","Syrup-like-Maple Syrup","Chocolate-like-Bakers","Chocolate-like-Dark Chocolate","Vanilla-like-Swiss","Vanilla-like-Butter","Turpeny-Piney","Turpeny-Blackcurrant-like","Medicinal-Camphoric","Medicinal-Cineolic","Warming-Cedar","Warming-Pepper","Pungent-Clove","Pungent-Thyme","Smokey-Tarry","Smokey-Pipe Tobacco","Ashy-Burnt","Ashy-Charred"],"pathbar":{"textfont ":{"size":15.0}},"marker":{}}];
+            var layout = {"margin":{"l":25,"r":25,"t":50,"b":25},"uniformtext":{"minsize":10,"mode":"hide"}};
+            var config = {};
+            Plotly.newPlot('6a2a19a1-ae96-487e-ac24-1803d9004133', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_6a2a19a1ae96487eac241803d9004133();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_6a2a19a1ae96487eac241803d9004133();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}

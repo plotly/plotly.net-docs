@@ -1,0 +1,723 @@
+---
+description: How to make Box Plots in F# with Plotly.
+display_as: statistical
+language: fsharp
+layout: base
+name: Box Plots
+order: 2
+page_type: example_index
+permalink: fsharp/box-plots/
+thumbnail: thumbnail/box.jpg
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET,  2.0.0-preview.8&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive,  2.0.0-preview.8&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-3360.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '3360.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>Plotly.NET, 2.0.0-preview.8</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.8</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Basic-Boxplot">Basic Boxplot<a class="anchor-link" href="#Basic-Boxplot">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span> 
+<span class="k">let</span> <span class="nv">y</span> <span class="o">=</span>  <span class="o">[</span><span class="mi">2</span><span class="o">.;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">5</span><span class="o">.;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">3</span><span class="o">.;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">3</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">1</span><span class="o">.]</span>
+<span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;bin1&quot;</span><span class="o">;</span><span class="s">&quot;bin2&quot;</span><span class="o">;</span><span class="s">&quot;bin1&quot;</span><span class="o">;</span><span class="s">&quot;bin2&quot;</span><span class="o">;</span><span class="s">&quot;bin1&quot;</span><span class="o">;</span><span class="s">&quot;bin2&quot;</span><span class="o">;</span><span class="s">&quot;bin1&quot;</span><span class="o">;</span><span class="s">&quot;bin1&quot;</span><span class="o">;</span><span class="s">&quot;bin2&quot;</span><span class="o">;</span><span class="s">&quot;bin1&quot;</span><span class="o">]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">BoxPlot</span><span class="o">(</span><span class="n">x</span><span class="o">,</span><span class="n">y</span><span class="o">,</span><span class="n">Jitter</span><span class="o">=</span><span class="mi">0</span><span class="o">.</span><span class="mi">1</span><span class="o">,</span><span class="n">Boxpoints</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Boxpoints</span><span class="p">.</span><span class="n">All</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="a688bc9f-cc0b-4de5-aae4-2df0151385e5" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_a688bc9fcc0b4de5aae42df0151385e5 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"box","y":[2.0,1.5,5.0,1.5,3.0,2.5,2.5,1.5,3.5,1.0],"x":["bin1","bin2","bin1","bin2","bin1","bin2","bin1","bin1","bin2","bin1"],"boxpoints":"all","jitter":0.1,"marker":{}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('a688bc9f-cc0b-4de5-aae4-2df0151385e5', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_a688bc9fcc0b4de5aae42df0151385e5();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_a688bc9fcc0b4de5aae42df0151385e5();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Choosing-The-Algorithm-For-Computing-Quartiles">Choosing The Algorithm For Computing Quartiles<a class="anchor-link" href="#Choosing-The-Algorithm-For-Computing-Quartiles">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>By default, quartiles for box plots are computed using the linear method (for more about linear interpolation, see #10 listed on <a href="http://www.amstat.org/publications/jse/v14n3/langford.html">http://www.amstat.org/publications/jse/v14n3/langford.html</a> and <a href="https://en.wikipedia.org/wiki/Quartile">https://en.wikipedia.org/wiki/Quartile</a> for more details).</p>
+<p>However, you can also choose to use an exclusive or an inclusive algorithm to compute quartiles.</p>
+<p>The exclusive algorithm uses the median to divide the ordered dataset into two halves. If the sample is odd, it does not include the median in either half. Q1 is then the median of the lower half and Q3 is the median of the upper half.</p>
+<p>The inclusive algorithm also uses the median to divide the ordered dataset into two halves, but if the sample is odd, it includes the median in both halves. Q1 is then the median of the lower half and Q3 the median of the upper half.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">y</span><span class="k">&#39;</span> <span class="o">=</span>  <span class="o">[</span><span class="mi">2</span><span class="o">.;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">5</span><span class="o">.;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">2</span><span class="o">.;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">1</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">1</span><span class="o">.;</span><span class="mi">2</span><span class="o">.;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">5</span><span class="o">.;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">3</span><span class="o">.;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">3</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">1</span><span class="o">.]</span>
+
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">BoxPlot</span><span class="o">(</span><span class="n">x</span><span class="o">,</span><span class="n">y&#39;</span><span class="o">,</span><span class="n">Boxpoints</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Boxpoints</span><span class="p">.</span><span class="n">All</span><span class="o">,</span><span class="n">QuartileMethod</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">QuartileMethod</span><span class="p">.</span><span class="n">Exclusive</span><span class="o">)</span> <span class="c1">//Inclusive or &quot;Linear&quot; by default</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="da969b00-cc6d-4223-86c0-3b6278ad77dd" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_da969b00cc6d422386c03b6278ad77dd = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"box","y":[2.0,1.5,5.0,1.5,2.0,2.5,2.1,2.5,1.5,1.0,2.0,1.5,5.0,1.5,3.0,2.5,2.5,1.5,3.5,1.0],"x":["bin1","bin2","bin1","bin2","bin1","bin2","bin1","bin1","bin2","bin1"],"boxpoints":"all","quartilemethod":"exclusive","marker":{}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('da969b00-cc6d-4223-86c0-3b6278ad77dd', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_da969b00cc6d422386c03b6278ad77dd();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_da969b00cc6d422386c03b6278ad77dd();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Modifying-The-Algorithm-For-Computing-Quartiles">Modifying The Algorithm For Computing Quartiles<a class="anchor-link" href="#Modifying-The-Algorithm-For-Computing-Quartiles">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>For an explanation of how each algorithm works, see  <a href="https://plotly.com/r/box-plots/#choosing-the-algorithm-for-computing-quartiles" target="_blank">Choosing The Algorithm For Computing Quartiles</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">y</span> <span class="o">=</span>  <span class="o">[</span><span class="mi">1</span><span class="o">;</span><span class="mi">2</span><span class="o">;</span><span class="mi">3</span><span class="o">;</span><span class="mi">4</span><span class="o">;</span><span class="mi">5</span><span class="o">]</span>
+
+<span class="o">[</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">BoxPlot</span><span class="o">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="o">,</span><span class="n">Boxpoints</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Boxpoints</span><span class="p">.</span><span class="n">All</span><span class="o">,</span><span class="n">QuartileMethod</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">QuartileMethod</span><span class="p">.</span><span class="n">Linear</span><span class="o">,</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;Linear Quartile&quot;</span><span class="o">);</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">BoxPlot</span><span class="o">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="o">,</span><span class="n">Boxpoints</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Boxpoints</span><span class="p">.</span><span class="n">All</span><span class="o">,</span><span class="n">QuartileMethod</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">QuartileMethod</span><span class="p">.</span><span class="n">Inclusive</span><span class="o">,</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;Inclusive Quartile&quot;</span><span class="o">);</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">BoxPlot</span><span class="o">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="o">,</span><span class="n">Boxpoints</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Boxpoints</span><span class="p">.</span><span class="n">All</span><span class="o">,</span><span class="n">QuartileMethod</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">QuartileMethod</span><span class="p">.</span><span class="n">Exclusive</span><span class="o">,</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;Exclusive Quartile&quot;</span><span class="o">)]</span>
+
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="9313538b-9858-4f11-a243-4917a1b9e530" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_9313538b98584f11a2434917a1b9e530 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"box","y":[1,2,3,4,5],"boxpoints":"all","quartilemethod":"linear","name":"Linear Quartile","marker":{}},{"type":"box","y":[1,2,3,4,5],"boxpoints":"all","quartilemethod":"inclusive","name":"Inclusive Quartile","marker":{}},{"type":"box","y":[1,2,3,4,5],"boxpoints":"all","quartilemethod":"exclusive","name":"Exclusive Quartile","marker":{}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('9313538b-9858-4f11-a243-4917a1b9e530', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_9313538b98584f11a2434917a1b9e530();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_9313538b98584f11a2434917a1b9e530();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Horizontal-Boxplot">Horizontal Boxplot<a class="anchor-link" href="#Horizontal-Boxplot">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">x1</span> <span class="o">=</span>  <span class="o">[</span><span class="mi">1</span><span class="o">;</span><span class="mi">2</span><span class="o">;</span><span class="mi">3</span><span class="o">;</span><span class="mi">4</span><span class="o">;</span><span class="mi">5</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">x2</span> <span class="o">=</span>  <span class="o">[</span><span class="mi">1</span><span class="o">;</span><span class="mi">2</span><span class="o">;</span><span class="mi">4</span><span class="o">;</span><span class="mi">5</span><span class="o">;</span><span class="mi">6</span><span class="o">;</span><span class="mi">9</span><span class="o">]</span>
+
+<span class="o">[</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">BoxPlot</span><span class="o">(</span><span class="n">x</span><span class="o">=</span><span class="n">x1</span><span class="o">,</span><span class="n">Boxpoints</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Boxpoints</span><span class="p">.</span><span class="n">All</span><span class="o">);</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">BoxPlot</span><span class="o">(</span><span class="n">x</span><span class="o">=</span><span class="n">x2</span><span class="o">,</span><span class="n">Boxpoints</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Boxpoints</span><span class="p">.</span><span class="n">All</span><span class="o">)</span>
+<span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="1484397d-b47c-449c-896c-2a5b70fab0e4" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_1484397db47c449c896c2a5b70fab0e4 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"box","x":[1,2,3,4,5],"boxpoints":"all","marker":{}},{"type":"box","x":[1,2,4,5,6,9],"boxpoints":"all","marker":{}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('1484397d-b47c-449c-896c-2a5b70fab0e4', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_1484397db47c449c896c2a5b70fab0e4();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_1484397db47c449c896c2a5b70fab0e4();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Adding-Jittered-Points">Adding Jittered Points<a class="anchor-link" href="#Adding-Jittered-Points">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">y</span> <span class="o">=</span>  <span class="o">[</span><span class="mi">2</span><span class="o">.;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">5</span><span class="o">.;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">3</span><span class="o">.;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">3</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">1</span><span class="o">.]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">BoxPlot</span><span class="o">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="o">,</span><span class="n">Boxpoints</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Boxpoints</span><span class="p">.</span><span class="n">All</span><span class="o">,</span><span class="n">Jitter</span><span class="o">=</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span><span class="n">Pointpos</span><span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">8</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[6]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="c5e9f85d-76bd-4d06-8185-67018984b4b4" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_c5e9f85d76bd4d06818567018984b4b4 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"box","y":[2.0,1.5,5.0,1.5,3.0,2.5,2.5,1.5,3.5,1.0],"boxpoints":"all","jitter":0.5,"pointpos":-1.8,"marker":{}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('c5e9f85d-76bd-4d06-8185-67018984b4b4', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_c5e9f85d76bd4d06818567018984b4b4();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_c5e9f85d76bd4d06818567018984b4b4();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Styled-box-plot">Styled box plot<a class="anchor-link" href="#Styled-box-plot">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">y</span> <span class="o">=</span>  <span class="o">[</span><span class="mi">2</span><span class="o">.;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">5</span><span class="o">.;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">3</span><span class="o">.;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">3</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">1</span><span class="o">.]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">BoxPlot</span><span class="o">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="o">,</span><span class="n">Boxpoints</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Boxpoints</span><span class="p">.</span><span class="n">All</span><span class="o">,</span><span class="n">Jitter</span><span class="o">=</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span><span class="n">Notched</span><span class="o">=</span><span class="k">true</span><span class="o">,</span><span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;red&quot;</span><span class="o">,</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;Styled box plot&quot;</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[7]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="73ad9ac2-ed55-4891-ac8f-97fac2b985f9" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_73ad9ac2ed554891ac8f97fac2b985f9 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"box","y":[2.0,1.5,5.0,1.5,3.0,2.5,2.5,1.5,3.5,1.0],"boxpoints":"all","jitter":0.5,"notched":true,"name":"Styled box plot","marker":{"color":"red"}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('73ad9ac2-ed55-4891-ac8f-97fac2b985f9', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_73ad9ac2ed554891ac8f97fac2b985f9();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_73ad9ac2ed554891ac8f97fac2b985f9();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Box-Plot-Styling-Mean-&amp;-Standard-Deviation">Box Plot Styling Mean &amp; Standard Deviation<a class="anchor-link" href="#Box-Plot-Styling-Mean-&amp;-Standard-Deviation">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+
+<span class="k">let</span> <span class="nv">y</span><span class="o">=[</span><span class="mi">2</span><span class="o">.</span><span class="mi">37</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">16</span><span class="o">;</span> <span class="mi">4</span><span class="o">.</span><span class="mi">82</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">73</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">04</span><span class="o">;</span> <span class="mi">0</span><span class="o">.</span><span class="mi">23</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">32</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">91</span><span class="o">;</span> <span class="mi">0</span><span class="o">.</span><span class="mi">11</span><span class="o">;</span> <span class="mi">4</span><span class="o">.</span><span class="mi">51</span><span class="o">;</span> <span class="mi">0</span><span class="o">.</span><span class="mi">51</span><span class="o">;</span> <span class="mi">3</span><span class="o">.</span><span class="mi">75</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">35</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">98</span><span class="o">;</span> <span class="mi">4</span><span class="o">.</span><span class="mi">50</span><span class="o">;</span> <span class="mi">0</span><span class="o">.</span><span class="mi">18</span><span class="o">;</span> <span class="mi">4</span><span class="o">.</span><span class="mi">66</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">30</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">06</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">19</span><span class="o">]</span>
+
+<span class="o">[</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">BoxPlot</span><span class="o">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="o">,</span><span class="n">Boxpoints</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Boxpoints</span><span class="p">.</span><span class="n">All</span><span class="o">,</span><span class="n">Jitter</span><span class="o">=</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span><span class="n">Notched</span><span class="o">=</span><span class="k">true</span><span class="o">,</span><span class="n">Marker</span><span class="o">=</span><span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;red&quot;</span><span class="o">),</span><span class="n">Boxmean</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">BoxMean</span><span class="p">.</span><span class="n">True</span><span class="o">,</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;Only Mean&quot;</span><span class="o">);</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">BoxPlot</span><span class="o">(</span><span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="o">,</span><span class="n">Boxpoints</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Boxpoints</span><span class="p">.</span><span class="n">All</span><span class="o">,</span><span class="n">Jitter</span><span class="o">=</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span><span class="n">Notched</span><span class="o">=</span><span class="k">true</span><span class="o">,</span><span class="n">Marker</span><span class="o">=</span><span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span>  <span class="s">&quot;blue&quot;</span><span class="o">),</span><span class="n">Boxmean</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">BoxMean</span><span class="p">.</span><span class="n">SD</span><span class="o">,</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;Mean &amp; SD&quot;</span><span class="o">)]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[8]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="5afde041-896b-4dcf-a3a2-da696d66a935" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_5afde041896b4dcfa3a2da696d66a935 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"box","y":[2.37,2.16,4.82,1.73,1.04,0.23,1.32,2.91,0.11,4.51,0.51,3.75,1.35,2.98,4.5,0.18,4.66,1.3,2.06,1.19],"boxpoints":"all","boxmean":"true","jitter":0.5,"marker":{"color":"red"},"notched":true,"name":"Only Mean"},{"type":"box","y":[2.37,2.16,4.82,1.73,1.04,0.23,1.32,2.91,0.11,4.51,0.51,3.75,1.35,2.98,4.5,0.18,4.66,1.3,2.06,1.19],"boxpoints":"all","boxmean":"SD","jitter":0.5,"marker":{"color":"blue"},"notched":true,"name":"Mean & SD"}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('5afde041-896b-4dcf-a3a2-da696d66a935', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_5afde041896b4dcfa3a2da696d66a935();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_5afde041896b4dcfa3a2da696d66a935();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Grouped-Box-plots">Grouped Box plots<a class="anchor-link" href="#Grouped-Box-plots">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Styling-Outliers">Styling Outliers<a class="anchor-link" href="#Styling-Outliers">&#182;</a></h1>
+</div>
+</div>
+</div>
+
+ 
+
+
+{% endraw %}

@@ -1,0 +1,559 @@
+---
+description: How to make horizontal bar charts in F# with Plotly.
+display_as: basic
+language: fsharp
+layout: base
+name: Horizontal Bar
+order: 8
+page_type: u-guide
+permalink: fsharp/horizontal-bar-charts/
+thumbnail: thumbnail/horizontal-bar.jpg
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET, 2.0.0-preview.8&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive, 2.0.0-preview.8&quot;</span>
+<span class="k">open</span> <span class="nn">Plotly.NET</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-6634.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '6634.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>Plotly.NET, 2.0.0-preview.8</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.8</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Basic-Horizontal-Bar-Chart">Basic Horizontal Bar Chart<a class="anchor-link" href="#Basic-Horizontal-Bar-Chart">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="nn">Chart</span><span class="p">.</span><span class="n">Bar</span><span class="o">([</span><span class="s">&quot;giraffes&quot;</span><span class="o">;</span> <span class="s">&quot;orangutans&quot;</span><span class="o">;</span> <span class="s">&quot;monkeys&quot;</span><span class="o">],</span> <span class="o">[</span><span class="mi">20</span><span class="o">;</span><span class="mi">14</span><span class="o">;</span><span class="mi">23</span><span class="o">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="1b39f3ce-cc5e-4dd7-936d-70d3b40b49bd" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_1b39f3cecc5e4dd7936d70d3b40b49bd = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[20,14,23],"y":["giraffes","orangutans","monkeys"],"orientation":"h","marker":{}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('1b39f3ce-cc5e-4dd7-936d-70d3b40b49bd', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_1b39f3cecc5e4dd7936d70d3b40b49bd();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_1b39f3cecc5e4dd7936d70d3b40b49bd();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Colored-Horizontal-Bar-Chart">Colored Horizontal Bar Chart<a class="anchor-link" href="#Colored-Horizontal-Bar-Chart">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+
+<span class="k">let</span> <span class="nv">markerStyle1</span> <span class="o">=</span> <span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgba(246, 78, 139, 0.6)&quot;</span><span class="o">,</span><span class="n">Line</span><span class="o">=</span><span class="nn">Line</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgba(246, 78, 139, 1.0)&quot;</span><span class="o">,</span><span class="n">Width</span><span class="o">=</span><span class="mi">3</span><span class="o">.))</span>
+<span class="k">let</span> <span class="nv">markerStyle2</span> <span class="o">=</span> <span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgba(58, 71, 80, 0.6)&quot;</span><span class="o">,</span><span class="n">Line</span><span class="o">=</span><span class="nn">Line</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgba(58, 71, 80, 1.0)&quot;</span><span class="o">,</span><span class="n">Width</span><span class="o">=</span><span class="mi">3</span><span class="o">.))</span>
+
+<span class="o">[</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Bar</span><span class="o">([</span><span class="s">&quot;giraffes&quot;</span><span class="o">;</span> <span class="s">&quot;orangutans&quot;</span><span class="o">;</span> <span class="s">&quot;monkeys&quot;</span><span class="o">],</span> <span class="o">[</span><span class="mi">20</span><span class="o">;</span><span class="mi">14</span><span class="o">;</span><span class="mi">23</span><span class="o">],</span><span class="n">Marker</span><span class="o">=</span><span class="n">markerStyle1</span><span class="o">,</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;SF Zoo&quot;</span><span class="o">)</span>    
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Bar</span><span class="o">([</span><span class="s">&quot;giraffes&quot;</span><span class="o">;</span> <span class="s">&quot;orangutans&quot;</span><span class="o">;</span> <span class="s">&quot;monkeys&quot;</span><span class="o">],</span> <span class="o">[</span><span class="mi">12</span><span class="o">;</span><span class="mi">18</span><span class="o">;</span><span class="mi">29</span><span class="o">],</span><span class="n">Marker</span><span class="o">=</span><span class="n">markerStyle2</span><span class="o">,</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;LA Zoo&quot;</span><span class="o">)</span>    
+<span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span><span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">BarMode</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">BarMode</span><span class="p">.</span><span class="n">Stack</span><span class="o">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="f9b930c0-7c4a-4ae5-91ea-53cc06c0dbfd" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_f9b930c07c4a4ae591ea53cc06c0dbfd = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[20,14,23],"y":["giraffes","orangutans","monkeys"],"orientation":"h","marker":{"color":"rgba(246, 78, 139, 0.6)","line":{"color":"rgba(246, 78, 139, 1.0)","width":3.0}},"name":"SF Zoo"},{"type":"bar","x":[12,18,29],"y":["giraffes","orangutans","monkeys"],"orientation":"h","marker":{"color":"rgba(58, 71, 80, 0.6)","line":{"color":"rgba(58, 71, 80, 1.0)","width":3.0}},"name":"LA Zoo"}];
+            var layout = {"barmode":"stack"};
+            var config = {};
+            Plotly.newPlot('f9b930c0-7c4a-4ae5-91ea-53cc06c0dbfd', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_f9b930c07c4a4ae591ea53cc06c0dbfd();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_f9b930c07c4a4ae591ea53cc06c0dbfd();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Color-Palette-for-Bar-Chart">Color Palette for Bar Chart<a class="anchor-link" href="#Color-Palette-for-Bar-Chart">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.LayoutObjects</span>
+
+<span class="k">let</span> <span class="nv">n</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="k">let</span> <span class="nv">topLabels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Strongly&lt;br&gt;agree&quot;</span><span class="o">;</span> <span class="s">&quot;Agree&quot;</span><span class="o">;</span> <span class="s">&quot;Neutral&quot;</span><span class="o">;</span> <span class="s">&quot;Disagree&quot;</span><span class="o">;</span> <span class="s">&quot;Strongly&lt;br&gt;disagree&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">colors</span> <span class="o">=</span> <span class="o">[|</span><span class="s">&quot;rgba(38, 24, 74, 0.8)&quot;</span><span class="o">;</span> <span class="s">&quot;rgba(71, 58, 131, 0.8)&quot;</span><span class="o">;</span> <span class="s">&quot;rgba(122, 120, 168, 0.8)&quot;</span><span class="o">;</span> <span class="s">&quot;rgba(164, 163, 204, 0.85)&quot;</span><span class="o">;</span> <span class="s">&quot;rgba(190, 192, 213, 1)&quot;</span><span class="o">|]</span>
+<span class="k">let</span> <span class="nv">xData</span> <span class="o">=</span> <span class="o">[[|</span><span class="mi">21</span><span class="o">;</span> <span class="mi">30</span><span class="o">;</span> <span class="mi">21</span><span class="o">;</span> <span class="mi">16</span><span class="o">;</span> <span class="mi">12</span><span class="o">;|];</span>
+             <span class="o">[|</span><span class="mi">24</span><span class="o">;</span> <span class="mi">31</span><span class="o">;</span> <span class="mi">19</span><span class="o">;</span> <span class="mi">15</span><span class="o">;</span> <span class="mi">11</span><span class="o">;|];</span>
+             <span class="o">[|</span><span class="mi">27</span><span class="o">;</span> <span class="mi">26</span><span class="o">;</span> <span class="mi">23</span><span class="o">;</span> <span class="mi">11</span><span class="o">;</span> <span class="mi">13</span><span class="o">;|];</span>
+             <span class="o">[|</span><span class="mi">29</span><span class="o">;</span> <span class="mi">24</span><span class="o">;</span> <span class="mi">15</span><span class="o">;</span> <span class="mi">18</span><span class="o">;</span> <span class="mi">14</span><span class="o">;|]]</span>
+<span class="k">let</span> <span class="nv">yData</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;The course was effectively&lt;br&gt;organized&quot;</span><span class="o">;</span>
+             <span class="s">&quot;The course developed my&lt;br&gt;abilities and skills &quot;</span> <span class="o">+</span>
+             <span class="s">&quot;for&lt;br&gt;the subject&quot;</span><span class="o">;</span> <span class="s">&quot;The course developed &quot;</span> <span class="o">+</span>
+             <span class="s">&quot;my&lt;br&gt;ability to think critically about&lt;br&gt;the subject&quot;</span><span class="o">;</span>
+             <span class="s">&quot;I would recommend this&lt;br&gt;course to a friend&quot;</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">fSum</span> <span class="n">x</span> <span class="o">=</span> <span class="o">(</span><span class="nn">Array</span><span class="p">.</span><span class="n">scan</span> <span class="o">(+)</span> <span class="mi">0</span> <span class="n">x</span><span class="o">).[</span><span class="mi">0</span><span class="o">..</span><span class="n">n</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">cumX</span> <span class="n">j</span><span class="o">=</span> <span class="n">fSum</span> <span class="n">xData</span><span class="o">.[</span><span class="n">j</span><span class="o">]</span>
+            <span class="o">|&gt;</span> <span class="nn">Array</span><span class="p">.</span><span class="n">mapi</span> <span class="o">(</span><span class="k">fun</span> <span class="n">i</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">x</span><span class="o">+</span><span class="n">xData</span><span class="o">.[</span><span class="mi">0</span><span class="o">].[</span><span class="n">i</span><span class="o">]/</span><span class="mi">2</span> <span class="k">else</span> <span class="n">xData</span><span class="o">.[</span><span class="mi">0</span><span class="o">].[</span><span class="mi">0</span><span class="o">]/</span><span class="mi">2</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">top_annotation</span> <span class="o">=[</span> <span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span><span class="o">..</span><span class="mi">4</span> <span class="o">-&gt;</span> <span class="nn">Annotation</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">XRef</span><span class="o">=</span><span class="s">&quot;x&quot;</span><span class="o">,</span><span class="n">YRef</span><span class="o">=</span><span class="s">&quot;paper&quot;</span><span class="o">,</span>
+                                                        <span class="n">X</span><span class="o">=(</span><span class="n">cumX</span> <span class="mi">0</span> <span class="o">|&gt;</span> <span class="nn">Array</span><span class="p">.</span><span class="n">item</span> <span class="n">i</span><span class="o">),</span>
+                                                        <span class="n">Y</span><span class="o">=</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span><span class="o">,</span>
+                                                        <span class="n">ShowArrow</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+                                                        <span class="n">Text</span><span class="o">=</span><span class="n">topLabels</span><span class="o">.[</span><span class="n">i</span><span class="o">])]</span>
+
+<span class="k">let</span> <span class="nv">label_annotations</span> <span class="o">=</span> <span class="o">[</span><span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span><span class="o">..</span><span class="mi">4</span> <span class="o">-&gt;</span> 
+                                <span class="o">[</span><span class="k">for</span> <span class="n">j</span> <span class="k">in</span> <span class="mi">0</span><span class="o">..</span><span class="mi">3</span> <span class="o">-&gt;</span> 
+                                        <span class="nn">Annotation</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">XRef</span><span class="o">=</span><span class="s">&quot;x&quot;</span><span class="o">,</span><span class="n">YRef</span><span class="o">=</span><span class="s">&quot;y&quot;</span><span class="o">,</span>
+                                                        <span class="n">X</span><span class="o">=(</span><span class="n">cumX</span> <span class="n">j</span> <span class="o">|&gt;</span> <span class="nn">Array</span><span class="p">.</span><span class="n">item</span> <span class="n">i</span><span class="o">),</span>
+                                                        <span class="n">Y</span><span class="o">=</span><span class="n">yData</span><span class="o">.[</span><span class="n">j</span><span class="o">],</span>
+                                                        <span class="n">ShowArrow</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+                                                        <span class="n">Font</span> <span class="o">=</span> <span class="nn">Font</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Family</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">FontFamily</span><span class="p">.</span><span class="n">Arial</span><span class="o">,</span> <span class="n">Size</span><span class="o">=</span><span class="mi">14</span><span class="o">.,</span> <span class="n">Color</span> <span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;white&quot;</span><span class="o">),</span>
+                                                        <span class="n">Text</span><span class="o">=</span><span class="kt">string</span> <span class="n">xData</span><span class="o">.[</span><span class="n">j</span><span class="o">].[</span><span class="n">i</span><span class="o">]+</span><span class="s">&quot;%&quot;</span><span class="o">)]]</span> <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">concat</span> <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">toList</span>
+
+<span class="k">let</span> <span class="nv">annotations</span> <span class="o">=</span> <span class="n">top_annotation</span> <span class="o">@</span> <span class="n">label_annotations</span>
+
+<span class="k">let</span> <span class="nv">markerStyle</span> <span class="n">i</span><span class="o">=</span> <span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="o">(</span><span class="n">colors</span><span class="o">.[</span><span class="n">i</span><span class="o">]),</span><span class="n">Line</span><span class="o">=</span><span class="nn">Line</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgb(248, 248, 249)&quot;</span><span class="o">,</span><span class="n">Width</span><span class="o">=</span><span class="mi">1</span><span class="o">.))</span>
+
+<span class="k">let</span> <span class="nv">y</span> <span class="n">i</span><span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">init</span> <span class="n">n</span> <span class="o">(</span><span class="k">fun</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="n">yData</span><span class="o">.[</span><span class="n">i</span><span class="o">])</span>
+
+<span class="o">[</span><span class="k">for</span> <span class="n">j</span> <span class="k">in</span> <span class="mi">0</span><span class="o">..</span><span class="n">n</span>  <span class="o">-&gt;</span> <span class="o">[</span><span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">0</span><span class="o">..</span><span class="mi">3</span> <span class="o">-&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">Bar</span><span class="o">(</span><span class="n">keys</span><span class="o">=</span><span class="n">y</span> <span class="n">i</span><span class="o">,</span><span class="n">values</span><span class="o">=[</span><span class="n">xData</span><span class="o">.[</span><span class="n">i</span><span class="o">].[</span><span class="n">j</span><span class="o">]],</span><span class="n">Marker</span><span class="o">=</span><span class="n">markerStyle</span> <span class="n">j</span><span class="o">)]</span> <span class="o">]</span> <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">concat</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span><span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">BarMode</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">BarMode</span><span class="p">.</span><span class="n">Stack</span><span class="o">,</span>
+                        <span class="n">Margin</span> <span class="o">=</span> <span class="nn">Margin</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Left</span> <span class="o">=</span> <span class="mi">120</span><span class="o">,</span> <span class="n">Right</span> <span class="o">=</span> <span class="mi">10</span><span class="o">,</span> <span class="n">Top</span> <span class="o">=</span> <span class="mi">140</span><span class="o">,</span> <span class="n">Bottom</span> <span class="o">=</span> <span class="mi">80</span><span class="o">),</span>
+                        <span class="n">ShowLegend</span><span class="o">=</span><span class="k">false</span><span class="o">,</span>
+                        <span class="n">Annotations</span><span class="o">=</span><span class="n">annotations</span><span class="o">,</span>
+                        <span class="n">PaperBGColor</span> <span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgb(248, 248, 255)&quot;</span><span class="o">,</span> <span class="n">PlotBGColor</span> <span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgb(248, 248, 255)&quot;</span><span class="o">,</span>
+                        <span class="n">Font</span> <span class="o">=</span> <span class="nn">Font</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Family</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">FontFamily</span><span class="p">.</span><span class="n">Arial</span><span class="o">,</span> <span class="n">Size</span><span class="o">=</span><span class="mi">14</span><span class="o">.,</span> <span class="n">Color</span> <span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgb(67, 67, 67)&quot;</span><span class="o">)))</span>
+
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withXAxis</span><span class="o">(</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Domain</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Range</span><span class="p">.</span><span class="n">MinMax</span> <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">15</span><span class="o">,</span> <span class="mi">1</span><span class="o">.),</span> <span class="n">ZeroLine</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span> <span class="n">ShowTickLabels</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span> <span class="n">ShowLine</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span> <span class="n">ShowGrid</span> <span class="o">=</span> <span class="k">false</span> <span class="o">))</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withYAxis</span><span class="o">(</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">ZeroLine</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span> <span class="n">ShowTickLabels</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span> <span class="n">ShowLine</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span> <span class="n">ShowGrid</span> <span class="o">=</span> <span class="k">false</span> <span class="o">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="bafdcc97-f422-4358-958f-1bf616630dc9" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_bafdcc97f4224358958f1bf616630dc9 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[21],"y":["The course was effectively<br>organized","The course was effectively<br>organized","The course was effectively<br>organized","The course was effectively<br>organized"],"orientation":"h","marker":{"color":"rgba(38, 24, 74, 0.8)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[24],"y":["The course developed my<br>abilities and skills for<br>the subject","The course developed my<br>abilities and skills for<br>the subject","The course developed my<br>abilities and skills for<br>the subject","The course developed my<br>abilities and skills for<br>the subject"],"orientation":"h","marker":{"color":"rgba(38, 24, 74, 0.8)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[27],"y":["The course developed my<br>ability to think critically about<br>the subject","The course developed my<br>ability to think critically about<br>the subject","The course developed my<br>ability to think critically about<br>the subject","The course developed my<br>ability to think critically about<br>the subject"],"orientation":"h","marker":{"color":"rgba(38, 24, 74, 0.8)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[29],"y":["I would recommend this<br>course to a friend","I would recommend this<br>course to a friend","I would recommend this<br>course to a friend","I would recommend this<br>course to a friend"],"orientation":"h","marker":{"color":"rgba(38, 24, 74, 0.8)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[30],"y":["The course was effectively<br>organized","The course was effectively<br>organized","The course was effectively<br>organized","The course was effectively<br>organized"],"orientation":"h","marker":{"color":"rgba(71, 58, 131, 0.8)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[31],"y":["The course developed my<br>abilities and skills for<br>the subject","The course developed my<br>abilities and skills for<br>the subject","The course developed my<br>abilities and skills for<br>the subject","The course developed my<br>abilities and skills for<br>the subject"],"orientation":"h","marker":{"color":"rgba(71, 58, 131, 0.8)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[26],"y":["The course developed my<br>ability to think critically about<br>the subject","The course developed my<br>ability to think critically about<br>the subject","The course developed my<br>ability to think critically about<br>the subject","The course developed my<br>ability to think critically about<br>the subject"],"orientation":"h","marker":{"color":"rgba(71, 58, 131, 0.8)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[24],"y":["I would recommend this<br>course to a friend","I would recommend this<br>course to a friend","I would recommend this<br>course to a friend","I would recommend this<br>course to a friend"],"orientation":"h","marker":{"color":"rgba(71, 58, 131, 0.8)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[21],"y":["The course was effectively<br>organized","The course was effectively<br>organized","The course was effectively<br>organized","The course was effectively<br>organized"],"orientation":"h","marker":{"color":"rgba(122, 120, 168, 0.8)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[19],"y":["The course developed my<br>abilities and skills for<br>the subject","The course developed my<br>abilities and skills for<br>the subject","The course developed my<br>abilities and skills for<br>the subject","The course developed my<br>abilities and skills for<br>the subject"],"orientation":"h","marker":{"color":"rgba(122, 120, 168, 0.8)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[23],"y":["The course developed my<br>ability to think critically about<br>the subject","The course developed my<br>ability to think critically about<br>the subject","The course developed my<br>ability to think critically about<br>the subject","The course developed my<br>ability to think critically about<br>the subject"],"orientation":"h","marker":{"color":"rgba(122, 120, 168, 0.8)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[15],"y":["I would recommend this<br>course to a friend","I would recommend this<br>course to a friend","I would recommend this<br>course to a friend","I would recommend this<br>course to a friend"],"orientation":"h","marker":{"color":"rgba(122, 120, 168, 0.8)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[16],"y":["The course was effectively<br>organized","The course was effectively<br>organized","The course was effectively<br>organized","The course was effectively<br>organized"],"orientation":"h","marker":{"color":"rgba(164, 163, 204, 0.85)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[15],"y":["The course developed my<br>abilities and skills for<br>the subject","The course developed my<br>abilities and skills for<br>the subject","The course developed my<br>abilities and skills for<br>the subject","The course developed my<br>abilities and skills for<br>the subject"],"orientation":"h","marker":{"color":"rgba(164, 163, 204, 0.85)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[11],"y":["The course developed my<br>ability to think critically about<br>the subject","The course developed my<br>ability to think critically about<br>the subject","The course developed my<br>ability to think critically about<br>the subject","The course developed my<br>ability to think critically about<br>the subject"],"orientation":"h","marker":{"color":"rgba(164, 163, 204, 0.85)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[18],"y":["I would recommend this<br>course to a friend","I would recommend this<br>course to a friend","I would recommend this<br>course to a friend","I would recommend this<br>course to a friend"],"orientation":"h","marker":{"color":"rgba(164, 163, 204, 0.85)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[12],"y":["The course was effectively<br>organized","The course was effectively<br>organized","The course was effectively<br>organized","The course was effectively<br>organized"],"orientation":"h","marker":{"color":"rgba(190, 192, 213, 1)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[11],"y":["The course developed my<br>abilities and skills for<br>the subject","The course developed my<br>abilities and skills for<br>the subject","The course developed my<br>abilities and skills for<br>the subject","The course developed my<br>abilities and skills for<br>the subject"],"orientation":"h","marker":{"color":"rgba(190, 192, 213, 1)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[13],"y":["The course developed my<br>ability to think critically about<br>the subject","The course developed my<br>ability to think critically about<br>the subject","The course developed my<br>ability to think critically about<br>the subject","The course developed my<br>ability to think critically about<br>the subject"],"orientation":"h","marker":{"color":"rgba(190, 192, 213, 1)","line":{"color":"rgb(248, 248, 249)","width":1.0}}},{"type":"bar","x":[14],"y":["I would recommend this<br>course to a friend","I would recommend this<br>course to a friend","I would recommend this<br>course to a friend","I would recommend this<br>course to a friend"],"orientation":"h","marker":{"color":"rgba(190, 192, 213, 1)","line":{"color":"rgb(248, 248, 249)","width":1.0}}}];
+            var layout = {"showlegend":false,"margin":{"l":120,"r":10,"t":140,"b":80},"font":{"family":"Arial","size":14.0,"color":"rgb(67, 67, 67)"},"paper_bgcolor":"rgb(248, 248, 255)","plot_bgcolor":"rgb(248, 248, 255)","barmode":"stack","annotations":[{"x":10,"y":1.1,"showarrow":false,"text":"Strongly<br>agree","xref":"x","yref":"paper"},{"x":36,"y":1.1,"showarrow":false,"text":"Agree","xref":"x","yref":"paper"},{"x":61,"y":1.1,"showarrow":false,"text":"Neutral","xref":"x","yref":"paper"},{"x":80,"y":1.1,"showarrow":false,"text":"Disagree","xref":"x","yref":"paper"},{"x":94,"y":1.1,"showarrow":false,"text":"Strongly<br>disagree","xref":"x","yref":"paper"},{"x":10,"y":"The course was effectively<br>organized","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"21%","xref":"x","yref":"y"},{"x":10,"y":"The course developed my<br>abilities and skills for<br>the subject","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"24%","xref":"x","yref":"y"},{"x":10,"y":"The course developed my<br>ability to think critically about<br>the subject","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"27%","xref":"x","yref":"y"},{"x":10,"y":"I would recommend this<br>course to a friend","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"29%","xref":"x","yref":"y"},{"x":36,"y":"The course was effectively<br>organized","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"30%","xref":"x","yref":"y"},{"x":39,"y":"The course developed my<br>abilities and skills for<br>the subject","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"31%","xref":"x","yref":"y"},{"x":42,"y":"The course developed my<br>ability to think critically about<br>the subject","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"26%","xref":"x","yref":"y"},{"x":44,"y":"I would recommend this<br>course to a friend","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"24%","xref":"x","yref":"y"},{"x":61,"y":"The course was effectively<br>organized","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"21%","xref":"x","yref":"y"},{"x":65,"y":"The course developed my<br>abilities and skills for<br>the subject","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"19%","xref":"x","yref":"y"},{"x":63,"y":"The course developed my<br>ability to think critically about<br>the subject","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"23%","xref":"x","yref":"y"},{"x":63,"y":"I would recommend this<br>course to a friend","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"15%","xref":"x","yref":"y"},{"x":80,"y":"The course was effectively<br>organized","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"16%","xref":"x","yref":"y"},{"x":82,"y":"The course developed my<br>abilities and skills for<br>the subject","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"15%","xref":"x","yref":"y"},{"x":84,"y":"The course developed my<br>ability to think critically about<br>the subject","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"11%","xref":"x","yref":"y"},{"x":76,"y":"I would recommend this<br>course to a friend","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"18%","xref":"x","yref":"y"},{"x":94,"y":"The course was effectively<br>organized","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"12%","xref":"x","yref":"y"},{"x":95,"y":"The course developed my<br>abilities and skills for<br>the subject","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"11%","xref":"x","yref":"y"},{"x":93,"y":"The course developed my<br>ability to think critically about<br>the subject","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"13%","xref":"x","yref":"y"},{"x":92,"y":"I would recommend this<br>course to a friend","font":{"family":"Arial","size":14.0,"color":"white"},"showarrow":false,"text":"14%","xref":"x","yref":"y"}],"xaxis":{"showticklabels":false,"showline":false,"showgrid":false,"zeroline":false,"domain":[0.15,1.0]},"yaxis":{"showticklabels":false,"showline":false,"showgrid":false,"zeroline":false}};
+            var config = {};
+            Plotly.newPlot('bafdcc97-f422-4358-958f-1bf616630dc9', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_bafdcc97f4224358958f1bf616630dc9();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_bafdcc97f4224358958f1bf616630dc9();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Bar-Chart-with-Line-Plot">Bar Chart with Line Plot<a class="anchor-link" href="#Bar-Chart-with-Line-Plot">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">ySaving</span> <span class="o">=</span> <span class="o">[|</span><span class="mi">1</span><span class="o">.</span><span class="mi">3586</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">2623000000000002</span><span class="o">;</span> <span class="mi">4</span><span class="o">.</span><span class="mi">9821999999999997</span><span class="o">;</span> <span class="mi">6</span><span class="o">.</span><span class="mi">5096999999999996</span><span class="o">;</span> <span class="mi">7</span><span class="o">.</span><span class="mi">4812000000000003</span><span class="o">;</span> <span class="mi">7</span><span class="o">.</span><span class="mi">5133000000000001</span><span class="o">;</span><span class="mi">15</span><span class="o">.</span><span class="mi">2148</span><span class="o">;</span><span class="mi">17</span><span class="o">.</span><span class="mi">520499999999998</span><span class="o">|]</span>
+<span class="k">let</span> <span class="nv">yNetWorth</span> <span class="o">=</span> <span class="o">[|</span><span class="mi">93453</span><span class="o">.</span><span class="mi">919999999998</span><span class="o">;</span> <span class="mi">81666</span><span class="o">.</span><span class="mi">570000000007</span><span class="o">;</span> <span class="mi">69889</span><span class="o">.</span><span class="mi">619999999995</span><span class="o">;</span> <span class="mi">78381</span><span class="o">.</span><span class="mi">529999999999</span><span class="o">;</span> <span class="mi">141395</span><span class="o">.</span><span class="mi">29999999999</span><span class="o">;</span> <span class="mi">92969</span><span class="o">.</span><span class="mi">020000000004</span><span class="o">;</span> <span class="mi">66090</span><span class="o">.</span><span class="mi">179999999993</span><span class="o">;</span> <span class="mi">122379</span><span class="o">.</span><span class="mi">3</span><span class="o">|]</span>
+<span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="o">[|</span><span class="s">&quot;Japan&quot;</span><span class="o">;</span> <span class="s">&quot;United Kingdom&quot;</span><span class="o">;</span> <span class="s">&quot;Canada&quot;</span><span class="o">;</span> <span class="s">&quot;Netherlands&quot;</span><span class="o">;</span> <span class="s">&quot;United States&quot;</span><span class="o">;</span> <span class="s">&quot;Belgium&quot;</span><span class="o">;</span> <span class="s">&quot;Sweden&quot;</span><span class="o">;</span> <span class="s">&quot;Switzerland&quot;</span><span class="o">|]</span>
+<span class="k">let</span> <span class="nv">xs</span> <span class="o">=</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">zip</span> <span class="n">yNetWorth</span> <span class="n">x</span>
+
+<span class="k">let</span> <span class="nv">barChart</span> <span class="o">=</span> <span class="o">(</span><span class="nn">Chart</span><span class="p">.</span><span class="n">Bar</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">ySaving</span><span class="o">,</span> <span class="n">Name</span><span class="o">=</span><span class="s">&quot;Household savings, percentage of household disposable income&quot;</span><span class="o">,</span> <span class="n">Marker</span> <span class="o">=</span> <span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Color</span> <span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgba(50, 171, 96, 0.6)&quot;</span><span class="o">,</span> <span class="n">Line</span> <span class="o">=</span> <span class="nn">Line</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Color</span> <span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgba(50, 171, 96, 1.0)&quot;</span><span class="o">,</span> <span class="n">Width</span> <span class="o">=</span><span class="mi">1</span><span class="o">.)))</span>
+                <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withYAxis</span><span class="o">(</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">ShowGrid</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span> <span class="n">ShowLine</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span> <span class="n">ShowTickLabels</span> <span class="o">=</span> <span class="k">true</span><span class="o">,</span><span class="n">Domain</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Range</span><span class="p">.</span><span class="n">MinMax</span><span class="o">(</span><span class="mi">0</span><span class="o">.,</span><span class="mi">0</span><span class="o">.</span><span class="mi">85</span><span class="o">)))</span>
+                <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withXAxis</span><span class="o">(</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">ShowGrid</span> <span class="o">=</span> <span class="k">true</span><span class="o">,</span> <span class="n">ShowLine</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span> <span class="n">ShowTickLabels</span> <span class="o">=</span> <span class="k">true</span><span class="o">,</span> <span class="n">ZeroLine</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span><span class="n">Domain</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Range</span><span class="p">.</span><span class="n">MinMax</span><span class="o">(</span><span class="mi">0</span><span class="o">.,</span><span class="mi">0</span><span class="o">.</span><span class="mi">42</span><span class="o">))))</span>
+
+<span class="k">let</span> <span class="nv">lineChart</span> <span class="o">=</span>  <span class="o">(</span><span class="nn">Chart</span><span class="p">.</span><span class="n">Line</span><span class="o">(</span><span class="n">xs</span><span class="o">,</span> <span class="n">Color</span> <span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgb(128, 0, 128)&quot;</span><span class="o">,</span> <span class="n">Name</span> <span class="o">=</span> <span class="s">&quot;Household net worth, Million USD/capita&quot;</span><span class="o">)</span>
+                    <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withYAxis</span><span class="o">(</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">ShowGrid</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span> <span class="n">ShowLine</span> <span class="o">=</span> <span class="k">true</span><span class="o">,</span> <span class="n">ShowTickLabels</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span> <span class="n">LineColor</span> <span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgba(102, 102, 102, 0.8)&quot;</span><span class="o">,</span> <span class="n">LineWidth</span> <span class="o">=</span> <span class="mi">2</span><span class="o">.,</span><span class="n">Domain</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Range</span><span class="p">.</span><span class="n">MinMax</span><span class="o">(</span><span class="mi">0</span><span class="o">.,</span><span class="mi">0</span><span class="o">.</span><span class="mi">85</span><span class="o">)))</span>
+                    <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withXAxis</span><span class="o">(</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">ShowGrid</span> <span class="o">=</span> <span class="k">true</span><span class="o">,</span> <span class="n">ShowLine</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span> <span class="n">ShowTickLabels</span> <span class="o">=</span> <span class="k">true</span><span class="o">,</span> <span class="n">ZeroLine</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span> <span class="n">Side</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Side</span><span class="p">.</span><span class="n">Top</span><span class="o">,</span> <span class="n">DTick</span> <span class="o">=</span> <span class="mi">25000</span><span class="o">,</span><span class="n">Domain</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Range</span><span class="p">.</span><span class="n">MinMax</span><span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">47</span><span class="o">,</span><span class="mi">1</span><span class="o">.))))</span>
+
+
+<span class="k">let</span> <span class="nv">annotations</span> <span class="o">=</span> <span class="o">[</span><span class="k">for</span> <span class="o">(</span><span class="n">ydn</span><span class="o">,</span> <span class="n">yd</span><span class="o">,</span> <span class="n">xd</span><span class="o">)</span> <span class="k">in</span> <span class="nn">Array</span><span class="p">.</span><span class="n">zip3</span> <span class="n">yNetWorth</span> <span class="n">ySaving</span> <span class="n">x</span><span class="o">-&gt;</span>
+
+                                                     <span class="o">[|</span><span class="nn">Annotation</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">XRef</span><span class="o">=</span><span class="s">&quot;x1&quot;</span><span class="o">,</span><span class="n">YRef</span><span class="o">=</span><span class="s">&quot;y1&quot;</span><span class="o">,</span>
+                                                        <span class="n">X</span><span class="o">=</span><span class="n">yd</span><span class="o">+</span><span class="mi">3</span><span class="o">.,</span>
+                                                        <span class="n">Y</span><span class="o">=</span><span class="n">xd</span><span class="o">,</span>
+                                                        <span class="n">ShowArrow</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+                                                        <span class="n">Font</span> <span class="o">=</span> <span class="nn">Font</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Family</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">FontFamily</span><span class="p">.</span><span class="n">Arial</span><span class="o">,</span> <span class="n">Size</span><span class="o">=</span><span class="mi">14</span><span class="o">.,</span> <span class="n">Color</span> <span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgb(50, 171, 96)&quot;</span><span class="o">),</span>
+                                                        <span class="n">Text</span><span class="o">=</span><span class="kt">string</span> <span class="n">yd</span><span class="o">+</span><span class="s">&quot;%&quot;</span><span class="o">);</span>
+
+                                                        <span class="nn">Annotation</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">XRef</span><span class="o">=</span><span class="s">&quot;x2&quot;</span><span class="o">,</span><span class="n">YRef</span><span class="o">=</span><span class="s">&quot;y2&quot;</span><span class="o">,</span>
+                                                        <span class="n">X</span><span class="o">=</span><span class="n">ydn</span><span class="o">-</span><span class="mi">20000</span><span class="o">.,</span>
+                                                        <span class="n">Y</span><span class="o">=</span><span class="n">xd</span><span class="o">,</span>
+                                                        <span class="n">ShowArrow</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+                                                        <span class="n">Font</span> <span class="o">=</span> <span class="nn">Font</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Family</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">FontFamily</span><span class="p">.</span><span class="n">Arial</span><span class="o">,</span> <span class="n">Size</span><span class="o">=</span><span class="mi">14</span><span class="o">.,</span> <span class="n">Color</span> <span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgb(128, 0, 128)&quot;</span><span class="o">),</span>
+                                                        <span class="n">Text</span><span class="o">=</span><span class="kt">string</span> <span class="n">ydn</span><span class="o">+</span><span class="s">&quot;M&quot;</span><span class="o">)|]</span> <span class="o">]</span> <span class="o">|&gt;</span> <span class="nn">Array</span><span class="p">.</span><span class="n">concat</span>
+
+<span class="k">let</span> <span class="nv">labelAnnotation</span> <span class="o">=</span> <span class="nn">Annotation</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">XRef</span><span class="o">=</span><span class="s">&quot;paper&quot;</span><span class="o">,</span><span class="n">YRef</span><span class="o">=</span><span class="s">&quot;paper&quot;</span><span class="o">,</span>
+                                            <span class="n">X</span><span class="o">=</span> <span class="mi">0</span><span class="o">,</span>
+                                            <span class="n">Y</span><span class="o">=</span> <span class="o">-</span><span class="mi">0</span><span class="o">.</span><span class="mi">109</span><span class="o">,</span>
+                                            <span class="n">ShowArrow</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+                                            <span class="n">Font</span> <span class="o">=</span> <span class="nn">Font</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Family</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">FontFamily</span><span class="p">.</span><span class="n">Arial</span><span class="o">,</span> <span class="n">Size</span><span class="o">=</span><span class="mi">10</span><span class="o">.,</span> <span class="n">Color</span> <span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;rgb(150,150,150)&quot;</span><span class="o">),</span>
+                                            <span class="n">Text</span><span class="o">=</span><span class="s">&quot;OECD (2015), Household savings (indicator), Household net worth (indicator). doi: 10.1787/cfc6f499-en (Accessed on 05 June 2015&quot;</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">allAnnotations</span> <span class="o">=</span> <span class="n">annotations</span><span class="o">|&gt;</span> <span class="nn">Array</span><span class="p">.</span><span class="n">append</span> <span class="o">[|</span><span class="n">labelAnnotation</span><span class="o">|]</span>
+
+<span class="o">[</span><span class="n">barChart</span><span class="o">;</span><span class="n">lineChart</span><span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">Grid</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span><span class="o">(</span><span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Width</span> <span class="o">=</span> <span class="mi">1000</span><span class="o">,</span> <span class="n">Margin</span> <span class="o">=</span> <span class="nn">Margin</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Top</span> <span class="o">=</span> <span class="mi">70</span><span class="o">.,</span> <span class="n">Bottom</span> <span class="o">=</span> <span class="mi">70</span><span class="o">.,</span> <span class="n">Left</span> <span class="o">=</span> <span class="mi">100</span><span class="o">.,</span> <span class="n">Right</span> <span class="o">=</span> <span class="mi">20</span><span class="o">.),</span> <span class="n">Legend</span> <span class="o">=</span> <span class="nn">Legend</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">X</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.</span><span class="mi">029</span><span class="o">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="mi">1</span><span class="o">.</span><span class="mi">100</span><span class="o">)))</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withAnnotations</span><span class="o">(</span><span class="n">allAnnotations</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="4e72a04e-f46d-490c-8c54-519fe0bb5f1b" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_4e72a04ef46d490c8c54519fe0bb5f1b = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"bar","x":[1.3586,2.2623,4.9822,6.5097,7.4812,7.5133,15.2148,17.5205],"y":["Japan","United Kingdom","Canada","Netherlands","United States","Belgium","Sweden","Switzerland"],"orientation":"h","marker":{"color":"rgba(50, 171, 96, 0.6)","line":{"color":"rgba(50, 171, 96, 1.0)","width":1.0}},"name":"Household savings, percentage of household disposable income","xaxis":"x","yaxis":"y"},{"type":"scatter","mode":"lines","x":[93453.92,81666.57,69889.62,78381.53,141395.3,92969.02,66090.18,122379.3],"y":["Japan","United Kingdom","Canada","Netherlands","United States","Belgium","Sweden","Switzerland"],"line":{"color":"rgb(128, 0, 128)"},"name":"Household net worth, Million USD/capita","marker":{"color":"rgb(128, 0, 128)"},"xaxis":"x2","yaxis":"y2"}];
+            var layout = {"yaxis":{"showticklabels":true,"showline":false,"showgrid":false,"domain":[0.0,0.85]},"xaxis":{"showticklabels":true,"showline":false,"showgrid":true,"zeroline":false,"domain":[0.0,0.42]},"xaxis2":{"dtick":25000,"showticklabels":true,"showline":false,"showgrid":true,"zeroline":false,"side":"top","domain":[0.47,1.0]},"yaxis2":{"showticklabels":false,"showline":true,"linecolor":"rgba(102, 102, 102, 0.8)","linewidth":2.0,"showgrid":false,"domain":[0.0,0.85]},"grid":{"rows":1,"columns":2,"pattern":"independent"},"legend":{"x":0.029,"y":1.1},"margin":{"l":100.0,"r":20.0,"t":70.0,"b":70.0},"width":1000,"annotations":[{"x":0,"y":-0.109,"font":{"family":"Arial","size":10.0,"color":"rgb(150,150,150)"},"showarrow":false,"text":"OECD (2015), Household savings (indicator), Household net worth (indicator). doi: 10.1787/cfc6f499-en (Accessed on 05 June 2015","xref":"paper","yref":"paper"},{"x":4.3586,"y":"Japan","font":{"family":"Arial","size":14.0,"color":"rgb(50, 171, 96)"},"showarrow":false,"text":"1.3586%","xref":"x1","yref":"y1"},{"x":73453.92,"y":"Japan","font":{"family":"Arial","size":14.0,"color":"rgb(128, 0, 128)"},"showarrow":false,"text":"93453.92M","xref":"x2","yref":"y2"},{"x":5.2623,"y":"United Kingdom","font":{"family":"Arial","size":14.0,"color":"rgb(50, 171, 96)"},"showarrow":false,"text":"2.2623%","xref":"x1","yref":"y1"},{"x":61666.57000000001,"y":"United Kingdom","font":{"family":"Arial","size":14.0,"color":"rgb(128, 0, 128)"},"showarrow":false,"text":"81666.57M","xref":"x2","yref":"y2"},{"x":7.9822,"y":"Canada","font":{"family":"Arial","size":14.0,"color":"rgb(50, 171, 96)"},"showarrow":false,"text":"4.9822%","xref":"x1","yref":"y1"},{"x":49889.619999999995,"y":"Canada","font":{"family":"Arial","size":14.0,"color":"rgb(128, 0, 128)"},"showarrow":false,"text":"69889.62M","xref":"x2","yref":"y2"},{"x":9.509699999999999,"y":"Netherlands","font":{"family":"Arial","size":14.0,"color":"rgb(50, 171, 96)"},"showarrow":false,"text":"6.5097%","xref":"x1","yref":"y1"},{"x":58381.53,"y":"Netherlands","font":{"family":"Arial","size":14.0,"color":"rgb(128, 0, 128)"},"showarrow":false,"text":"78381.53M","xref":"x2","yref":"y2"},{"x":10.481200000000001,"y":"United States","font":{"family":"Arial","size":14.0,"color":"rgb(50, 171, 96)"},"showarrow":false,"text":"7.4812%","xref":"x1","yref":"y1"},{"x":121395.29999999999,"y":"United States","font":{"family":"Arial","size":14.0,"color":"rgb(128, 0, 128)"},"showarrow":false,"text":"141395.3M","xref":"x2","yref":"y2"},{"x":10.513300000000001,"y":"Belgium","font":{"family":"Arial","size":14.0,"color":"rgb(50, 171, 96)"},"showarrow":false,"text":"7.5133%","xref":"x1","yref":"y1"},{"x":72969.02,"y":"Belgium","font":{"family":"Arial","size":14.0,"color":"rgb(128, 0, 128)"},"showarrow":false,"text":"92969.02M","xref":"x2","yref":"y2"},{"x":18.2148,"y":"Sweden","font":{"family":"Arial","size":14.0,"color":"rgb(50, 171, 96)"},"showarrow":false,"text":"15.2148%","xref":"x1","yref":"y1"},{"x":46090.17999999999,"y":"Sweden","font":{"family":"Arial","size":14.0,"color":"rgb(128, 0, 128)"},"showarrow":false,"text":"66090.18M","xref":"x2","yref":"y2"},{"x":20.5205,"y":"Switzerland","font":{"family":"Arial","size":14.0,"color":"rgb(50, 171, 96)"},"showarrow":false,"text":"17.5205%","xref":"x1","yref":"y1"},{"x":102379.3,"y":"Switzerland","font":{"family":"Arial","size":14.0,"color":"rgb(128, 0, 128)"},"showarrow":false,"text":"122379.3M","xref":"x2","yref":"y2"}]};
+            var config = {};
+            Plotly.newPlot('4e72a04e-f46d-490c-8c54-519fe0bb5f1b', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_4e72a04ef46d490c8c54519fe0bb5f1b();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_4e72a04ef46d490c8c54519fe0bb5f1b();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}

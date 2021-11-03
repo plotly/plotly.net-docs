@@ -1,0 +1,877 @@
+---
+description: How to make Pie charts in F# with Plotly.
+display_as: basic
+language: fsharp
+layout: base
+name: Pie Charts
+order: 4
+page_type: u-guide
+permalink: fsharp/pie-charts/
+thumbnail: thumbnail/pie-chart.jpg
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET, 2.0.0-preview.8&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive, 2.0.0-preview.8&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-9584.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '9584.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>Plotly.NET, 2.0.0-preview.8</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.8</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>A pie chart is a circular statistical chart, which is divided into sectors to illustrate numerical proportion.</p>
+<p>If you're looking instead for a multilevel hierarchical pie-like chart, go to the Sunburst tutorial.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Basic-Pie-Chart">Basic Pie Chart<a class="anchor-link" href="#Basic-Pie-Chart">&#182;</a></h1><p>In Chart.Pie, data visualized by the sectors of the pie is set in values. The sector labels are set in labels. The sector colors are set in SectionColors.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Oxygen&quot;</span><span class="o">;</span> <span class="s">&quot;Hydrogen&quot;</span><span class="o">;</span> <span class="s">&quot;Carbon_Dioxide&quot;</span><span class="o">;</span> <span class="s">&quot;Nitrogen&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">values</span> <span class="o">=</span> <span class="o">[</span><span class="mi">4500</span><span class="o">;</span> <span class="mi">2500</span><span class="o">;</span> <span class="mi">1053</span><span class="o">;</span> <span class="mi">500</span><span class="o">]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="5e05f77c-83cd-4fbb-aa61-dae6b51f768d" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_5e05f77c83cd4fbbaa61dae6b51f768d = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"pie","values":[4500,2500,1053,500],"labels":["Oxygen","Hydrogen","Carbon_Dioxide","Nitrogen"],"marker":{},"text":["Oxygen","Hydrogen","Carbon_Dioxide","Nitrogen"]}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('5e05f77c-83cd-4fbb-aa61-dae6b51f768d', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_5e05f77c83cd4fbbaa61dae6b51f768d();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_5e05f77c83cd4fbbaa61dae6b51f768d();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Styled-Pie-Chart">Styled Pie Chart<a class="anchor-link" href="#Styled-Pie-Chart">&#182;</a></h1><p>Colors can be given as RGB triplets or hexadecimal strings, or with CSS color names as below.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+
+<span class="k">let</span> <span class="nv">colors</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;gold&quot;</span><span class="o">;</span> <span class="s">&quot;mediumturquoise&quot;</span><span class="o">;</span> <span class="s">&quot;darkorange&quot;</span><span class="o">;</span> <span class="s">&quot;lightgreen&quot;</span><span class="o">]</span> <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="n">c</span><span class="o">)</span>
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Oxygen&quot;</span><span class="o">;</span> <span class="s">&quot;Hydrogen&quot;</span><span class="o">;</span> <span class="s">&quot;Carbon_Dioxide&quot;</span><span class="o">;</span> <span class="s">&quot;Nitrogen&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">values</span> <span class="o">=</span> <span class="o">[</span><span class="mi">4500</span><span class="o">;</span> <span class="mi">2500</span><span class="o">;</span> <span class="mi">1053</span><span class="o">;</span> <span class="mi">500</span><span class="o">]</span>
+
+
+<span class="k">let</span> <span class="nv">marker</span> <span class="o">=</span> <span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Line</span><span class="o">=</span><span class="nn">Line</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Color</span><span class="o">=</span><span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;black&quot;</span><span class="o">,</span><span class="n">Width</span><span class="o">=</span><span class="mi">2</span><span class="o">.))</span>
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="o">,</span><span class="n">SectionColors</span> <span class="o">=</span> <span class="n">colors</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span> <span class="o">(</span><span class="nn">TraceDomainStyle</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">HoverInfo</span><span class="o">=</span> <span class="s">&quot;label+percent&quot;</span><span class="o">,</span><span class="n">TextInfo</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">TextInfo</span><span class="p">.</span><span class="n">Value</span><span class="o">,</span><span class="n">TextFont</span><span class="o">=</span><span class="nn">Font</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Size</span><span class="o">=</span><span class="mi">20</span><span class="o">.),</span><span class="n">Marker</span><span class="o">=</span><span class="n">marker</span><span class="o">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="6db0952f-f88e-4a47-a1e8-4032133e6c84" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_6db0952ff88e4a47a1e84032133e6c84 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"pie","values":[4500,2500,1053,500],"labels":["Oxygen","Hydrogen","Carbon_Dioxide","Nitrogen"],"marker":{"line":{"color":"black","width":2.0}},"text":["Oxygen","Hydrogen","Carbon_Dioxide","Nitrogen"],"hoverinfo":"label+percent","textfont":{"size":20.0},"textinfo":"value"}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('6db0952f-f88e-4a47-a1e8-4032133e6c84', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_6db0952ff88e4a47a1e84032133e6c84();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_6db0952ff88e4a47a1e84032133e6c84();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Controlling-text-orientation-inside-pie-sectors">Controlling text orientation inside pie sectors<a class="anchor-link" href="#Controlling-text-orientation-inside-pie-sectors">&#182;</a></h1><p>The InsideTextOrientation attribute controls the orientation of text inside sectors. With "Auto" the texts may automatically be rotated to fit with the maximum size inside the slice. Using "Horizontal" (resp. "Radial", "Tangential") forces text to be horizontal (resp. radial or tangential)</p>
+<p>Example below shows how to change Inside text orientation</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Oxygen&quot;</span><span class="o">;</span> <span class="s">&quot;Hydrogen&quot;</span><span class="o">;</span> <span class="s">&quot;Carbon_Dioxide&quot;</span><span class="o">;</span> <span class="s">&quot;Nitrogen&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">values</span> <span class="o">=</span> <span class="o">[</span><span class="mi">4500</span><span class="o">;</span> <span class="mi">2500</span><span class="o">;</span> <span class="mi">1053</span><span class="o">;</span> <span class="mi">500</span><span class="o">]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span> <span class="o">(</span><span class="nn">TraceDomainStyle</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">InsideTextOrientation</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">InsideTextOrientation</span><span class="p">.</span><span class="n">Radial</span><span class="o">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="e54943c1-0cf4-4535-b58a-b34a191d74da" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_e54943c10cf44535b58ab34a191d74da = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"pie","values":[4500,2500,1053,500],"labels":["Oxygen","Hydrogen","Carbon_Dioxide","Nitrogen"],"marker":{},"text":["Oxygen","Hydrogen","Carbon_Dioxide","Nitrogen"],"insidetextorientation":"radial"}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('e54943c1-0cf4-4535-b58a-b34a191d74da', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_e54943c10cf44535b58ab34a191d74da();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_e54943c10cf44535b58ab34a191d74da();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Donut-Chart">Donut Chart<a class="anchor-link" href="#Donut-Chart">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Oxygen&quot;</span><span class="o">;</span> <span class="s">&quot;Hydrogen&quot;</span><span class="o">;</span> <span class="s">&quot;Carbon_Dioxide&quot;</span><span class="o">;</span> <span class="s">&quot;Nitrogen&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">values</span> <span class="o">=</span> <span class="o">[</span><span class="mi">4500</span><span class="o">;</span> <span class="mi">2500</span><span class="o">;</span> <span class="mi">1053</span><span class="o">;</span> <span class="mi">500</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">colors</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;gold&quot;</span><span class="o">;</span> <span class="s">&quot;mediumturquoise&quot;</span><span class="o">;</span> <span class="s">&quot;darkorange&quot;</span><span class="o">;</span> <span class="s">&quot;lightgreen&quot;</span><span class="o">]</span> <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="n">c</span><span class="o">)</span>
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Doughnut</span><span class="o">(</span><span class="n">Labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="o">,</span> <span class="n">Hole</span><span class="o">=</span><span class="mi">0</span><span class="o">.</span><span class="mi">3</span><span class="o">,</span><span class="n">SectionColors</span><span class="o">=</span><span class="n">colors</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="56127796-909c-4595-9a83-a8313f1c2fff" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_56127796909c45959a83a8313f1c2fff = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"pie","values":[4500,2500,1053,500],"labels":["Oxygen","Hydrogen","Carbon_Dioxide","Nitrogen"],"hole":0.3,"marker":{"colors":["gold","mediumturquoise","darkorange","lightgreen"]},"text":["Oxygen","Hydrogen","Carbon_Dioxide","Nitrogen"]}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('56127796-909c-4595-9a83-a8313f1c2fff', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_56127796909c45959a83a8313f1c2fff();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_56127796909c45959a83a8313f1c2fff();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Pulling-sectors-out-from-the-center">Pulling sectors out from the center<a class="anchor-link" href="#Pulling-sectors-out-from-the-center">&#182;</a></h1><p>For a "pulled-out" or "exploded" layout of the pie chart, use the pull argument.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Oxygen&quot;</span><span class="o">;</span> <span class="s">&quot;Hydrogen&quot;</span><span class="o">;</span> <span class="s">&quot;Carbon_Dioxide&quot;</span><span class="o">;</span> <span class="s">&quot;Nitrogen&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">values</span> <span class="o">=</span> <span class="o">[</span><span class="mi">4500</span><span class="o">.;</span> <span class="mi">2500</span><span class="o">.;</span> <span class="mi">1053</span><span class="o">.;</span> <span class="mi">500</span><span class="o">.]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Doughnut</span><span class="o">(</span><span class="n">Labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span> <span class="n">values</span><span class="o">=</span><span class="n">values</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="k">fun</span> <span class="n">t</span> <span class="o">-&gt;</span> <span class="n">t</span><span class="o">?</span><span class="n">pull</span> <span class="o">&lt;-</span> <span class="o">[</span><span class="mi">0</span><span class="o">.;</span><span class="mi">0</span><span class="o">.;</span><span class="mi">0</span><span class="o">.</span><span class="mi">2</span><span class="o">;</span><span class="mi">0</span><span class="o">.];</span><span class="n">t</span><span class="o">)</span> <span class="c1">//Workaround</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[6]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="8625a526-2072-4c9e-87df-95b796fe36c7" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_8625a52620724c9e87df95b796fe36c7 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"pie","values":[4500.0,2500.0,1053.0,500.0],"labels":["Oxygen","Hydrogen","Carbon_Dioxide","Nitrogen"],"hole":0.4,"marker":{},"text":["Oxygen","Hydrogen","Carbon_Dioxide","Nitrogen"],"pull":[0.0,0.0,0.2,0.0]}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('8625a526-2072-4c9e-87df-95b796fe36c7', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_8625a52620724c9e87df95b796fe36c7();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_8625a52620724c9e87df95b796fe36c7();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Pie-Charts-in-subplots">Pie Charts in subplots<a class="anchor-link" href="#Pie-Charts-in-subplots">&#182;</a></h1><p>Domain=Domain.init(Row=0,Column=0) or Domain.init(X=StyleParam.Range.MinMax(0.,0.5),Y=StyleParam.Range.MinMax(0.5,1.)) &amp; Chart.withLayoutGrid() can be set configure sub plots for multiple pie charts</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.LayoutObjects</span>
+
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;US&quot;</span><span class="o">;</span> <span class="s">&quot;China&quot;</span><span class="o">;</span> <span class="s">&quot;European Union&quot;</span><span class="o">;</span> <span class="s">&quot;Russian Federation&quot;</span><span class="o">;</span> <span class="s">&quot;Brazil&quot;</span><span class="o">;</span> <span class="s">&quot;India&quot;</span><span class="o">;</span> <span class="s">&quot;Rest of the World&quot;</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">CHG</span> <span class="o">=</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;CHG Emissions&quot;</span><span class="o">,</span><span class="n">Labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span><span class="n">values</span><span class="o">=[</span><span class="mi">16</span><span class="o">;</span> <span class="mi">15</span><span class="o">;</span> <span class="mi">12</span><span class="o">;</span> <span class="mi">6</span><span class="o">;</span> <span class="mi">5</span><span class="o">;</span> <span class="mi">4</span><span class="o">;</span> <span class="mi">42</span><span class="o">])</span>
+            <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="nn">TraceDomainStyle</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Domain</span><span class="o">=</span><span class="nn">Domain</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Row</span><span class="o">=</span><span class="mi">0</span><span class="o">,</span><span class="n">Column</span><span class="o">=</span><span class="mi">0</span><span class="o">),</span><span class="n">HoverInfo</span><span class="o">=</span><span class="s">&quot;label+percent+name&quot;</span><span class="o">,</span><span class="n">Hole</span><span class="o">=</span><span class="mi">0</span><span class="o">.</span><span class="mi">4</span><span class="o">))</span>
+            
+<span class="k">let</span> <span class="nv">CO2</span> <span class="o">=</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;CO2 Emissions&quot;</span><span class="o">,</span><span class="n">Labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span><span class="n">values</span><span class="o">=[</span><span class="mi">27</span><span class="o">;</span> <span class="mi">11</span><span class="o">;</span> <span class="mi">25</span><span class="o">;</span> <span class="mi">8</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">3</span><span class="o">;</span> <span class="mi">25</span><span class="o">])</span>
+            <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="nn">TraceDomainStyle</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Domain</span><span class="o">=</span><span class="nn">Domain</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Row</span><span class="o">=</span><span class="mi">0</span><span class="o">,</span><span class="n">Column</span><span class="o">=</span><span class="mi">1</span><span class="o">),</span><span class="n">HoverInfo</span><span class="o">=</span><span class="s">&quot;label+percent+name&quot;</span><span class="o">,</span><span class="n">Hole</span><span class="o">=</span><span class="mi">0</span><span class="o">.</span><span class="mi">4</span><span class="o">))</span>
+
+<span class="k">let</span> <span class="nv">CHGAnnotation</span> <span class="o">=</span> <span class="nn">Annotation</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">X</span><span class="o">=</span> <span class="mi">0</span><span class="o">.</span><span class="mi">20</span><span class="o">,</span><span class="n">Y</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span><span class="n">ShowArrow</span><span class="o">=</span><span class="k">false</span><span class="o">,</span><span class="n">Text</span><span class="o">=</span><span class="s">&quot;CHG&quot;</span><span class="o">,</span><span class="n">Font</span><span class="o">=</span><span class="nn">Font</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Size</span><span class="o">=</span><span class="mi">20</span><span class="o">.))</span>
+<span class="k">let</span> <span class="nv">CO2Annotation</span> <span class="o">=</span> <span class="nn">Annotation</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">X</span><span class="o">=</span> <span class="mi">0</span><span class="o">.</span><span class="mi">80</span><span class="o">,</span><span class="n">Y</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span><span class="n">ShowArrow</span><span class="o">=</span><span class="k">false</span><span class="o">,</span><span class="n">Text</span><span class="o">=</span><span class="s">&quot;CO2&quot;</span><span class="o">,</span><span class="n">Font</span><span class="o">=</span><span class="nn">Font</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Size</span><span class="o">=</span><span class="mi">20</span><span class="o">.))</span>
+
+<span class="o">[</span><span class="n">CHG</span><span class="o">;</span><span class="n">CO2</span><span class="o">]</span> 
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayoutGrid</span><span class="o">(</span><span class="nn">LayoutGrid</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Rows</span><span class="o">=</span><span class="mi">1</span><span class="o">,</span><span class="n">Columns</span><span class="o">=</span><span class="mi">2</span><span class="o">))</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withAnnotations</span><span class="o">([</span><span class="n">CHGAnnotation</span><span class="o">;</span><span class="n">CO2Annotation</span><span class="o">])</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withTitle</span><span class="o">(</span><span class="s">&quot;Global Emissions 1990-2011&quot;</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[7]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="1cfea564-32d5-454b-a6e4-1be27a692c9a" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_1cfea56432d5454ba6e41be27a692c9a = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"pie","name":"CHG Emissions","values":[16,15,12,6,5,4,42],"labels":["US","China","European Union","Russian Federation","Brazil","India","Rest of the World"],"marker":{},"text":["US","China","European Union","Russian Federation","Brazil","India","Rest of the World"],"hoverinfo":"label+percent+name","domain":{"row":0,"column":0},"hole":0.4},{"type":"pie","name":"CO2 Emissions","values":[27,11,25,8,1,3,25],"labels":["US","China","European Union","Russian Federation","Brazil","India","Rest of the World"],"marker":{},"text":["US","China","European Union","Russian Federation","Brazil","India","Rest of the World"],"hoverinfo":"label+percent+name","domain":{"row":0,"column":1},"hole":0.4}];
+            var layout = {"grid":{"rows":1,"columns":2},"annotations":[{"x":0.2,"y":0.5,"font":{"size":20.0},"showarrow":false,"text":"CHG"},{"x":0.8,"y":0.5,"font":{"size":20.0},"showarrow":false,"text":"CO2"}],"title":{"text":"Global Emissions 1990-2011"}};
+            var config = {};
+            Plotly.newPlot('1cfea564-32d5-454b-a6e4-1be27a692c9a', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_1cfea56432d5454ba6e41be27a692c9a();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_1cfea56432d5454ba6e41be27a692c9a();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;1st&quot;</span><span class="o">;</span> <span class="s">&quot;2nd&quot;</span><span class="o">;</span> <span class="s">&quot;3rd&quot;</span><span class="o">;</span> <span class="s">&quot;4th&quot;</span><span class="o">;</span> <span class="s">&quot;5th&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">nightColors</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;rgb(56, 75, 126)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(18, 36, 37)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(34, 53, 101)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(36, 55, 57)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(6, 4, 4)&quot;</span><span class="o">]</span> <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="n">c</span><span class="o">)</span>
+<span class="k">let</span> <span class="nv">sunflowersColors</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;rgb(177; 127; 38)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(205; 152; 36)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(99; 79; 37)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(129; 180; 179)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(124; 103; 37)&quot;</span><span class="o">]</span> <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="n">c</span><span class="o">)</span>
+<span class="k">let</span> <span class="nv">irisesColors</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;rgb(33; 75; 99)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(79; 129; 102)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(151; 179; 100)&quot;</span><span class="o">;</span><span class="s">&quot;rgb(175; 49; 35)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(36; 73; 147)&quot;</span><span class="o">]</span> <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="n">c</span><span class="o">)</span>
+<span class="k">let</span> <span class="nv">cafeColors</span> <span class="o">=</span>  <span class="o">[</span><span class="s">&quot;rgb(146; 123; 21)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(177; 180; 34)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(206; 206; 40)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(175; 51; 21)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(35; 36; 21)&quot;</span><span class="o">]</span> <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="n">c</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">starryNight</span> <span class="o">=</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;Starry Night&quot;</span><span class="o">,</span><span class="n">Labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span><span class="n">values</span><span class="o">=[</span><span class="mi">38</span><span class="o">;</span> <span class="mi">27</span><span class="o">;</span> <span class="mi">18</span><span class="o">;</span> <span class="mi">10</span><span class="o">;</span> <span class="mi">7</span><span class="o">],</span><span class="n">SectionColors</span><span class="o">=</span><span class="n">nightColors</span><span class="o">)</span>
+                    <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="nn">TraceDomainStyle</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Domain</span><span class="o">=</span><span class="nn">Domain</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">X</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Range</span><span class="p">.</span><span class="n">MinMax</span><span class="o">(</span><span class="mi">0</span><span class="o">.,</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">),</span><span class="n">Y</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Range</span><span class="p">.</span><span class="n">MinMax</span><span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span><span class="mi">1</span><span class="o">.)),</span><span class="n">HoverInfo</span><span class="o">=</span><span class="s">&quot;label+percent+name&quot;</span><span class="o">,</span><span class="n">TextInfo</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">TextInfo</span><span class="p">.</span><span class="n">None</span><span class="o">))</span>
+
+<span class="k">let</span> <span class="nv">sunflowers</span> <span class="o">=</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;Sunflowers&quot;</span><span class="o">,</span><span class="n">Labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span><span class="n">values</span><span class="o">=[</span><span class="mi">28</span><span class="o">;</span> <span class="mi">26</span><span class="o">;</span> <span class="mi">21</span><span class="o">;</span> <span class="mi">15</span><span class="o">;</span> <span class="mi">10</span><span class="o">],</span><span class="n">SectionColors</span><span class="o">=</span><span class="n">sunflowersColors</span><span class="o">)</span>
+                    <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="nn">TraceDomainStyle</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Domain</span><span class="o">=</span><span class="nn">Domain</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">X</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Range</span><span class="p">.</span><span class="n">MinMax</span><span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span><span class="mi">1</span><span class="o">.),</span><span class="n">Y</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Range</span><span class="p">.</span><span class="n">MinMax</span><span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span><span class="mi">1</span><span class="o">.)),</span><span class="n">HoverInfo</span><span class="o">=</span><span class="s">&quot;label+percent+name&quot;</span><span class="o">,</span><span class="n">TextInfo</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">TextInfo</span><span class="p">.</span><span class="n">None</span><span class="o">))</span>
+
+<span class="k">let</span> <span class="nv">irises</span> <span class="o">=</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;Irises&quot;</span><span class="o">,</span><span class="n">Labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span><span class="n">values</span><span class="o">=[</span><span class="mi">38</span><span class="o">;</span> <span class="mi">19</span><span class="o">;</span> <span class="mi">16</span><span class="o">;</span> <span class="mi">14</span><span class="o">;</span> <span class="mi">13</span><span class="o">],</span><span class="n">SectionColors</span><span class="o">=</span><span class="n">irisesColors</span><span class="o">)</span>
+                    <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="nn">TraceDomainStyle</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Domain</span><span class="o">=</span><span class="nn">Domain</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">X</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Range</span><span class="p">.</span><span class="n">MinMax</span><span class="o">(</span><span class="mi">0</span><span class="o">.,</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">),</span><span class="n">Y</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Range</span><span class="p">.</span><span class="n">MinMax</span><span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">)),</span><span class="n">HoverInfo</span><span class="o">=</span><span class="s">&quot;label+percent+name&quot;</span><span class="o">,</span><span class="n">TextInfo</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">TextInfo</span><span class="p">.</span><span class="n">None</span><span class="o">))</span>
+
+<span class="k">let</span> <span class="nv">nightCafe</span> <span class="o">=</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;The Night Cafe&quot;</span><span class="o">,</span><span class="n">Labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span><span class="n">values</span><span class="o">=[</span><span class="mi">31</span><span class="o">;</span> <span class="mi">24</span><span class="o">;</span> <span class="mi">19</span><span class="o">;</span> <span class="mi">18</span><span class="o">;</span> <span class="mi">8</span><span class="o">],</span><span class="n">SectionColors</span><span class="o">=</span><span class="n">cafeColors</span><span class="o">)</span>
+                    <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="nn">TraceDomainStyle</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Domain</span><span class="o">=</span><span class="nn">Domain</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">X</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Range</span><span class="p">.</span><span class="n">MinMax</span><span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">),</span><span class="n">Y</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Range</span><span class="p">.</span><span class="n">MinMax</span><span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">)),</span><span class="n">HoverInfo</span><span class="o">=</span><span class="s">&quot;label+percent+name&quot;</span><span class="o">,</span><span class="n">TextInfo</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">TextInfo</span><span class="p">.</span><span class="n">None</span><span class="o">))</span>
+    
+<span class="o">[</span><span class="n">starryNight</span><span class="o">;</span><span class="n">sunflowers</span><span class="o">;</span><span class="n">irises</span><span class="o">;</span><span class="n">nightCafe</span><span class="o">]</span> 
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayoutGrid</span><span class="o">(</span><span class="nn">LayoutGrid</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Rows</span><span class="o">=</span><span class="mi">2</span><span class="o">,</span><span class="n">Columns</span><span class="o">=</span><span class="mi">2</span><span class="o">))</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withTitle</span><span class="o">(</span><span class="s">&quot;Van Gogh: 5 Most Prominent Colors Shown Proportionally&quot;</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[8]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="997c5b10-07f1-4690-b7e1-79e7795b7c08" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_997c5b1007f14690b7e179e7795b7c08 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"pie","name":"Starry Night","values":[38,27,18,10,7],"labels":["1st","2nd","3rd","4th","5th"],"marker":{"colors":["rgb(56, 75, 126)","rgb(18, 36, 37)","rgb(34, 53, 101)","rgb(36, 55, 57)","rgb(6, 4, 4)"]},"text":["1st","2nd","3rd","4th","5th"],"hoverinfo":"label+percent+name","domain":{"x":[0.0,0.5],"y":[0.5,1.0]},"textinfo":"none"},{"type":"pie","name":"Sunflowers","values":[28,26,21,15,10],"labels":["1st","2nd","3rd","4th","5th"],"marker":{"colors":["rgb(177; 127; 38)","rgb(205; 152; 36)","rgb(99; 79; 37)","rgb(129; 180; 179)","rgb(124; 103; 37)"]},"text":["1st","2nd","3rd","4th","5th"],"hoverinfo":"label+percent+name","domain":{"x":[0.5,1.0],"y":[0.5,1.0]},"textinfo":"none"},{"type":"pie","name":"Irises","values":[38,19,16,14,13],"labels":["1st","2nd","3rd","4th","5th"],"marker":{"colors":["rgb(33; 75; 99)","rgb(79; 129; 102)","rgb(151; 179; 100)","rgb(175; 49; 35)","rgb(36; 73; 147)"]},"text":["1st","2nd","3rd","4th","5th"],"hoverinfo":"label+percent+name","domain":{"x":[0.0,0.5],"y":[0.0,0.5]},"textinfo":"none"},{"type":"pie","name":"The Night Cafe","values":[31,24,19,18,8],"labels":["1st","2nd","3rd","4th","5th"],"marker":{"colors":["rgb(146; 123; 21)","rgb(177; 180; 34)","rgb(206; 206; 40)","rgb(175; 51; 21)","rgb(35; 36; 21)"]},"text":["1st","2nd","3rd","4th","5th"],"hoverinfo":"label+percent+name","domain":{"x":[0.5,1.0],"y":[0.0,0.5]},"textinfo":"none"}];
+            var layout = {"grid":{"rows":2,"columns":2},"title":{"text":"Van Gogh: 5 Most Prominent Colors Shown Proportionally"}};
+            var config = {};
+            Plotly.newPlot('997c5b10-07f1-4690-b7e1-79e7795b7c08', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_997c5b1007f14690b7e179e7795b7c08();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_997c5b1007f14690b7e179e7795b7c08();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Plot-chart-with-area-proportional-to-total-count">Plot chart with area proportional to total count<a class="anchor-link" href="#Plot-chart-with-area-proportional-to-total-count">&#182;</a></h1><p>ScaleGroup property can be set to scale pie charts according to the area</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Asia&quot;</span><span class="o">;</span> <span class="s">&quot;Europe&quot;</span><span class="o">;</span> <span class="s">&quot;Africa&quot;</span><span class="o">;</span> <span class="s">&quot;Americas&quot;</span><span class="o">;</span> <span class="s">&quot;Oceania&quot;</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">gdp1980</span> <span class="o">=</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;World GDP 1980&quot;</span><span class="o">,</span><span class="n">Labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span><span class="n">values</span><span class="o">=[</span><span class="mi">4</span><span class="o">.;</span><span class="mi">7</span><span class="o">.;</span><span class="mi">1</span><span class="o">.;</span><span class="mi">7</span><span class="o">.;</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">])</span>
+            <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="nn">TraceDomainStyle</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Domain</span><span class="o">=</span><span class="nn">Domain</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Row</span><span class="o">=</span><span class="mi">0</span><span class="o">,</span><span class="n">Column</span><span class="o">=</span><span class="mi">0</span><span class="o">),</span><span class="n">HoverInfo</span><span class="o">=</span><span class="s">&quot;label+percent+name&quot;</span><span class="o">,</span><span class="n">ScaleGroup</span><span class="o">=</span><span class="s">&quot;one&quot;</span><span class="o">))</span>
+            
+<span class="k">let</span> <span class="nv">gdp2007</span> <span class="o">=</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Name</span><span class="o">=</span><span class="s">&quot;World GDP 2007&quot;</span><span class="o">,</span><span class="n">Labels</span><span class="o">=</span><span class="n">labels</span><span class="o">,</span><span class="n">values</span><span class="o">=[</span><span class="mi">21</span><span class="o">.;</span><span class="mi">15</span><span class="o">.;</span><span class="mi">3</span><span class="o">.;</span><span class="mi">19</span><span class="o">.;</span><span class="mi">1</span><span class="o">.])</span>
+            <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">mapTrace</span><span class="o">(</span><span class="nn">TraceDomainStyle</span><span class="p">.</span><span class="n">Pie</span><span class="o">(</span><span class="n">Domain</span><span class="o">=</span><span class="nn">Domain</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Row</span><span class="o">=</span><span class="mi">0</span><span class="o">,</span><span class="n">Column</span><span class="o">=</span><span class="mi">1</span><span class="o">),</span><span class="n">HoverInfo</span><span class="o">=</span><span class="s">&quot;label+percent+name&quot;</span><span class="o">,</span><span class="n">ScaleGroup</span><span class="o">=</span><span class="s">&quot;one&quot;</span><span class="o">))</span>
+
+<span class="o">[</span><span class="n">gdp1980</span><span class="o">;</span><span class="n">gdp2007</span><span class="o">]</span> 
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayoutGrid</span><span class="o">(</span><span class="nn">LayoutGrid</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Rows</span><span class="o">=</span><span class="mi">1</span><span class="o">,</span><span class="n">Columns</span><span class="o">=</span><span class="mi">2</span><span class="o">))</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withTitle</span><span class="o">(</span><span class="s">&quot;World GDP&quot;</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[9]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="9b4c6812-5f7a-4e2d-ba49-798d37b619b3" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_9b4c68125f7a4e2dba49798d37b619b3 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"pie","name":"World GDP 1980","values":[4.0,7.0,1.0,7.0,0.5],"labels":["Asia","Europe","Africa","Americas","Oceania"],"marker":{},"text":["Asia","Europe","Africa","Americas","Oceania"],"hoverinfo":"label+percent+name","domain":{"row":0,"column":0},"scalegroup":"one"},{"type":"pie","name":"World GDP 2007","values":[21.0,15.0,3.0,19.0,1.0],"labels":["Asia","Europe","Africa","Americas","Oceania"],"marker":{},"text":["Asia","Europe","Africa","Americas","Oceania"],"hoverinfo":"label+percent+name","domain":{"row":0,"column":1},"scalegroup":"one"}];
+            var layout = {"grid":{"rows":1,"columns":2},"title":{"text":"World GDP"}};
+            var config = {};
+            Plotly.newPlot('9b4c6812-5f7a-4e2d-ba49-798d37b619b3', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_9b4c68125f7a4e2dba49798d37b619b3();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_9b4c68125f7a4e2dba49798d37b619b3();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Sunburst-charts">Sunburst charts<a class="anchor-link" href="#Sunburst-charts">&#182;</a></h1><p>For multilevel pie charts representing hierarchical data, you can use the Sunburst chart. A simple example is given below, for more information see the tutorial on Sunburst charts.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Cain&quot;</span><span class="o">;</span> <span class="s">&quot;Seth&quot;</span><span class="o">;</span> <span class="s">&quot;Enos&quot;</span><span class="o">;</span> <span class="s">&quot;Noam&quot;</span><span class="o">;</span> <span class="s">&quot;Abel&quot;</span><span class="o">;</span> <span class="s">&quot;Awan&quot;</span><span class="o">;</span> <span class="s">&quot;Enoch&quot;</span><span class="o">;</span> <span class="s">&quot;Azura&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">parents</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Seth&quot;</span><span class="o">;</span> <span class="s">&quot;Seth&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">;</span> <span class="s">&quot;Awan&quot;</span><span class="o">;</span> <span class="s">&quot;Eve&quot;</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">values</span> <span class="o">=</span> <span class="o">[</span><span class="mi">10</span><span class="o">.;</span><span class="mi">14</span><span class="o">.;</span><span class="mi">12</span><span class="o">.;</span><span class="mi">10</span><span class="o">.;</span><span class="mi">2</span><span class="o">.;</span><span class="mi">6</span><span class="o">.;</span><span class="mi">6</span><span class="o">.;</span><span class="mi">4</span><span class="o">.;</span><span class="mi">4</span><span class="o">.]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Sunburst</span><span class="o">(</span><span class="n">labels</span> <span class="o">=</span> <span class="n">labels</span><span class="o">,</span> <span class="n">parents</span> <span class="o">=</span> <span class="n">parents</span><span class="o">,</span> <span class="n">Values</span> <span class="o">=</span> <span class="n">values</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarginSize</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[10]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="f16ab3f1-3fa7-4119-b3bc-dbc4026a7e99" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_f16ab3f13fa74119b3bcdbc4026a7e99 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"sunburst","labels":["Eve","Cain","Seth","Enos","Noam","Abel","Awan","Enoch","Azura"],"parents":["","Eve","Eve","Seth","Seth","Eve","Eve","Awan","Eve"],"values":[10.0,14.0,12.0,10.0,2.0,6.0,6.0,4.0,4.0],"marker":{}}];
+            var layout = {"margin":{"l":0}};
+            var config = {};
+            Plotly.newPlot('f16ab3f1-3fa7-4119-b3bc-dbc4026a7e99', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_f16ab3f13fa74119b3bcdbc4026a7e99();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_f16ab3f13fa74119b3bcdbc4026a7e99();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}

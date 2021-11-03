@@ -1,0 +1,574 @@
+---
+description: How to make bubble charts in F# with Plotly.
+display_as: basic
+language: fsharp
+layout: base
+name: Bubble Charts
+order: 5
+page_type: u-guide
+permalink: fsharp/bubble-charts/
+thumbnail: thumbnail/bubble.jpg
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET,  2.0.0-preview.8&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: newtonsoft.json&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive,  2.0.0-preview.8&quot;</span>
+<span class="k">open</span> <span class="nn">Plotly.NET</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-3543.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '3543.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>newtonsoft.json, 13.0.1</span></li><li><span>Plotly.NET, 2.0.0-preview.8</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.8</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Simple-Bubble-Chart">Simple Bubble Chart<a class="anchor-link" href="#Simple-Bubble-Chart">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Bubble</span><span class="o">([</span><span class="mi">1</span><span class="o">;</span><span class="mi">2</span><span class="o">;</span><span class="mi">3</span><span class="o">;</span><span class="mi">4</span><span class="o">],</span> <span class="o">[</span><span class="mi">10</span><span class="o">;</span><span class="mi">11</span><span class="o">;</span><span class="mi">12</span><span class="o">;</span><span class="mi">13</span><span class="o">],</span> <span class="o">[</span><span class="mi">40</span><span class="o">;</span><span class="mi">60</span><span class="o">;</span><span class="mi">80</span><span class="o">;</span><span class="mi">100</span><span class="o">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="b352fd4e-61db-4e22-b196-808cc3bcfb92" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_b352fd4e61db4e22b196808cc3bcfb92 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scatter","mode":"markers","x":[1,2,3,4],"y":[10,11,12,13],"marker":{"size":[40,60,80,100]}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('b352fd4e-61db-4e22-b196-808cc3bcfb92', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_b352fd4e61db4e22b196808cc3bcfb92();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_b352fd4e61db4e22b196808cc3bcfb92();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Setting-Marker-Size-and-Color">Setting Marker Size and Color<a class="anchor-link" href="#Setting-Marker-Size-and-Color">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+
+<span class="k">let</span> <span class="nv">colors</span> <span class="o">=</span> 
+    <span class="o">[|</span><span class="s">&quot;#4287f5&quot;</span><span class="o">;</span><span class="s">&quot;#cb23fa&quot;</span><span class="o">;</span><span class="s">&quot;#23fabd&quot;</span><span class="o">;</span><span class="s">&quot;#ff7b00&quot;</span><span class="o">|]</span> 
+    <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span>
+    <span class="o">|&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromColors</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Bubble</span><span class="o">(</span><span class="n">x</span><span class="o">=[</span><span class="mi">1</span><span class="o">;</span><span class="mi">2</span><span class="o">;</span><span class="mi">3</span><span class="o">;</span><span class="mi">4</span><span class="o">],</span> <span class="n">y</span><span class="o">=[</span><span class="mi">10</span><span class="o">;</span><span class="mi">11</span><span class="o">;</span><span class="mi">12</span><span class="o">;</span><span class="mi">13</span><span class="o">],</span> <span class="n">sizes</span><span class="o">=[</span><span class="mi">40</span><span class="o">;</span><span class="mi">60</span><span class="o">;</span><span class="mi">80</span><span class="o">;</span><span class="mi">100</span><span class="o">],</span><span class="n">Color</span><span class="o">=</span><span class="n">colors</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="b37af95c-4045-43d6-8dfe-0a1c0497a9b0" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_b37af95c404543d68dfe0a1c0497a9b0 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scatter","mode":"markers","x":[1,2,3,4],"y":[10,11,12,13],"marker":{"color":["#4287f5","#cb23fa","#23fabd","#ff7b00"],"size":[40,60,80,100]}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('b37af95c-4045-43d6-8dfe-0a1c0497a9b0', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_b37af95c404543d68dfe0a1c0497a9b0();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_b37af95c404543d68dfe0a1c0497a9b0();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Scaling-the-size-of-bubble-charts">Scaling the size of bubble charts<a class="anchor-link" href="#Scaling-the-size-of-bubble-charts">&#182;</a></h1><p>To scale the bubble size, use the attribute Marker Sizeref property. We recommend using the following formula to calculate a sizeref value:
+sizeref = 2. * max(array of size values) / (desired maximum marker size ** 2)</p>
+<p>Note that setting 'Sizeref' to a value greater than 1, decreases the rendered marker sizes, while setting 'Sizeref' to less than 1, increases the rendered marker sizes. See <a href="https://plotly.com/fsharp/reference/scatter/#scatter-marker-sizeref">https://plotly.com/fsharp/reference/scatter/#scatter-marker-sizeref</a> for more information. Additionally, we recommend setting the sizemode attribute: <a href="https://plotly.com/fsharp/reference/scatter/#scatter-marker-sizemode">https://plotly.com/fsharp/reference/scatter/#scatter-marker-sizemode</a> to area.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+<span class="k">let</span> <span class="nv">sizes</span> <span class="o">=</span> <span class="o">[</span><span class="mi">20</span><span class="o">.;</span> <span class="mi">40</span><span class="o">.;</span> <span class="mi">60</span><span class="o">.;</span> <span class="mi">80</span><span class="o">.;</span> <span class="mi">100</span><span class="o">.;</span> <span class="mi">80</span><span class="o">.;</span> <span class="mi">60</span><span class="o">.;</span> <span class="mi">40</span><span class="o">.;</span> <span class="mi">20</span><span class="o">.;</span> <span class="mi">40</span><span class="o">.]</span>
+<span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="o">.;</span> <span class="mi">2</span><span class="o">.;</span> <span class="mi">3</span><span class="o">.;</span> <span class="mi">4</span><span class="o">.;</span> <span class="mi">5</span><span class="o">.;</span> <span class="mi">6</span><span class="o">.;</span> <span class="mi">7</span><span class="o">.;</span> <span class="mi">8</span><span class="o">.;</span> <span class="mi">9</span><span class="o">.;</span> <span class="mi">10</span><span class="o">.]</span>
+<span class="k">let</span> <span class="nv">y</span> <span class="o">=</span> <span class="o">[</span><span class="mi">11</span><span class="o">.;</span> <span class="mi">12</span><span class="o">.;</span> <span class="mi">10</span><span class="o">.;</span> <span class="mi">11</span><span class="o">.;</span> <span class="mi">12</span><span class="o">.;</span> <span class="mi">11</span><span class="o">.;</span> <span class="mi">12</span><span class="o">.;</span> <span class="mi">13</span><span class="o">.;</span> <span class="mi">12</span><span class="o">.;</span> <span class="mi">11</span><span class="o">.]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Bubble</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">sizes</span><span class="o">)</span>
+
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarker</span><span class="o">(</span><span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="c1">//Opacity = [1.; 0.8; 0.6; 0.4],</span>
+                                <span class="n">MultiSizes</span> <span class="o">=</span> <span class="n">sizes</span><span class="o">,</span>
+                                <span class="n">Sizeref</span> <span class="o">=</span> <span class="mi">2</span><span class="o">.</span> <span class="o">*</span> <span class="o">(</span><span class="nn">Seq</span><span class="p">.</span><span class="n">max</span> <span class="n">sizes</span><span class="o">)</span> <span class="o">/</span> <span class="nn">System</span><span class="p">.</span><span class="nn">Math</span><span class="p">.</span><span class="n">Pow</span><span class="o">(</span><span class="mi">40</span><span class="o">.,</span> <span class="mi">2</span><span class="o">.),</span>
+                                <span class="n">Sizemode</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">MarkerSizeMode</span><span class="p">.</span><span class="n">Area</span><span class="o">,</span>
+                                <span class="n">Sizemin</span> <span class="o">=</span> <span class="mi">4</span><span class="o">.</span><span class="mi">0</span>
+                                <span class="o">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="17f9da02-7e7f-48b5-a717-3500147fc033" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_17f9da027e7f48b5a7173500147fc033 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scatter","mode":"markers","x":[1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0],"y":[11.0,12.0,10.0,11.0,12.0,11.0,12.0,13.0,12.0,11.0],"marker":{"size":[20.0,40.0,60.0,80.0,100.0,80.0,60.0,40.0,20.0,40.0],"sizeref":0.125,"sizemin":4.0,"sizemode":"area"}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('17f9da02-7e7f-48b5-a717-3500147fc033', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_17f9da027e7f48b5a7173500147fc033();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_17f9da027e7f48b5a7173500147fc033();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Hover-Text-with-Bubble-Charts">Hover Text with Bubble Charts<a class="anchor-link" href="#Hover-Text-with-Bubble-Charts">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+
+<span class="k">let</span> <span class="nv">x</span><span class="o">=[</span><span class="mi">1</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">3</span><span class="o">;</span> <span class="mi">4</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">y</span><span class="o">=[</span><span class="mi">10</span><span class="o">;</span> <span class="mi">11</span><span class="o">;</span> <span class="mi">12</span><span class="o">;</span> <span class="mi">13</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">colors</span> <span class="o">=</span> 
+    <span class="o">[</span><span class="s">&quot;rgb(160, 164, 214)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(255, 144, 14)&quot;</span><span class="o">;</span>  <span class="s">&quot;rgb(44, 160, 101)&quot;</span><span class="o">;</span> <span class="s">&quot;rgb(255, 65, 54)&quot;</span><span class="o">]</span>
+    <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">c</span> <span class="o">-&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span><span class="o">(</span><span class="n">c</span><span class="o">))</span>
+    <span class="o">|&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromColors</span>
+
+<span class="k">let</span> <span class="nv">marker</span> <span class="o">=</span> <span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">MultiSizes</span><span class="o">=[</span><span class="mi">40</span><span class="o">;</span> <span class="mi">60</span><span class="o">;</span> <span class="mi">80</span><span class="o">;</span> <span class="mi">100</span><span class="o">],</span><span class="n">Color</span><span class="o">=</span><span class="n">colors</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">labels</span> <span class="o">=</span> <span class="o">[</span><span class="s">&quot;A&lt;br&gt;size: 40&quot;</span><span class="o">;</span> <span class="s">&quot;B&lt;br&gt;size: 60&quot;</span><span class="o">;</span> <span class="s">&quot;C&lt;br&gt;size: 80&quot;</span><span class="o">;</span> <span class="s">&quot;D&lt;br&gt;size: 100&quot;</span><span class="o">];</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Scatter</span><span class="o">(</span><span class="n">x</span><span class="o">,</span><span class="n">y</span><span class="o">,</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Mode</span><span class="p">.</span><span class="n">Markers</span><span class="o">,</span> <span class="n">Labels</span><span class="o">=</span><span class="n">labels</span><span class="o">)</span>
+    <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarker</span><span class="o">(</span><span class="n">marker</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="e516abd1-ee5c-46a1-b7c5-894cd67053c8" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_e516abd1ee5c46a1b7c5894cd67053c8 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scatter","mode":"markers","x":[1,2,3,4],"y":[10,11,12,13],"line":{},"marker":{"color":["rgb(160, 164, 214)","rgb(255, 144, 14)","rgb(44, 160, 101)","rgb(255, 65, 54)"],"size":[40,60,80,100]},"text":["A<br>size: 40","B<br>size: 60","C<br>size: 80","D<br>size: 100"]}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('e516abd1-ee5c-46a1-b7c5-894cd67053c8', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_e516abd1ee5c46a1b7c5894cd67053c8();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_e516abd1ee5c46a1b7c5894cd67053c8();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Bubble-Charts-with-Colorscale">Bubble Charts with Colorscale<a class="anchor-link" href="#Bubble-Charts-with-Colorscale">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+
+<span class="k">let</span> <span class="nv">x</span><span class="o">=[</span><span class="mi">1</span><span class="o">.;</span> <span class="mi">3</span><span class="o">.</span><span class="mi">2</span><span class="o">;</span> <span class="mi">5</span><span class="o">.</span><span class="mi">4</span><span class="o">;</span> <span class="mi">7</span><span class="o">.</span><span class="mi">6</span><span class="o">;</span> <span class="mi">9</span><span class="o">.</span><span class="mi">8</span><span class="o">;</span> <span class="mi">12</span><span class="o">.</span><span class="mi">5</span><span class="o">;]</span>
+<span class="k">let</span> <span class="nv">y</span><span class="o">=[</span><span class="mi">1</span><span class="o">.;</span> <span class="mi">3</span><span class="o">.</span><span class="mi">2</span><span class="o">;</span> <span class="mi">5</span><span class="o">.</span><span class="mi">4</span><span class="o">;</span> <span class="mi">7</span><span class="o">.</span><span class="mi">6</span><span class="o">;</span> <span class="mi">9</span><span class="o">.</span><span class="mi">8</span><span class="o">;</span> <span class="mi">12</span><span class="o">.</span><span class="mi">5</span><span class="o">;]</span>
+
+<span class="k">let</span> <span class="nv">colors</span><span class="o">=</span>
+    <span class="o">[</span><span class="mi">120</span><span class="o">;</span> <span class="mi">125</span><span class="o">;</span> <span class="mi">130</span><span class="o">;</span> <span class="mi">135</span><span class="o">;</span> <span class="mi">140</span><span class="o">;</span> <span class="mi">145</span><span class="o">]</span> 
+    <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">cast</span><span class="o">&lt;</span><span class="n">IConvertible</span><span class="o">&gt;</span>
+    <span class="o">|&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromColorScaleValues</span>
+    
+
+<span class="k">let</span> <span class="nv">marker</span> <span class="o">=</span> <span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">MultiSizes</span><span class="o">=[</span><span class="mi">15</span><span class="o">;</span> <span class="mi">30</span><span class="o">;</span> <span class="mi">55</span><span class="o">;</span> <span class="mi">70</span><span class="o">;</span> <span class="mi">90</span><span class="o">;</span> <span class="mi">110</span><span class="o">],</span><span class="n">Showscale</span><span class="o">=</span><span class="k">true</span><span class="o">,</span><span class="n">Color</span><span class="o">=</span><span class="n">colors</span><span class="o">)</span>
+
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Scatter</span><span class="o">(</span><span class="n">x</span><span class="o">,</span><span class="n">y</span><span class="o">,</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Mode</span><span class="p">.</span><span class="n">Markers</span><span class="o">)</span>
+    <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarker</span><span class="o">(</span><span class="n">marker</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[6]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="374f1a49-db70-4f74-b1c8-8750ccafcddf" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_374f1a49db704f74b1c88750ccafcddf = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scatter","mode":"markers","x":[1.0,3.2,5.4,7.6,9.8,12.5],"y":[1.0,3.2,5.4,7.6,9.8,12.5],"line":{},"marker":{"color":[120,125,130,135,140,145],"size":[15,30,55,70,90,110],"showscale":true}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('374f1a49-db70-4f74-b1c8-8750ccafcddf', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_374f1a49db704f74b1c88750ccafcddf();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_374f1a49db704f74b1c88750ccafcddf();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}

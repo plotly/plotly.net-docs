@@ -1,0 +1,636 @@
+---
+description: How to make 2D Histograms in F# with Plotly.
+display_as: statistical
+language: fsharp
+layout: base
+name: 2D Histograms
+order: 5
+page_type: example_index
+permalink: fsharp/2D-Histogram/
+thumbnail: thumbnail/histogram2d.jpg
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Newtonsoft.Json, 12.0.3&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET, 2.0.0-preview.9&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive, 2.0.0-preview.9&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Deedle&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: FSharp.Data&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: FSharp.Stats&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-1161.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '1161.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>Deedle, 2.4.3</span></li><li><span>FSharp.Data, 4.2.4</span></li><li><span>FSharp.Stats, 0.4.2</span></li><li><span>Newtonsoft.Json, 12.0.3</span></li><li><span>Plotly.NET, 2.0.0-preview.9</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.9</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="2D-Histograms-or-Density-Heatmaps">2D Histograms or Density Heatmaps<a class="anchor-link" href="#2D-Histograms-or-Density-Heatmaps">&#182;</a></h1><p>A 2D histogram, also known as a density heatmap, is the 2-dimensional generalization of a histogram which resembles a heatmap but is computed by grouping a set of points specified by their x and y coordinates into bins, and applying an aggregation function such as count or sum (if z is provided) to compute the color of the tile representing the bin. This kind of visualization (and the related 2D histogram contour, or density contour) is often used to manage over-plotting, or situations where showing large data sets as scatter plots would result in points overlapping each other and hiding patterns.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">Deedle</span>
+<span class="k">open</span> <span class="nn">FSharp.Data</span>
+
+<span class="k">let</span> <span class="nv">data</span><span class="o">=</span>
+    <span class="nn">Http</span><span class="p">.</span><span class="n">RequestString</span> <span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/master/tips.csv&quot;</span>
+    <span class="o">|&gt;</span> <span class="k">fun</span> <span class="n">csv</span> <span class="o">-&gt;</span> <span class="nn">Frame</span><span class="p">.</span><span class="n">ReadCsvString</span><span class="o">(</span><span class="n">csv</span><span class="o">,</span><span class="k">true</span><span class="o">,</span><span class="n">separators</span><span class="o">=</span><span class="s">&quot;,&quot;</span><span class="o">)</span>
+    
+
+<span class="k">let</span> <span class="nv">getColumnData</span> <span class="n">column</span><span class="o">=</span>
+        <span class="n">data</span>
+        <span class="o">|&gt;</span> <span class="nn">Frame</span><span class="p">.</span><span class="n">getCol</span> <span class="n">column</span>
+        <span class="o">|&gt;</span> <span class="nn">Series</span><span class="p">.</span><span class="n">values</span>
+        <span class="o">|&gt;</span> <span class="nn">Array</span><span class="p">.</span><span class="n">ofSeq</span>
+
+<span class="k">let</span> <span class="nv">y</span><span class="o">:</span><span class="kt">float</span><span class="bp">[]</span> <span class="o">=</span> <span class="n">getColumnData</span> <span class="s">&quot;tip&quot;</span>
+<span class="k">let</span> <span class="nv">x</span><span class="o">:</span><span class="kt">float</span><span class="bp">[]</span> <span class="o">=</span> <span class="n">getColumnData</span> <span class="s">&quot;total_bill&quot;</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Histogram2d</span><span class="o">(</span><span class="n">x</span><span class="o">,</span><span class="n">y</span><span class="o">,</span><span class="n">Showscale</span><span class="o">=</span><span class="k">true</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="7f113793-26f3-4dda-a300-988edcf28365" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_7f11379326f34ddaa300988edcf28365 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-2.4.2.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"histogram2d","x":[16.99,10.34,21.01,23.68,24.59,25.29,8.77,26.88,15.04,14.78,10.27,35.26,15.42,18.43,14.83,21.58,10.33,16.29,16.97,20.65,17.92,20.29,15.77,39.42,19.82,17.81,13.37,12.69,21.7,19.65,9.55,18.35,15.06,20.69,17.78,24.06,16.31,16.93,18.69,31.27,16.04,17.46,13.94,9.68,30.4,18.29,22.23,32.4,28.55,18.04,12.54,10.29,34.81,9.94,25.56,19.49,38.01,26.41,11.24,48.27,20.29,13.81,11.02,18.29,17.59,20.08,16.45,3.07,20.23,15.01,12.02,17.07,26.86,25.28,14.73,10.51,17.92,27.2,22.76,17.29,19.44,16.66,10.07,32.68,15.98,34.83,13.03,18.28,24.71,21.16,28.97,22.49,5.75,16.32,22.75,40.17,27.28,12.03,21.01,12.46,11.35,15.38,44.3,22.42,20.92,15.36,20.49,25.21,18.24,14.31,14.0,7.25,38.07,23.95,25.71,17.31,29.93,10.65,12.43,24.08,11.69,13.42,14.26,15.95,12.48,29.8,8.52,14.52,11.38,22.82,19.08,20.27,11.17,12.26,18.26,8.51,10.33,14.15,16.0,13.16,17.47,34.3,41.19,27.05,16.43,8.35,18.64,11.87,9.78,7.51,14.07,13.13,17.26,24.55,19.77,29.85,48.17,25.0,13.39,16.49,21.5,12.66,16.21,13.81,17.51,24.52,20.76,31.71,10.59,10.63,50.81,15.81,7.25,31.85,16.82,32.9,17.89,14.48,9.6,34.63,34.65,23.33,45.35,23.17,40.55,20.69,20.9,30.46,18.15,23.1,15.69,19.81,28.44,15.48,16.58,7.56,10.34,43.11,13.0,13.51,18.71,12.74,13.0,16.4,20.53,16.47,26.59,38.73,24.27,12.76,30.06,25.89,48.33,13.27,28.17,12.9,28.15,11.59,7.74,30.14,12.16,13.42,8.58,15.98,13.42,16.27,10.09,20.45,13.28,22.12,24.01,15.69,11.61,10.77,15.53,10.07,12.6,32.83,35.83,29.03,27.18,22.67,17.82,18.78],"y":[1.01,1.66,3.5,3.31,3.61,4.71,2.0,3.12,1.96,3.23,1.71,5.0,1.57,3.0,3.02,3.92,1.67,3.71,3.5,3.35,4.08,2.75,2.23,7.58,3.18,2.34,2.0,2.0,4.3,3.0,1.45,2.5,3.0,2.45,3.27,3.6,2.0,3.07,2.31,5.0,2.24,2.54,3.06,1.32,5.6,3.0,5.0,6.0,2.05,3.0,2.5,2.6,5.2,1.56,4.34,3.51,3.0,1.5,1.76,6.73,3.21,2.0,1.98,3.76,2.64,3.15,2.47,1.0,2.01,2.09,1.97,3.0,3.14,5.0,2.2,1.25,3.08,4.0,3.0,2.71,3.0,3.4,1.83,5.0,2.03,5.17,2.0,4.0,5.85,3.0,3.0,3.5,1.0,4.3,3.25,4.73,4.0,1.5,3.0,1.5,2.5,3.0,2.5,3.48,4.08,1.64,4.06,4.29,3.76,4.0,3.0,1.0,4.0,2.55,4.0,3.5,5.07,1.5,1.8,2.92,2.31,1.68,2.5,2.0,2.52,4.2,1.48,2.0,2.0,2.18,1.5,2.83,1.5,2.0,3.25,1.25,2.0,2.0,2.0,2.75,3.5,6.7,5.0,5.0,2.3,1.5,1.36,1.63,1.73,2.0,2.5,2.0,2.74,2.0,2.0,5.14,5.0,3.75,2.61,2.0,3.5,2.5,2.0,2.0,3.0,3.48,2.24,4.5,1.61,2.0,10.0,3.16,5.15,3.18,4.0,3.11,2.0,2.0,4.0,3.55,3.68,5.65,3.5,6.5,3.0,5.0,3.5,2.0,3.5,4.0,1.5,4.19,2.56,2.02,4.0,1.44,2.0,5.0,2.0,2.0,4.0,2.01,2.0,2.5,4.0,3.23,3.41,3.0,2.03,2.23,2.0,5.16,9.0,2.5,6.5,1.1,3.0,1.5,1.44,3.09,2.2,3.48,1.92,3.0,1.58,2.5,2.0,3.0,2.72,2.88,2.0,3.0,3.39,1.47,3.0,1.25,1.0,1.17,4.67,5.92,2.0,2.0,1.75,3.0],"showscale":true}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('7f113793-26f3-4dda-a300-988edcf28365', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_7f11379326f34ddaa300988edcf28365();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_7f11379326f34ddaa300988edcf28365();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The number of bins can be controlled with nBinsx and nBinsy and the color scale with colorscale.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET</span>
+<span class="k">open</span> <span class="nn">Deedle</span>
+<span class="k">open</span> <span class="nn">FSharp.Data</span>
+
+<span class="k">let</span> <span class="nv">data</span><span class="o">=</span>
+    <span class="nn">Http</span><span class="p">.</span><span class="n">RequestString</span> <span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/master/tips.csv&quot;</span>
+    <span class="o">|&gt;</span> <span class="k">fun</span> <span class="n">csv</span> <span class="o">-&gt;</span> <span class="nn">Frame</span><span class="p">.</span><span class="n">ReadCsvString</span><span class="o">(</span><span class="n">csv</span><span class="o">,</span><span class="k">true</span><span class="o">,</span><span class="n">separators</span><span class="o">=</span><span class="s">&quot;,&quot;</span><span class="o">)</span>
+    
+
+<span class="k">let</span> <span class="nv">getColumnData</span> <span class="n">column</span><span class="o">=</span>
+        <span class="n">data</span>
+        <span class="o">|&gt;</span> <span class="nn">Frame</span><span class="p">.</span><span class="n">getCol</span> <span class="n">column</span>
+        <span class="o">|&gt;</span> <span class="nn">Series</span><span class="p">.</span><span class="n">values</span>
+        <span class="o">|&gt;</span> <span class="nn">Array</span><span class="p">.</span><span class="n">ofSeq</span>
+
+<span class="k">let</span> <span class="nv">y</span><span class="o">:</span><span class="kt">float</span><span class="bp">[]</span> <span class="o">=</span> <span class="n">getColumnData</span> <span class="s">&quot;tip&quot;</span>
+<span class="k">let</span> <span class="nv">x</span><span class="o">:</span><span class="kt">float</span><span class="bp">[]</span> <span class="o">=</span> <span class="n">getColumnData</span> <span class="s">&quot;total_bill&quot;</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Histogram2d</span><span class="o">(</span><span class="n">x</span><span class="o">,</span><span class="n">y</span><span class="o">,</span><span class="n">Showscale</span><span class="o">=</span><span class="k">true</span><span class="o">,</span><span class="n">nBinsx</span><span class="o">=</span><span class="mi">20</span><span class="o">,</span><span class="n">nBinsy</span><span class="o">=</span><span class="mi">20</span><span class="o">,</span><span class="n">Colorscale</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">Viridis</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="c8836492-4233-4ea2-8874-b0e1af4e5fa5" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_c883649242334ea28874b0e1af4e5fa5 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-2.4.2.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"histogram2d","x":[16.99,10.34,21.01,23.68,24.59,25.29,8.77,26.88,15.04,14.78,10.27,35.26,15.42,18.43,14.83,21.58,10.33,16.29,16.97,20.65,17.92,20.29,15.77,39.42,19.82,17.81,13.37,12.69,21.7,19.65,9.55,18.35,15.06,20.69,17.78,24.06,16.31,16.93,18.69,31.27,16.04,17.46,13.94,9.68,30.4,18.29,22.23,32.4,28.55,18.04,12.54,10.29,34.81,9.94,25.56,19.49,38.01,26.41,11.24,48.27,20.29,13.81,11.02,18.29,17.59,20.08,16.45,3.07,20.23,15.01,12.02,17.07,26.86,25.28,14.73,10.51,17.92,27.2,22.76,17.29,19.44,16.66,10.07,32.68,15.98,34.83,13.03,18.28,24.71,21.16,28.97,22.49,5.75,16.32,22.75,40.17,27.28,12.03,21.01,12.46,11.35,15.38,44.3,22.42,20.92,15.36,20.49,25.21,18.24,14.31,14.0,7.25,38.07,23.95,25.71,17.31,29.93,10.65,12.43,24.08,11.69,13.42,14.26,15.95,12.48,29.8,8.52,14.52,11.38,22.82,19.08,20.27,11.17,12.26,18.26,8.51,10.33,14.15,16.0,13.16,17.47,34.3,41.19,27.05,16.43,8.35,18.64,11.87,9.78,7.51,14.07,13.13,17.26,24.55,19.77,29.85,48.17,25.0,13.39,16.49,21.5,12.66,16.21,13.81,17.51,24.52,20.76,31.71,10.59,10.63,50.81,15.81,7.25,31.85,16.82,32.9,17.89,14.48,9.6,34.63,34.65,23.33,45.35,23.17,40.55,20.69,20.9,30.46,18.15,23.1,15.69,19.81,28.44,15.48,16.58,7.56,10.34,43.11,13.0,13.51,18.71,12.74,13.0,16.4,20.53,16.47,26.59,38.73,24.27,12.76,30.06,25.89,48.33,13.27,28.17,12.9,28.15,11.59,7.74,30.14,12.16,13.42,8.58,15.98,13.42,16.27,10.09,20.45,13.28,22.12,24.01,15.69,11.61,10.77,15.53,10.07,12.6,32.83,35.83,29.03,27.18,22.67,17.82,18.78],"y":[1.01,1.66,3.5,3.31,3.61,4.71,2.0,3.12,1.96,3.23,1.71,5.0,1.57,3.0,3.02,3.92,1.67,3.71,3.5,3.35,4.08,2.75,2.23,7.58,3.18,2.34,2.0,2.0,4.3,3.0,1.45,2.5,3.0,2.45,3.27,3.6,2.0,3.07,2.31,5.0,2.24,2.54,3.06,1.32,5.6,3.0,5.0,6.0,2.05,3.0,2.5,2.6,5.2,1.56,4.34,3.51,3.0,1.5,1.76,6.73,3.21,2.0,1.98,3.76,2.64,3.15,2.47,1.0,2.01,2.09,1.97,3.0,3.14,5.0,2.2,1.25,3.08,4.0,3.0,2.71,3.0,3.4,1.83,5.0,2.03,5.17,2.0,4.0,5.85,3.0,3.0,3.5,1.0,4.3,3.25,4.73,4.0,1.5,3.0,1.5,2.5,3.0,2.5,3.48,4.08,1.64,4.06,4.29,3.76,4.0,3.0,1.0,4.0,2.55,4.0,3.5,5.07,1.5,1.8,2.92,2.31,1.68,2.5,2.0,2.52,4.2,1.48,2.0,2.0,2.18,1.5,2.83,1.5,2.0,3.25,1.25,2.0,2.0,2.0,2.75,3.5,6.7,5.0,5.0,2.3,1.5,1.36,1.63,1.73,2.0,2.5,2.0,2.74,2.0,2.0,5.14,5.0,3.75,2.61,2.0,3.5,2.5,2.0,2.0,3.0,3.48,2.24,4.5,1.61,2.0,10.0,3.16,5.15,3.18,4.0,3.11,2.0,2.0,4.0,3.55,3.68,5.65,3.5,6.5,3.0,5.0,3.5,2.0,3.5,4.0,1.5,4.19,2.56,2.02,4.0,1.44,2.0,5.0,2.0,2.0,4.0,2.01,2.0,2.5,4.0,3.23,3.41,3.0,2.03,2.23,2.0,5.16,9.0,2.5,6.5,1.1,3.0,1.5,1.44,3.09,2.2,3.48,1.92,3.0,1.58,2.5,2.0,3.0,2.72,2.88,2.0,3.0,3.39,1.47,3.0,1.25,1.0,1.17,4.67,5.92,2.0,2.0,1.75,3.0],"nbinsx":20,"nbinsy":20,"colorscale":"Viridis","showscale":true}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('c8836492-4233-4ea2-8874-b0e1af4e5fa5', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_c883649242334ea28874b0e1af4e5fa5();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_c883649242334ea28874b0e1af4e5fa5();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="2D-Histogram-of-a-Bivariate-Normal-Distribution">2D Histogram of a Bivariate Normal Distribution<a class="anchor-link" href="#2D-Histogram-of-a-Bivariate-Normal-Distribution">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">FSharp.Stats.Distributions</span>
+
+<span class="k">let</span> <span class="nv">n</span>  <span class="o">=</span> <span class="mi">20</span>
+
+<span class="k">let</span> <span class="nv">xs</span> <span class="o">=</span> 
+    <span class="k">let</span> <span class="nv">normal</span> <span class="o">=</span> <span class="nn">Continuous</span><span class="p">.</span><span class="n">normal</span> <span class="mi">500</span><span class="o">.</span> <span class="mi">20</span><span class="o">.</span>
+    <span class="o">[</span><span class="mi">300</span><span class="o">..</span><span class="mi">700</span><span class="o">]|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">normal</span><span class="o">.</span><span class="n">Sample</span><span class="bp">()</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">ys</span> <span class="o">=</span> 
+    <span class="k">let</span> <span class="nv">normal</span> <span class="o">=</span> <span class="nn">Continuous</span><span class="p">.</span><span class="n">normal</span> <span class="mi">500</span><span class="o">.</span> <span class="mi">20</span><span class="o">.</span>
+    <span class="o">[</span><span class="mi">300</span><span class="o">..</span><span class="mi">700</span><span class="o">]|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">normal</span><span class="o">.</span><span class="n">Sample</span><span class="bp">()</span><span class="o">)</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Histogram2d</span><span class="o">(</span><span class="n">x</span><span class="o">=</span><span class="n">xs</span><span class="o">,</span><span class="n">y</span><span class="o">=</span><span class="n">ys</span><span class="o">,</span><span class="n">nBinsx</span><span class="o">=</span><span class="n">n</span><span class="o">,</span><span class="n">nBinsy</span><span class="o">=</span><span class="n">n</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="50b07242-451a-436f-a49d-e0bd7a3fdbab" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_50b07242451a436fa49de0bd7a3fdbab = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-2.4.2.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"histogram2d","x":[487.7842242118743,480.77750044529444,493.22422258611675,518.4100072124627,524.7468140004925,507.93503536418456,494.49183900578004,496.818025843692,498.2594679230213,501.84553562038747,468.85039036390873,502.42861505831166,496.3647827614961,512.1219797352456,534.5526374952507,462.91909519797986,478.8676629275387,493.8768949917578,499.44167410647464,483.5286525173291,490.5208288771708,479.8551734261116,476.18202179042896,483.9331158574537,495.57447325786484,497.9999172902894,537.2668339937254,505.80776423843156,490.5384003500115,530.3505540781681,525.5050567024189,534.3646366158584,466.79713194819624,486.6648171283564,532.7599935255456,476.1271006817511,498.13430968114295,478.30868785110886,517.5513503058669,492.9279416736958,534.9610458457321,498.69547312554243,509.58777916198244,500.99159726837064,484.34043874207185,464.9279678985223,518.1232075513585,509.16676111778617,484.07888704428564,491.4440632799952,477.6735386521862,496.5721373751637,486.7571513954065,510.76960346521554,503.1595979939405,538.0097410303214,516.5612411511319,505.55192362369655,532.0589735137947,491.59901535065995,486.4153482313999,473.5523602776519,485.51389811729234,517.8381030685549,491.3343917614224,519.33068617508,485.09351680351165,509.31788180892977,483.77254924066636,505.95500969336996,487.7656806967368,470.67182948198257,499.3065504024808,509.10570363975654,504.9222724766498,507.84100105396243,502.65716061747526,537.4614623632644,497.25340334493916,483.1969521840668,470.33726878936716,472.50145006964925,499.3768184965491,480.68765176130296,525.2927534288876,500.6115580383912,472.4986427770644,483.55859906808115,502.0889581297278,497.3770197662901,485.6117340635894,510.8653124126051,509.5829039931189,486.7315797197374,524.2456183869108,477.0575798884073,473.66963904475324,503.89635055696755,474.51676506161175,492.9738560101733,518.6406993818623,548.2762824442893,466.0101660730129,525.1050690208408,513.4700906981652,505.0304325128921,491.3696856814287,492.25371707678164,485.4468605459654,497.0822888594883,497.52207509083735,509.20279176972434,494.29053377146397,524.1551630403446,527.5736862416436,492.00611627948456,524.311569842632,490.3366374365784,524.7909032212382,492.84361888991805,495.8469952697518,498.0778967315073,490.66869121260163,485.673054939764,491.1170471297918,499.15985459244894,487.14140788428045,508.9230700835971,545.569915314779,481.36976445236644,506.10997289104796,485.0454498836852,490.39280890865837,530.2353897794031,515.8000876192286,499.437237870417,500.3367946826851,510.81386803181795,486.10264795882586,509.9186310846773,520.8675208899078,441.66245904320255,506.04651984630163,526.0115159906046,485.1474249322123,526.6372876014475,472.907397034527,497.80817856689606,493.09643383855314,487.5406302663255,496.43728194536055,495.7825960010191,522.2773551454067,503.78424777636127,475.8787477468114,509.95108079271756,495.82908028957576,518.9937072624809,494.2685595341599,494.0151320651005,543.5111098228423,496.37759373015,495.3252480536006,510.3059172752188,450.58130022606684,499.2405377168006,510.85842901491003,523.540714513748,511.7824056742486,518.1139772668198,495.54114965139655,510.42284627964455,511.1253040152417,516.869171664267,479.70359534750594,490.1631106894771,496.0691018104248,503.4387781615883,528.5781960146152,498.14611449908534,498.27326853036004,492.17916134138795,537.3831711656331,497.36117301560057,495.5978080238297,460.8270436192791,490.215859000952,486.98856676379626,505.51379855736445,502.11408952762605,494.04452462851543,527.6789551356228,488.0566929093346,503.63777211188153,527.1456706305689,462.3438654537605,485.35563081077953,509.2519732039963,490.4458083627743,523.3906266872798,513.8068244507155,490.7770048491525,531.8958094764994,486.0502248972434,510.67533396987596,480.72570491346823,496.50857475303576,495.6824452089963,488.2595393517931,475.00212054605663,478.156150242813,505.0832097697607,487.1696494076512,462.3170880055842,466.4459352391922,543.1708040170461,539.141718627103,440.4496527196265,468.82879520725476,518.6202991486325,515.3973821798897,502.9500512760938,502.97511925249574,484.54615032975204,484.8703798339945,511.5455426515376,506.19792039257345,494.5036630238879,498.68261607975666,485.83022427846004,492.61836005747466,466.255067841436,520.2009697107356,529.2077440188668,484.25823553972174,523.1468877576459,515.4602972507465,423.4819319520608,472.3276810039693,505.9530353034157,497.4151305615179,513.828978918424,514.4462739830947,509.6164228017027,526.4458064240919,451.8225807867117,500.95635902274523,514.1724727668851,484.43702625545865,520.7928908844119,496.95810285376996,536.1166727367906,475.76429102946366,475.1739116578024,492.1051335324129,506.33248172567073,532.267371335758,517.7539438442515,497.42552712870145,520.3214622679293,489.0309081837353,506.93959532420155,521.2670702670753,496.373002861441,487.04357075235856,476.6206670811727,492.74253906203876,489.10389056228763,481.0721765188427,479.9834119391398,504.6867538301771,540.6692512721082,481.83186994310967,471.01338815464266,507.98000777339547,527.886196670586,484.18255500923874,530.3336047350094,523.3978974473378,516.8854968590989,513.4322107842007,465.1573335238811,526.6567738155433,506.6814626071532,529.4356986118014,472.9884407092074,496.16504098562723,519.8888443890329,518.7200343655566,506.6198080861174,496.448750747821,512.628110300653,494.21720709827366,448.84155257404404,520.9909380633006,485.66531230125264,470.166777078666,482.06628404420053,504.78677429752827,474.6453293260107,471.4761299980103,505.46185099422246,520.2308596726762,470.37210378335834,518.080271672814,499.05721981810734,489.1411777777381,510.6663495574122,510.29455339063907,470.2659663536718,513.876982893572,540.9489238400321,551.0684643677131,474.945293296504,487.08729943974214,538.1333954688781,470.5652648339361,519.599064279428,524.814104864403,521.709942723395,510.4646674531894,470.9657627295454,478.8807423802906,489.4537624994499,522.5306309092534,491.75464634656845,507.3282888018868,482.8517527151242,509.764462316186,512.4643898757668,463.48715080249366,521.497832189739,534.1984293669038,521.721434290106,485.050809831525,526.6190176214176,476.7064594054572,479.65204106854844,484.3566536397592,452.8742064204346,558.1620851888536,475.7545611792797,509.1583017474622,526.1235926123841,494.56458308723506,486.3285618667506,510.25525748646095,482.10071777520784,491.99514787540664,515.0483324762864,497.0298727315056,480.9133065352738,548.981634170571,509.3786267376601,502.8671285844826,488.488175468771,459.32810605887664,490.04248977351926,501.15073815417816,449.36396095127174,481.4854471349139,466.023615554003,547.6848130160806,463.5772680904962,504.43892691033165,526.6685381828602,531.0171642329199,474.1589378183192,478.0713471309908,505.59961004294234,477.22771100267397,515.9633906416049,487.34511629236374,535.1612499475726,495.73441520215925,509.41625142345924,474.00020964432366,507.4190051498571,517.3717034631411,484.9436928842847,485.18122419875607,528.0869532745978,508.9868967181663,483.4922333524315,511.5789818070174,460.6100832762007,500.8048757352479,496.253541010056,493.4804430956696,518.1768069071752,478.7064120591651,521.0151280905988,445.8566165638407,500.6126609802517,487.4047064707904,501.544067084014,511.79660316425753,487.7959631467569,467.4693315999056,490.16944865884625,541.7507678710306],"y":[507.7699577252457,477.9791089874032,509.04519769231086,520.2291210290012,527.2824877183879,484.71398143417196,494.91066172662715,492.1624755206026,513.6250076185603,524.8249232451905,504.3345271875802,511.10901580032504,528.1296369390662,541.4640485855674,479.08743302960403,504.55864709688547,517.2460247750842,491.60160028625256,504.1799311063449,491.5339679392763,496.47357849520586,469.8488648914788,476.67752486932477,525.8933478484269,499.21523561119926,482.090033282524,488.18684225943537,520.5769499018046,528.6524560936961,497.463210694065,494.7175489925744,491.74864478420375,498.7954331739787,511.27345001213223,468.4875055448645,482.48624436413616,506.8025455991431,494.66456401322904,490.68710952307623,510.3398353368998,477.2760575108022,480.7027417512273,496.0535976565053,507.0077134361783,464.91536283230846,519.6080535380748,467.3553121189527,519.446729455029,525.9512902528492,533.9492443374385,557.9414806226966,516.8875655366384,519.5041865805644,509.22843482143173,522.0513448089514,522.3372880858293,489.98533343015646,464.2909594607497,501.82608458354485,511.8671861834717,510.8246407267355,492.4882040395148,488.7053940736376,514.7049887910977,511.71220178914956,527.3776559710942,511.8191182678741,493.6762102785935,528.8941066588345,474.47936461019276,491.49425960535484,495.23960865949596,508.8986710741249,482.0627903963309,460.59076074431147,518.4437554919996,508.70571247831117,510.8258995173932,480.2853964181888,493.35482063689847,478.51339691169386,501.5617992751809,513.0962117036189,529.0662431435338,516.5175416745151,531.3714401505526,507.2462333831156,520.2291765229979,519.0395512561265,548.6332542319304,512.0595921516014,502.3901026891624,512.4868822772845,487.6427101443473,497.3635621020333,490.7943738778821,485.44848071257064,504.12795251823655,533.089021451851,503.45710801393994,519.5789963528465,514.7385420612121,487.2312079454037,463.84677069493716,505.4692473944452,522.664270171961,480.983941581467,546.9102575225637,496.66873096432624,510.81682933933394,530.3925180865724,502.3199306637349,501.03068338763035,500.61136898553116,490.90491660667044,501.2000440290602,486.92810639887847,528.9914070195767,472.3172143707501,474.1471391059175,511.32362820255827,521.7055105421813,481.4032878666678,516.1809997455273,526.9752079284839,474.32028261353577,464.9722266042103,524.5513209570321,484.1258877486964,498.6642463134793,486.4697268479162,488.4579248701572,528.6360058094222,477.52786566838773,498.4629592787097,510.6384649275787,491.86492378823954,511.9726703766598,464.0492106058328,497.11250393390753,490.74889327842214,504.2905167987438,533.5535069361023,528.9763887788262,516.910978630338,522.6901979605366,501.9638387484809,484.1513811068864,532.1825666309113,521.5150502529299,502.28099026672095,514.0396683459304,531.229594993831,546.6355980589715,525.5607178205405,534.1899081079621,502.9581976972079,473.2547345914252,487.96284721292744,489.4498609954376,493.6652136814331,485.00264244790657,531.6710573248042,492.6484612384328,501.4172274053868,504.98416679568555,486.78564263528864,568.6441420428417,502.17069381251116,520.1286826694911,495.56606497016867,478.2756913904552,518.6892923687241,511.7416507320499,490.2572978475117,509.12006685447994,513.1462450123797,501.1273926570563,498.7498435109479,463.8613310403511,503.86663528066447,502.818496128308,530.759338746911,505.1640913130616,517.6944493715021,491.64401320945655,491.67497156999394,502.2081474166024,486.66176101176666,513.172650015578,493.90533998531987,479.19985758422484,507.3363954297394,533.9280808421541,481.0293459027969,468.35568081849004,466.6872837411875,495.9946154173775,498.91900035788103,488.93672480471184,493.737911193292,476.149650539558,514.6117075306421,508.5378532141149,488.2956515795948,530.8567736638186,489.36448409377834,532.9913977550855,491.5555981245092,455.49133496604145,480.501357582172,488.49118290193695,465.72563061918174,482.8494118858808,487.376521041706,484.6468517938875,516.5207683594933,485.35601905174053,500.6134450423916,497.4007963968654,491.5132410806583,524.1439702071913,486.8129815158946,509.13946845230413,507.3840906746236,460.6416471992077,481.028726774391,489.2078670713087,463.38549144764266,507.4905920716745,503.34353668895756,509.59741320621407,462.1277030575299,486.688548788478,491.97754410675196,504.68595299273136,510.6900398589692,502.0588593360214,524.1355187564665,491.7500859938549,505.8577789420384,513.6699955866261,450.9665628908157,516.7370767061817,486.62594475575327,548.8262753669517,485.3344960074097,515.0741609184419,476.30579504729343,534.6765252497293,519.5498133227744,489.99985005546597,497.4292240717374,480.0099295982271,506.52309768267077,482.69285169523897,536.4224530059882,485.0451578682054,484.70125252930626,514.4102750792612,458.00296514390243,498.55002026384346,498.9322424806582,511.75254686118393,530.089083969076,485.2876897564102,474.05804594783825,488.00985350319775,480.8575647476683,541.0643670503912,521.1075849335612,483.7896045368177,496.7093310008223,463.0777810928203,496.73486156812925,544.3251738211416,479.98891626873865,472.15182948674857,505.4720506896083,549.839306119999,476.5304384333876,473.29757716906056,536.0716449152478,506.15049991034886,509.85992197799584,507.6034746601595,526.9555994000111,503.2617509120697,472.55458169775164,502.14725074024204,471.9719098176205,508.08426814988104,515.0678559276142,490.6409872078386,492.66928358938867,516.7419145756013,536.8055382131366,456.89902033669546,524.2735020741347,466.3523347100577,477.6077039393334,547.6124650620848,526.2429826195818,511.13983654170374,520.2673714455009,489.0283121360675,476.97764915734865,479.2224691424016,491.3101961295599,497.41204576266273,509.33412788297585,452.78082473558135,531.8618228600342,516.2902548931943,510.8794341131942,461.3546752622101,530.7021313805657,499.4798763175601,485.619885513099,549.2369957124379,518.3966863465639,497.2034566505736,491.55126425055823,488.590349174459,484.35164939021143,482.14963924046293,507.77901047055434,516.6545670571589,491.3183792839883,517.025777214234,515.2377464003737,481.31219300393633,492.5791669907988,480.9794337826925,493.0691921816971,496.5801861613675,489.25869936340047,550.5371486831501,504.2761146469855,486.69439350501915,515.1296271609532,490.9554523340305,495.6841816340038,491.29459243040714,495.2993994595351,502.98269793667623,489.1711434380564,492.3950167727219,479.6277951918011,518.1918499874737,499.99578506173145,511.05624838920954,478.63009582466947,487.0623914737644,470.54736245325523,507.2928561527888,527.9903237859459,467.2340186850318,527.6219402225634,482.43265580425674,502.8030092205835,502.41357820240836,477.0271689086865,508.1572957111422,529.3019424457673,495.8545484414447,462.4376429407894,531.3138209530181,489.200951565941,455.62742288293515,507.98712603081555,508.83311288266304,470.0611234815813,485.75511798367125,503.3334501907978,496.2485341741689,496.466632859926,480.9535205413705,489.60283910944094,477.6140405255198,522.0725310786404,502.73136161058045,483.16555742396025,510.06089414348656,512.8765272930484,462.4262473969567,496.73471736365514,518.510006008255,503.4114946002627,491.44349034377285,515.9550841834073,506.2920544622334,488.338138325895,477.21648923916825,503.25614549162475,441.9152452012721,501.81872962294483,508.4716684416453,506.0500140664572,500.14929951741385,467.4712754980829],"nbinsx":20,"nbinsy":20}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('50b07242-451a-436f-a49d-e0bd7a3fdbab', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_50b07242451a436fa49de0bd7a3fdbab();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_50b07242451a436fa49de0bd7a3fdbab();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="2D-Histogram-Binning-and-Styling-Options">2D Histogram Binning and Styling Options<a class="anchor-link" href="#2D-Histogram-Binning-and-Styling-Options">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">FSharp.Stats.Distributions</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+
+<span class="k">let</span> <span class="nv">n</span>  <span class="o">=</span> <span class="mi">20</span>
+
+<span class="k">let</span> <span class="nv">xs</span> <span class="o">=</span> 
+    <span class="k">let</span> <span class="nv">normal</span> <span class="o">=</span> <span class="nn">Continuous</span><span class="p">.</span><span class="n">normal</span> <span class="mi">500</span><span class="o">.</span> <span class="mi">20</span><span class="o">.</span>
+    <span class="o">[</span><span class="mi">300</span><span class="o">..</span><span class="mi">700</span><span class="o">]|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">normal</span><span class="o">.</span><span class="n">Sample</span><span class="bp">()</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">ys</span> <span class="o">=</span> 
+    <span class="k">let</span> <span class="nv">normal</span> <span class="o">=</span> <span class="nn">Continuous</span><span class="p">.</span><span class="n">normal</span> <span class="mi">500</span><span class="o">.</span> <span class="mi">20</span><span class="o">.</span>
+    <span class="o">[</span><span class="mi">300</span><span class="o">..</span><span class="mi">700</span><span class="o">]|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">map</span> <span class="o">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">normal</span><span class="o">.</span><span class="n">Sample</span><span class="bp">()</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">customColorscale</span> <span class="o">=</span>
+    <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">Custom</span> <span class="o">[</span> <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="s">&quot;rgb(12,51,131)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">25</span><span class="o">,</span> <span class="s">&quot;rgb(10,136,186)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span> <span class="s">&quot;rgb(242,211,56)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">75</span><span class="o">,</span> <span class="s">&quot;rgb(242,143,56)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="s">&quot;rgb(217,30,30)&quot;</span><span class="o">)</span> <span class="o">]</span>
+
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Histogram2d</span><span class="o">(</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">xs</span><span class="o">,</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">ys</span><span class="o">,</span>
+    <span class="n">xBins</span> <span class="o">=</span> <span class="nn">Bins</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">StartBins</span> <span class="o">=</span> <span class="mi">440</span><span class="o">.,</span> <span class="n">EndBins</span> <span class="o">=</span> <span class="mi">570</span><span class="o">.,</span> <span class="n">Size</span> <span class="o">=</span> <span class="mi">5</span><span class="o">.),</span>
+    <span class="n">yBins</span> <span class="o">=</span> <span class="nn">Bins</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">StartBins</span> <span class="o">=</span> <span class="mi">440</span><span class="o">.,</span> <span class="n">EndBins</span> <span class="o">=</span> <span class="mi">570</span><span class="o">.,</span> <span class="n">Size</span> <span class="o">=</span> <span class="mi">5</span><span class="o">.),</span>
+    <span class="n">HistNorm</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">HistNorm</span><span class="p">.</span><span class="n">Probability</span><span class="o">,</span>
+    <span class="n">Colorscale</span><span class="o">=</span> <span class="n">customColorscale</span>
+<span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="d841a0b3-fe04-41fd-871f-e66a0e47b0d2" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_d841a0b3fe0441fd871fe66a0e47b0d2 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-2.4.2.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"histogram2d","x":[466.8699785069165,528.9013217912062,487.5037677393074,525.4002033402844,502.29432859527753,502.2478332339876,529.5845104438057,496.10264573320615,494.7346119664588,538.738469880103,496.91352612858003,503.2836598909436,511.62647966287915,502.14724924406903,497.08838156070493,483.9923900655637,482.13975677151103,479.9058856592012,490.9334042061155,492.77170981453435,464.69839265094873,495.14933873916135,518.2612495808315,497.0255679586986,528.8704865956181,493.3290476239114,501.6733414106732,499.47104232969133,517.0248864576872,480.6441992878548,480.77247328696603,519.845945471322,491.6642781622526,449.9343465980512,512.1828999531285,448.68801719443354,470.5599152567277,506.37263429279466,526.2773312830843,519.4390102814334,500.86758803515824,511.81060254460135,494.37842043352487,489.7869155287915,519.4169117857986,523.1128033395581,517.9779035522787,500.9848335961222,511.1587744547232,486.1040158170745,506.59280329998177,553.3572298236097,497.99248734236534,454.50424877272616,516.179364981269,486.07458852816455,480.2729625518719,506.0840299264015,514.3603869176609,502.7535812901738,485.61198091612783,475.3862777116335,489.64195089685165,515.6482819949948,501.9043289470737,521.584966029627,509.7451765247919,527.2451660235729,481.23022884656115,518.0366884256548,491.5142614479088,504.18912862833105,470.4970936148153,512.898986839839,495.80549201698284,500.4097857467897,499.2787692380859,509.31266022905834,535.8387664152987,520.6201041491623,501.1160062897517,481.5528931751193,505.7634181664593,487.93815032626753,527.6198022558378,453.93240099792865,497.3290115975689,459.73878190588175,539.330897388434,523.6894727355553,494.64513815261904,488.5419602416416,485.9575999102436,486.57050548274975,531.0208448501565,477.1130993586667,511.4731511070512,498.9151991643509,511.38169695727424,491.3497333825569,534.8849946097707,499.89987145845737,511.385797566705,517.1713860919309,514.4701029095563,459.5982504925372,494.72708659760235,499.25953580619114,522.1729141840334,501.73473849125696,519.4201027302688,533.0655436703724,514.688643770656,483.7878119308703,521.2034144880287,558.4556611722314,475.4726427450436,504.44523413083834,491.5492025464262,495.05304334298097,523.6428162146705,464.7038549654812,486.5742005268375,484.06533557108395,456.6357801553381,518.319351825124,496.20580379410296,497.111827121656,494.8142616469521,516.0102712498726,504.1138827908581,501.05995420436994,507.2482943848586,507.4839628014393,472.7876355172234,511.62031723953703,480.3286766437004,482.77462177071607,505.43780334140496,489.48751003601313,448.4337612920704,520.2613487888588,513.5114205703818,482.96515355511707,519.0834090662329,485.40352136457045,545.570617891644,528.4967898076659,498.32989945706794,525.909445503967,520.6099532374882,456.3169700060851,487.01299134392497,482.0820868948156,503.712018021285,489.03455080343383,514.8111760330708,514.5997675516377,518.458284624325,501.83148898157106,503.76641621978143,457.6686980632161,523.1537426182011,495.9862893702035,507.0954026369763,515.9198322989699,535.7665998535468,522.6021781168411,494.45884934627884,521.6779886352739,510.5074746629047,531.9488487632038,481.99554413014715,496.51873514057826,518.1613733487683,538.5813463849698,525.2630289013756,479.8317698491133,457.12335647829906,492.07596512021183,482.85075826983433,527.5621195469679,514.0426214722751,495.7598794804171,509.57404109574094,537.0027049563806,495.1720646864147,473.7409430801685,474.70459548208623,473.6350994032575,507.9017183401886,509.4901489722378,487.7683111471582,487.48377235079806,522.1327457052652,463.6031673501197,467.1122848678873,469.9700206880592,453.44593302935556,507.046105573172,519.9725946097807,520.5671882044057,481.1289465293597,500.2997501206472,504.0008667981479,519.6401751437085,475.8369414112066,491.50492919348324,489.283907581509,525.8117121351426,516.9069462989202,500.50965609085193,490.33568210831527,500.3789581213547,477.0474499350267,476.2179535257112,516.7034577487732,524.588404805601,442.5051422753329,482.45674474728344,498.03720436830645,526.9392676890687,514.769652564337,521.3293884192832,517.3502939628272,502.25030705902384,504.7958981083717,494.38289432908556,484.69264925311523,528.4478556842445,530.206724959645,523.662291889978,472.389653317669,452.25206595177315,533.9016539554239,522.4230288784723,492.4795120327598,517.7399086031858,492.49091442198863,503.99905665592036,500.54311553458297,511.2296942766964,467.9992795402916,509.9366569246024,479.37700381180514,501.3468130519564,538.3163201639369,514.3074190407979,484.7279534663156,535.8341734103312,509.3079186979907,488.9642351896669,498.9639538448167,473.3479456125241,483.997234669507,480.26974420215413,495.71779267167796,507.19678644448123,502.9758810025181,478.21671175325986,516.7140396911897,469.7746250506174,496.4503249645851,505.6224454169953,523.4258848118519,515.4967262249615,491.7220369425037,490.54158158465674,489.27769148128573,504.9459159587618,494.72717044200294,502.64109107382956,474.19555734320124,486.4175598585774,515.7429009181556,492.15621150419895,467.79092119686146,503.2656392353334,487.72542604082366,517.4984850663276,526.4791192619605,501.0509730997318,517.257963872215,455.1388677399834,512.8637437717997,484.1513291183737,501.1865295477053,476.36672174743927,507.93824316910496,521.4794026468959,512.812109978279,507.68623254410005,503.5148073057581,481.3254924176825,475.0624249848719,492.99174343038106,506.9961271231513,494.53932062674124,521.4911716949539,505.94108018903637,510.4497083166197,491.61085803429575,466.96707586209345,490.0705700164311,518.7491738755307,485.9381843945063,513.6590764962825,458.1926429145449,481.72044647891664,505.9468669871665,516.9302421008377,488.866188783366,483.10899494915674,477.9960373872462,487.58113834157973,495.94544663137066,492.0777462443658,500.22300147344356,472.61133862925413,499.44804291371145,502.7661286205728,549.9036139944191,487.18893590216123,523.2955283875058,526.9689846998228,505.5034999167385,528.9809888431844,492.8076213490432,507.34925921233764,515.7962015277661,485.5098357963973,476.5695199025935,488.9349330347428,519.9771984390761,471.0428950294459,490.96754111238124,488.22418839646906,526.4198113432626,512.4598116054914,468.0614072367523,491.7785437282137,477.6188150955947,510.5835892281078,521.0798880540832,491.2507252647129,527.098763415348,499.9424326705622,485.8322383878533,491.7298012179575,491.60334431311946,488.34474026754987,511.71680296312576,478.60247755834325,492.0718611219668,510.5106780281485,497.92118125829853,495.22757731448627,539.1160983832223,466.219243006837,478.35166694333816,521.0196139949186,494.26058382257935,467.1104905859403,544.8894391769306,529.3033790023491,544.4705789510356,470.1638487181164,481.6766108325732,505.8660817401197,469.50517290716135,506.4650986118206,508.1404493823235,515.0270824444365,535.1167023625572,486.6087714909757,495.59536163215296,503.7284933756127,503.9050611432693,490.7926005330088,525.3129236334922,545.850275887881,533.6684431675903,502.5437520315187,518.269382059352,467.7106557248173,528.5677132615998,506.04223049710725,494.8329917382934,491.9533800317893,486.4088310886463,485.5287190238319,526.4681446700272,501.69137613856424,544.0587862239242,496.69178117199846,532.115463528969,527.3916315201119,476.2106698813525,501.44045725436894,471.1753098524871,469.16792760960334],"y":[483.104658961618,463.7843760137709,496.66634613525434,503.20162734555987,506.05528224004297,481.5255646778855,506.9942672197789,494.91203310693726,486.1080444827639,483.5830243145189,512.9729892272994,504.2749396062421,495.5176265301902,494.3065006780058,507.90328144034055,503.8676744259597,508.0667429220368,508.26876279855105,526.2590428582572,492.3511050478808,458.6039607413202,496.48976929427045,505.182869918046,534.6248351661052,482.07503173497287,521.5004503701193,498.1627875553576,536.4281640005927,476.4364458068051,511.98734779000256,495.49088975173777,481.7574008788334,516.6235248444813,514.3981796567211,512.7848467917715,494.7399952239634,518.1071964258422,512.9869236210942,535.4518084785514,489.385659367072,494.45320804621366,517.6609338357871,492.00758084559783,537.497316956224,477.4255974273851,492.21257804002886,527.7788092123803,517.6687752972991,548.0331778823071,486.05996596900104,503.7982804909052,515.2239028192324,466.00044445363807,504.08605755996797,475.9715199140392,501.59336869019955,485.4346720097063,566.6113736441688,507.7289565172765,476.9418629712458,494.1913474026101,488.9141730470538,523.7014542221666,481.5815554587789,532.1912974844935,482.31354713458296,536.4292619454427,542.4629570547428,505.49296657527964,485.89613903644374,494.7084940793635,497.3558765284037,533.9004525533936,492.0043647493433,492.59743795383275,493.44478878289334,514.4463823376005,491.95321791031773,536.2475545640879,467.4374976827297,526.2125468290153,515.5484429004485,511.2892314273352,478.1868146573107,495.74843806442374,506.5925841453922,481.0787606893127,495.3631570428966,448.5094004937637,488.4576200299636,493.3313242178462,548.8074618594926,501.3307209269634,490.5280088190568,515.8615122002208,532.2914094716257,467.5149645647036,514.0353669799152,495.6858927376746,490.6800441871188,504.2335982017811,499.3346134433286,499.1022622871619,500.44741027518484,474.5769359961437,526.8279701853536,525.8898864688442,498.6675122238602,506.7897422160273,498.09789543985386,486.1111273137903,510.863201945539,515.4237556252875,507.695884242346,524.8777411875241,542.8991376557196,477.19085928175934,478.3699848580576,480.9020322944762,465.6450527830872,475.1637540535355,514.4686992264146,482.73594488339603,520.2840383984915,509.23435595910604,490.489270342736,492.88457166016576,467.13528183088573,526.4224487967001,515.1855816541881,495.252825264931,530.0636098624025,489.3136696630102,519.5701636627074,479.3512718590298,519.2306761441454,529.1992595214745,504.0395111897219,477.2153864428051,494.52242683002396,492.92140860170014,509.38665954950125,504.7178248499711,489.5209786578612,513.8784475726153,501.4493239625736,509.00228439394857,507.4126949419516,533.0727032322983,488.84577625985764,496.6118445060054,547.6944412801525,508.39478643282416,484.347515584205,491.7347384817005,505.8968841766547,496.6022460547024,498.1933938998195,518.2768703497389,486.314022377555,535.6887534846533,500.14008139053453,497.0897454172195,516.3254467413595,473.69885279185524,506.5928598239863,487.0678834726283,528.4569548654581,521.014196172673,518.645018615659,508.7524112408303,475.0294281493606,477.6195906115505,509.6735728281684,494.7436039794694,494.36057720037087,481.8017636744902,529.5852497973528,499.0367972321072,522.9269947361786,482.3608828819975,489.6307107977616,477.9957693027563,494.59563360974005,473.4542188296609,464.45094087524797,505.5414670307858,538.3917951470322,549.5873998817008,505.7881012782468,485.5728406009924,501.564119903647,477.23343589496346,525.6773879209392,497.0042454438331,510.1406178671552,501.5135511195292,528.8935557151418,466.7654512488494,495.7227968754194,528.7889255598752,510.39637328789655,484.1723484877707,525.1837085217278,518.2765676757346,530.9526554443659,496.99638086180994,488.18842797239745,536.9274127681989,488.5012962125355,479.91350827550684,500.77337073528,524.3230575106026,507.67447621237903,505.61782662329665,495.40369848759985,510.07977903626573,498.5832793009616,491.17505646349906,539.3988213597622,484.72843571164077,477.3998887340021,493.6374409509368,556.3170994268827,528.3608795583069,490.60149821184393,533.0411645774855,508.2033344533888,475.9738094198384,505.26918355007103,505.438280531099,505.2930720768448,475.7353788540077,522.9140973731711,505.6745810757723,509.13956847683005,439.6561164060223,485.91234255931994,513.2722643144776,523.1159208075179,519.1632547072935,508.7611450795722,512.8242067031301,490.89350738485973,522.4702449010048,503.03618888153267,493.60842345368013,491.6238710592652,505.65070795584205,502.60740989893895,503.1923389906162,542.0550904893506,480.7488992194518,506.5505828330411,470.8968508742465,524.9798193678562,523.1284512970642,512.3387563541044,490.024610020557,480.6590486951299,499.4900974139743,463.65669865518225,508.8523026247196,499.08360172628574,523.0442316172446,463.2276298476493,508.66779131521855,486.512560610685,478.85912378537034,528.2197725019062,485.38705919762594,486.0572370589727,492.8551098842671,486.9396413740942,526.0974160599636,514.1100730793707,495.4445660699397,481.96441807521046,498.5080583291739,513.2836005368864,538.3198064890544,475.66881286471,506.061397319034,532.0276391717764,493.91209714733856,478.5459717840996,499.11397208108747,488.44546364435683,483.2623683495904,479.1201242034415,508.1338999465727,471.1413635906307,497.77945593141925,518.8006965920802,474.6807496859497,537.1884003920613,482.7040225723482,456.2257440872278,490.45347915608954,522.0447742668823,488.46833168053297,512.8643983333353,474.82395197991553,455.1583741684865,518.5464022470966,509.9573245132219,513.9651649729384,502.1706173156958,500.5399676492935,490.37686954972685,513.2249497269439,496.19556259318824,488.2481015716671,500.87582274191857,508.0051675713864,506.2931360509714,525.9492837079812,494.73244179696337,513.5174776432003,526.6252076031745,493.4638039184899,505.9775287204273,536.4841902733739,511.63031385109207,479.40379039668613,467.31391159024975,501.5897831632705,499.5920265218037,503.4169779801001,479.8681245796581,485.1795284111079,475.9291280654457,520.0516990824103,498.1462794098883,538.5236750673303,513.5653221002672,520.4590116800322,523.8727225089102,474.7630376475768,504.793390550457,508.80383811393114,522.1347307795085,478.3432366108016,533.6885389315718,450.32601427786034,463.4582700484369,492.70278286254995,495.54785232145645,519.7551281206094,482.10271726998286,512.7296455737762,507.3217910260332,522.9070692080405,517.047094249017,545.9348172148781,515.3624670649867,500.00348051498185,496.5405413735567,491.40282987915066,471.7124759161373,520.8221212096894,501.9296579427848,493.89038833207866,525.9456194636854,493.18876789592866,483.4321797601512,507.7550857466893,499.0073906616094,510.97547820322353,481.6036596305839,510.10419843684735,546.1367184236208,512.120294614842,508.0527427533711,502.86439345748676,486.0973499851665,525.8290537911228,509.7718896162453,463.2168247684334,504.240855274483,507.1203341170821,498.39110756143833,494.65687830544124,517.4022545086472,505.3640623205003,492.49952461542915,473.33457782014256,503.50420111401456,474.82976061907794,485.7467373127785,476.2609261360711,526.2597760433781,498.634062031609,476.6318092548238,475.23882328163626,491.47706911206853,494.47640575215394,513.1078332363948,464.847468093238,460.0633803473331,502.5901948962232],"histnorm   ":"probability","xbins":{"start":440.0,"end":570.0,"size":5.0},"ybins":{"start":440.0,"end":570.0,"size":5.0},"colorscale":[[0.0,"rgb(12,51,131)"],[0.25,"rgb(10,136,186)"],[0.5,"rgb(242,211,56)"],[0.75,"rgb(242,143,56)"],[1.0,"rgb(217,30,30)"]]}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('d841a0b3-fe04-41fd-871f-e66a0e47b0d2', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_d841a0b3fe0441fd871fe66a0e47b0d2();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_d841a0b3fe0441fd871fe66a0e47b0d2();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="2D-Histogram-Overlaid-with-a-Scatter-Chart">2D Histogram Overlaid with a Scatter Chart<a class="anchor-link" href="#2D-Histogram-Overlaid-with-a-Scatter-Chart">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">System</span>
+
+<span class="k">let</span> <span class="nv">rand</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="bp">()</span>
+
+<span class="k">let</span> <span class="nv">x0</span> <span class="o">=</span> <span class="o">[</span><span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">..</span><span class="mi">100</span> <span class="o">-&gt;</span> <span class="n">rand</span><span class="o">.</span><span class="n">NextDouble</span><span class="bp">()</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">y0</span> <span class="o">=</span> <span class="o">[</span><span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">..</span><span class="mi">100</span> <span class="o">-&gt;</span> <span class="n">rand</span><span class="o">.</span><span class="n">NextDouble</span><span class="bp">()</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">x1</span> <span class="o">=</span> <span class="o">[</span><span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">..</span><span class="mi">50</span> <span class="o">-&gt;</span> <span class="n">rand</span><span class="o">.</span><span class="n">NextDouble</span><span class="bp">()</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">y1</span> <span class="o">=</span> <span class="o">[</span><span class="k">for</span> <span class="n">i</span> <span class="k">in</span> <span class="mi">1</span><span class="o">..</span><span class="mi">50</span> <span class="o">-&gt;</span> <span class="n">rand</span><span class="o">.</span><span class="n">NextDouble</span><span class="bp">()</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="n">x0</span> <span class="o">@</span> <span class="n">x1</span>
+<span class="k">let</span> <span class="nv">y</span> <span class="o">=</span>  <span class="n">y0</span> <span class="o">@</span> <span class="n">y1</span>
+
+<span class="k">let</span> <span class="nv">chart1</span> <span class="o">=</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Scatter</span><span class="o">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">x0</span><span class="o">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">y0</span><span class="o">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Mode</span><span class="p">.</span><span class="n">Markers</span><span class="o">,</span> <span class="n">ShowLegend</span> <span class="o">=</span> <span class="k">false</span><span class="o">)</span>
+    <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarkerStyle</span> <span class="o">(</span>
+        <span class="n">Size</span> <span class="o">=</span> <span class="mi">8</span><span class="o">,</span>
+        <span class="n">Color</span> <span class="o">=</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;white&quot;</span><span class="o">,</span>
+        <span class="n">Opacity</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.</span><span class="mi">7</span><span class="o">,</span>
+        <span class="n">Outline</span> <span class="o">=</span> <span class="nn">Line</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Width</span> <span class="o">=</span> <span class="mi">1</span><span class="o">.),</span>
+        <span class="n">Symbol</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">MarkerSymbol</span><span class="p">.</span><span class="n">X</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">chart2</span> <span class="o">=</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Scatter</span><span class="o">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">x1</span><span class="o">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">y1</span><span class="o">,</span> <span class="n">mode</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Mode</span><span class="p">.</span><span class="n">Markers</span><span class="o">,</span> <span class="n">ShowLegend</span> <span class="o">=</span> <span class="k">false</span><span class="o">)</span>
+    <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarkerStyle</span> <span class="o">(</span>
+        <span class="n">Size</span> <span class="o">=</span> <span class="mi">8</span><span class="o">,</span>
+        <span class="n">Color</span> <span class="o">=</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromString</span> <span class="s">&quot;white&quot;</span><span class="o">,</span>
+        <span class="n">Opacity</span> <span class="o">=</span> <span class="mi">0</span><span class="o">.</span><span class="mi">7</span><span class="o">,</span>
+        <span class="n">Outline</span> <span class="o">=</span> <span class="nn">Line</span><span class="p">.</span><span class="n">init</span> <span class="o">(</span><span class="n">Width</span> <span class="o">=</span> <span class="mi">1</span><span class="o">.)</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">histogra2D</span> <span class="o">=</span>
+    <span class="nn">Chart</span><span class="p">.</span><span class="n">Histogram2d</span><span class="o">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="o">,</span> <span class="n">Colorscale</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">YIGnBu</span><span class="o">)</span>
+
+<span class="o">[</span> <span class="n">chart1</span><span class="o">;</span> <span class="n">chart2</span><span class="o">;</span> <span class="n">histogra2D</span> <span class="o">]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">combine</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withXAxisStyle</span> <span class="o">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">,</span> <span class="n">ShowGrid</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span> <span class="n">Zeroline</span> <span class="o">=</span> <span class="k">false</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withYAxisStyle</span> <span class="o">(</span><span class="n">title</span> <span class="o">=</span> <span class="s">&quot;&quot;</span><span class="o">,</span> <span class="n">ShowGrid</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span> <span class="n">ZeroLine</span> <span class="o">=</span> <span class="k">false</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[6]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="04c8d9ae-2938-4ad2-9b71-e2589c1402ce" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_04c8d9ae29384ad29b71e2589c1402ce = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-2.4.2.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scatter","mode":"markers","x":[0.5489783787862297,0.17726851961448253,0.32026026459422907,0.3247118500642068,0.17003086776008405,0.016905999284659513,0.25744137878410583,0.5284010854216298,0.7621378743844749,0.2577097850189124,0.6638617583847892,0.842795481832137,0.20847225804276404,0.06243205445931854,0.09467587996957631,0.9222354176092127,0.7459451964804648,0.3513242641237212,0.17224657403875449,0.31634427714922664,0.1551586078271077,0.9009312930986897,0.7488922331244183,0.5793035298489516,0.15833528300669755,0.07013862490194786,0.9830027730125015,0.8123280111757704,0.24781346472344057,0.973525885014574,0.1823186241939285,0.5631506818175086,0.031089504729532407,0.7189365470404441,0.8689837175742647,0.12603004887980876,0.02949380224081399,0.15559716809335963,0.8823180784854656,0.2900288669811696,0.3668066367352412,0.18539032395248783,0.9293719720697832,0.42108039298145117,0.8222000914729201,0.9388876920281386,0.21918292400389114,0.22309332677307228,0.5816607608374491,0.22984186710316776,0.050157533050588114,0.6427211764467513,0.5030149074751021,0.6545198045924864,0.6450205094390644,0.64804708568754,0.42837628649006426,0.7409567347452775,0.16637656705750925,0.09989224285813618,0.033903226272157964,0.44511336760833553,0.2805876206981892,0.7886119893699008,0.07539116082498393,0.10071107656728061,0.8117059771026047,0.4895357110023199,0.19344833688505383,0.9686458310897675,0.8927416153683987,0.5903480283871051,0.4690061856382555,0.8822177070575848,0.9495376404139855,0.9697682838746199,0.9715593210289065,0.3278118401429671,0.7571034383760316,0.21944759097855893,0.8509557008980567,0.7599094462394292,0.2306672503383212,0.01797159762027282,0.9233683519639859,0.5395974477471772,0.06013577434240644,0.37656970013704605,0.0739160376013797,0.2209366318867247,0.6976537623897445,0.28853706749553654,0.9892206010358504,0.7824258356273295,0.25612564070901167,0.9216932691269057,0.9048027032542987,0.14075998269988224,0.34568923215646724,0.7214890149056394],"y":[0.12718171492553396,0.7296472130015712,0.029644989888018457,0.6130149297476816,0.3371002517347691,0.459809504663483,0.17371499080849578,0.6207972004175173,0.704982164178501,0.6752522255644445,0.6764877646586335,0.10056444634709714,0.9838532963692459,0.9469289760789503,0.24893654196007947,0.2739937800327287,0.2144461172700143,0.26261602307791637,0.865243637405915,0.5357937130778068,0.04057530222487417,0.4351362769655587,0.41561967340094025,0.9725117049983292,0.270992068700023,0.6042045478728622,0.6011274273512547,0.6865803500109261,0.6260920663485732,0.0278443712870797,0.06496558062032125,0.8307993383290243,0.9821226079864999,0.03561442347039209,0.09226587605302496,0.12130848789648548,0.7302644563514108,0.6176523205906397,0.6808713458855037,0.46355884730050284,0.36588245693868143,0.4393385739248891,0.671587535958545,0.39866381203693513,0.5444488672280912,0.5970893160426474,0.3046837711262907,0.04229162495690008,0.53348929366725,0.982131860676283,0.7072471518568915,0.6421866801763823,0.27551634529396724,0.8098955190786605,0.6809137126807653,0.6920454379599753,0.314027539600631,0.057133284889689315,0.34202286104765856,0.7328957038619069,0.8586820773122283,0.48713464079756974,0.9947051340689441,0.6771377928914213,0.6102866449441233,0.8456884263296092,0.11844183836059731,0.9482388728988538,0.8546631000259254,0.12762805406359398,0.5437293236813179,0.5967937966793747,0.5817446771924126,0.40168479010541214,0.16991125613912533,0.6012367282999851,0.7635487410070136,0.01695586136400507,0.42806283777023796,0.6739027526573756,0.2995207767465714,0.5588358023943546,0.1530910563436761,0.6439602056722903,0.32059721943018826,0.42277890044393895,0.5552829930350571,0.1722270889078393,0.3547007107896268,0.40022043809304964,0.8072809482958545,0.6731311714617215,0.27562945954298107,0.9479756420235967,0.6048767699882746,0.8787478161411116,0.44463343985594506,0.9944497430671239,0.7883771670928119,0.698760440898482],"showlegend":false,"line":{},"marker":{"color":"white","line":{"width":1.0},"size":8,"opacity":0.7,"symbol":"4"}},{"type":"scatter","mode":"markers","x":[0.47864747768205007,0.3564448982274369,0.1876285249309747,0.405861239603656,0.43840253699496506,0.11045335517751675,0.06044200298396964,0.873831555188555,0.6399842629395353,0.07967698438078025,0.9284966969529617,0.29707167823662595,0.6290704471194514,0.6681201083902829,0.43337492711533554,0.2998462749178737,0.33404358445389365,0.35074492839665383,0.35654057346123297,0.18750774450018431,0.2904054332945521,0.946214749452758,0.5935381621092269,0.4544426619328757,0.3203471057677395,0.8705981522195964,0.3211643371363936,0.6337690351688159,0.7968080201171376,0.29116343999801364,0.15660328844404,0.7690989979398898,0.2285786942711932,0.729302396871756,0.19525527497532558,0.9430758785191345,0.3712072774633799,0.7472298167400201,0.2055576686773252,0.21014386425267154,0.36233689745996933,0.681451437846502,0.5322428259683041,0.27502372640884654,0.47172374114008797,0.5102092700592286,0.04406072434227016,0.6075093511526982,0.5146007149082612,0.30503049507040086],"y":[0.544704231687218,0.09388851145929122,0.6379091696058908,0.6008694225926275,0.40835500760392984,0.5324327282292921,0.7629067361182099,0.733185862998099,0.08551413383591647,0.5678043847753687,0.7892890180411232,0.42667296781515374,0.07702353507141747,0.34882082294152156,0.9230736959367403,0.15939769901307194,0.06849298396543273,0.8997680502476954,0.47286483341495733,0.49029904859620105,0.9286389974544937,0.5868137677138735,0.1451872597193286,0.14639670920856143,0.8251708470402149,0.6089539954480501,0.4139719234844539,0.31851443570038046,0.9827189207927878,0.810137835708511,0.8265374278773262,0.7136549859836954,0.1191683202605547,0.4917775250467367,0.7464592083107956,0.0627147769847488,0.13118982833399895,0.6277092716785657,0.3209473892678262,0.6628225467460335,0.18016914240092466,0.6380214144652809,0.6617156829041037,0.6377532839019565,0.42085484621154834,0.9356639296448156,0.6044279027750845,0.18342200302678255,0.3519500304721063,0.31232604212701603],"showlegend":false,"line":{},"marker":{"color":"white","line":{"width":1.0},"size":8,"opacity":0.7}},{"type":"histogram2d","x":[0.5489783787862297,0.17726851961448253,0.32026026459422907,0.3247118500642068,0.17003086776008405,0.016905999284659513,0.25744137878410583,0.5284010854216298,0.7621378743844749,0.2577097850189124,0.6638617583847892,0.842795481832137,0.20847225804276404,0.06243205445931854,0.09467587996957631,0.9222354176092127,0.7459451964804648,0.3513242641237212,0.17224657403875449,0.31634427714922664,0.1551586078271077,0.9009312930986897,0.7488922331244183,0.5793035298489516,0.15833528300669755,0.07013862490194786,0.9830027730125015,0.8123280111757704,0.24781346472344057,0.973525885014574,0.1823186241939285,0.5631506818175086,0.031089504729532407,0.7189365470404441,0.8689837175742647,0.12603004887980876,0.02949380224081399,0.15559716809335963,0.8823180784854656,0.2900288669811696,0.3668066367352412,0.18539032395248783,0.9293719720697832,0.42108039298145117,0.8222000914729201,0.9388876920281386,0.21918292400389114,0.22309332677307228,0.5816607608374491,0.22984186710316776,0.050157533050588114,0.6427211764467513,0.5030149074751021,0.6545198045924864,0.6450205094390644,0.64804708568754,0.42837628649006426,0.7409567347452775,0.16637656705750925,0.09989224285813618,0.033903226272157964,0.44511336760833553,0.2805876206981892,0.7886119893699008,0.07539116082498393,0.10071107656728061,0.8117059771026047,0.4895357110023199,0.19344833688505383,0.9686458310897675,0.8927416153683987,0.5903480283871051,0.4690061856382555,0.8822177070575848,0.9495376404139855,0.9697682838746199,0.9715593210289065,0.3278118401429671,0.7571034383760316,0.21944759097855893,0.8509557008980567,0.7599094462394292,0.2306672503383212,0.01797159762027282,0.9233683519639859,0.5395974477471772,0.06013577434240644,0.37656970013704605,0.0739160376013797,0.2209366318867247,0.6976537623897445,0.28853706749553654,0.9892206010358504,0.7824258356273295,0.25612564070901167,0.9216932691269057,0.9048027032542987,0.14075998269988224,0.34568923215646724,0.7214890149056394,0.47864747768205007,0.3564448982274369,0.1876285249309747,0.405861239603656,0.43840253699496506,0.11045335517751675,0.06044200298396964,0.873831555188555,0.6399842629395353,0.07967698438078025,0.9284966969529617,0.29707167823662595,0.6290704471194514,0.6681201083902829,0.43337492711533554,0.2998462749178737,0.33404358445389365,0.35074492839665383,0.35654057346123297,0.18750774450018431,0.2904054332945521,0.946214749452758,0.5935381621092269,0.4544426619328757,0.3203471057677395,0.8705981522195964,0.3211643371363936,0.6337690351688159,0.7968080201171376,0.29116343999801364,0.15660328844404,0.7690989979398898,0.2285786942711932,0.729302396871756,0.19525527497532558,0.9430758785191345,0.3712072774633799,0.7472298167400201,0.2055576686773252,0.21014386425267154,0.36233689745996933,0.681451437846502,0.5322428259683041,0.27502372640884654,0.47172374114008797,0.5102092700592286,0.04406072434227016,0.6075093511526982,0.5146007149082612,0.30503049507040086],"y":[0.12718171492553396,0.7296472130015712,0.029644989888018457,0.6130149297476816,0.3371002517347691,0.459809504663483,0.17371499080849578,0.6207972004175173,0.704982164178501,0.6752522255644445,0.6764877646586335,0.10056444634709714,0.9838532963692459,0.9469289760789503,0.24893654196007947,0.2739937800327287,0.2144461172700143,0.26261602307791637,0.865243637405915,0.5357937130778068,0.04057530222487417,0.4351362769655587,0.41561967340094025,0.9725117049983292,0.270992068700023,0.6042045478728622,0.6011274273512547,0.6865803500109261,0.6260920663485732,0.0278443712870797,0.06496558062032125,0.8307993383290243,0.9821226079864999,0.03561442347039209,0.09226587605302496,0.12130848789648548,0.7302644563514108,0.6176523205906397,0.6808713458855037,0.46355884730050284,0.36588245693868143,0.4393385739248891,0.671587535958545,0.39866381203693513,0.5444488672280912,0.5970893160426474,0.3046837711262907,0.04229162495690008,0.53348929366725,0.982131860676283,0.7072471518568915,0.6421866801763823,0.27551634529396724,0.8098955190786605,0.6809137126807653,0.6920454379599753,0.314027539600631,0.057133284889689315,0.34202286104765856,0.7328957038619069,0.8586820773122283,0.48713464079756974,0.9947051340689441,0.6771377928914213,0.6102866449441233,0.8456884263296092,0.11844183836059731,0.9482388728988538,0.8546631000259254,0.12762805406359398,0.5437293236813179,0.5967937966793747,0.5817446771924126,0.40168479010541214,0.16991125613912533,0.6012367282999851,0.7635487410070136,0.01695586136400507,0.42806283777023796,0.6739027526573756,0.2995207767465714,0.5588358023943546,0.1530910563436761,0.6439602056722903,0.32059721943018826,0.42277890044393895,0.5552829930350571,0.1722270889078393,0.3547007107896268,0.40022043809304964,0.8072809482958545,0.6731311714617215,0.27562945954298107,0.9479756420235967,0.6048767699882746,0.8787478161411116,0.44463343985594506,0.9944497430671239,0.7883771670928119,0.698760440898482,0.544704231687218,0.09388851145929122,0.6379091696058908,0.6008694225926275,0.40835500760392984,0.5324327282292921,0.7629067361182099,0.733185862998099,0.08551413383591647,0.5678043847753687,0.7892890180411232,0.42667296781515374,0.07702353507141747,0.34882082294152156,0.9230736959367403,0.15939769901307194,0.06849298396543273,0.8997680502476954,0.47286483341495733,0.49029904859620105,0.9286389974544937,0.5868137677138735,0.1451872597193286,0.14639670920856143,0.8251708470402149,0.6089539954480501,0.4139719234844539,0.31851443570038046,0.9827189207927878,0.810137835708511,0.8265374278773262,0.7136549859836954,0.1191683202605547,0.4917775250467367,0.7464592083107956,0.0627147769847488,0.13118982833399895,0.6277092716785657,0.3209473892678262,0.6628225467460335,0.18016914240092466,0.6380214144652809,0.6617156829041037,0.6377532839019565,0.42085484621154834,0.9356639296448156,0.6044279027750845,0.18342200302678255,0.3519500304721063,0.31232604212701603],"colorscale":"YIGnBu"}];
+            var layout = {"xaxis":{"title":{"text":""},"showgrid":false,"zeroline":false},"yaxis":{"title":{"text":""},"showgrid":false,"zeroline":false}};
+            var config = {};
+            Plotly.newPlot('04c8d9ae-2938-4ad2-9b71-e2589c1402ce', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_04c8d9ae29384ad29b71e2589c1402ce();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_04c8d9ae29384ad29b71e2589c1402ce();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}

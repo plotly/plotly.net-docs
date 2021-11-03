@@ -1,0 +1,933 @@
+---
+description: How to set, create and control continuous color scales and color bars in scatter, bar, map and heatmap figures.
+display_as: file_settings
+language: fsharp
+layout: base
+name: Continuous Color Scales and Color Bars
+order: 20
+page_type: example_index
+permalink: fsharp/colorscales/
+thumbnail: thumbnail/heatmap_colorscale.jpg
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET,  2.0.0-preview.8&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive,  2.0.0-preview.8&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Deedle&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: FSharp.Data&quot;</span>
+<span class="k">open</span> <span class="nn">Plotly.NET</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-4665.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '4665.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>Deedle, 2.4.3</span></li><li><span>FSharp.Data, 4.2.4</span></li><li><span>Plotly.NET, 2.0.0-preview.8</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.8</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Custom-Discretized-Heatmap-Color-scale">Custom Discretized Heatmap Color scale<a class="anchor-link" href="#Custom-Discretized-Heatmap-Color-scale">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span>  <span class="nv">z</span><span class="o">=[[</span><span class="mi">0</span><span class="o">;</span><span class="mi">1</span><span class="o">;</span><span class="mi">2</span><span class="o">;</span><span class="mi">3</span><span class="o">;</span><span class="mi">4</span><span class="o">;</span><span class="mi">5</span><span class="o">;</span><span class="mi">6</span><span class="o">;</span><span class="mi">7</span><span class="o">;</span><span class="mi">8</span><span class="o">;</span><span class="mi">9</span><span class="o">]]</span>
+<span class="k">let</span> <span class="nv">customColorscale</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">Custom</span> <span class="o">[(</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="s">&quot;#000000&quot;</span><span class="o">);(</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="s">&quot;#B4B4B4&quot;</span><span class="o">)]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Heatmap</span><span class="o">(</span><span class="n">z</span><span class="o">,</span><span class="n">Colorscale</span><span class="o">=</span><span class="n">customColorscale</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withSize</span><span class="o">(</span><span class="mi">800</span><span class="o">.,</span><span class="mi">600</span><span class="o">.)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="a88962dd-caa4-4e0b-b68c-65beb3128d74" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_a88962ddcaa44e0bb68c65beb3128d74 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"heatmap","z":[[0,1,2,3,4,5,6,7,8,9]],"colorscale":[[0.0,"#000000"],[1.0,"#B4B4B4"]]}];
+            var layout = {"width":800,"height":600};
+            var config = {};
+            Plotly.newPlot('a88962dd-caa4-4e0b-b68c-65beb3128d74', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_a88962ddcaa44e0bb68c65beb3128d74();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_a88962ddcaa44e0bb68c65beb3128d74();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Color-scale-for-Scatter-Plots">Color scale for Scatter Plots<a class="anchor-link" href="#Color-scale-for-Scatter-Plots">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+
+<span class="k">let</span> <span class="nv">N</span> <span class="o">=</span> <span class="mi">40</span>
+<span class="k">let</span> <span class="nv">values</span> <span class="o">=</span> <span class="o">[</span><span class="mi">1</span><span class="o">..</span><span class="mi">40</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">colors</span> <span class="o">=</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromColorScaleValues</span> <span class="o">([|</span><span class="mi">1</span><span class="o">..</span><span class="mi">40</span><span class="o">|]</span> <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">cast</span><span class="o">&lt;</span><span class="n">IConvertible</span><span class="o">&gt;)</span>
+
+<span class="k">let</span> <span class="nv">marker</span> <span class="o">=</span> <span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Size</span><span class="o">=</span> <span class="mi">16</span><span class="o">,</span><span class="n">Colorscale</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">Viridis</span><span class="o">,</span> <span class="n">Showscale</span><span class="o">=</span><span class="k">true</span><span class="o">,</span><span class="n">Color</span><span class="o">=</span><span class="n">colors</span><span class="o">)</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Scatter</span><span class="o">(</span><span class="n">values</span><span class="o">,</span><span class="n">values</span><span class="o">,</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Mode</span><span class="p">.</span><span class="n">Markers</span><span class="o">)</span> 
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarker</span><span class="o">(</span><span class="n">marker</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="9aed6d6d-eaaa-4dff-ad10-a4436eb76f92" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_9aed6d6deaaa4dffad10a4436eb76f92 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scatter","mode":"markers","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40],"y":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40],"line":{},"marker":{"size":16,"color":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40],"colorscale":"Viridis","showscale":true}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('9aed6d6d-eaaa-4dff-ad10-a4436eb76f92', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_9aed6d6deaaa4dffad10a4436eb76f92();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_9aed6d6deaaa4dffad10a4436eb76f92();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Color-scale-for-Contour-Plot">Color scale for Contour Plot<a class="anchor-link" href="#Color-scale-for-Contour-Plot">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">z</span><span class="o">=[|</span> <span class="o">[|</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">10</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">12</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">15</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">20</span><span class="o">.</span><span class="mi">0</span><span class="o">;|];</span>
+        <span class="o">[|</span><span class="mi">5</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">6</span><span class="o">.</span><span class="mi">25</span><span class="o">;</span> <span class="mi">8</span><span class="o">.</span><span class="mi">125</span><span class="o">;</span> <span class="mi">11</span><span class="o">.</span><span class="mi">25</span><span class="o">;</span> <span class="mi">15</span><span class="o">.</span><span class="mi">625</span><span class="o">;|];</span>
+        <span class="o">[|</span><span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">3</span><span class="o">.</span><span class="mi">125</span><span class="o">;</span> <span class="mi">5</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">8</span><span class="o">.</span><span class="mi">125</span><span class="o">;</span> <span class="mi">12</span><span class="o">.</span><span class="mi">5</span><span class="o">;|];</span>
+        <span class="o">[|</span><span class="mi">0</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">25</span><span class="o">;</span> <span class="mi">3</span><span class="o">.</span><span class="mi">125</span><span class="o">;</span> <span class="mi">6</span><span class="o">.</span><span class="mi">25</span><span class="o">;</span> <span class="mi">10</span><span class="o">.</span><span class="mi">625</span><span class="o">;|];</span>
+        <span class="o">[|</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">5</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">|]|]</span>
+
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Contour</span><span class="o">(</span><span class="n">data</span><span class="o">=</span><span class="n">z</span><span class="o">,</span><span class="n">Colorscale</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">Cividis</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[4]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="6aa53ca4-23ee-430d-a36d-992d559bdc65" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_6aa53ca423ee430da36d992d559bdc65 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"contour","z":[[10.0,10.625,12.5,15.625,20.0],[5.625,6.25,8.125,11.25,15.625],[2.5,3.125,5.0,8.125,12.5],[0.625,1.25,3.125,6.25,10.625],[0.0,0.625,2.5,5.625,10.0]],"colorscale":"Cividis"}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('6aa53ca4-23ee-430d-a36d-992d559bdc65', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_6aa53ca423ee430da36d992d559bdc65();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_6aa53ca423ee430da36d992d559bdc65();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Custom-Heatmap-Color-scale">Custom Heatmap Color scale<a class="anchor-link" href="#Custom-Heatmap-Color-scale">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">FSharp.Data</span>
+
+<span class="k">type</span> <span class="nc">jsondata</span> <span class="o">=</span> <span class="n">JsonProvider</span><span class="o">&lt;</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/master/custom_heatmap_colorscale.json&quot;</span><span class="o">&gt;</span>
+<span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="n">jsondata</span><span class="o">.</span><span class="n">Load</span><span class="o">(</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/master/custom_heatmap_colorscale.json&quot;</span><span class="o">)</span>
+<span class="k">let</span> <span class="nv">z</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Z</span>
+
+<span class="k">let</span> <span class="nv">customColorscale</span> <span class="o">=</span>
+    <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">Custom</span> <span class="o">[</span> <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="s">&quot;rgb(165,0,38)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">11</span><span class="o">,</span> <span class="s">&quot;rgb(215,48,39)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">22</span><span class="o">,</span> <span class="s">&quot;rgb(244,109,67)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">33</span><span class="o">,</span> <span class="s">&quot;rgb(253,174,97)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">44</span><span class="o">,</span> <span class="s">&quot;rgb(254,224,144)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">55</span><span class="o">,</span> <span class="s">&quot;rgb(224,243,248)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">66</span><span class="o">,</span> <span class="s">&quot;rgb(171,217,233)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">77</span><span class="o">,</span> <span class="s">&quot;rgb(116,173,209)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">88</span><span class="o">,</span> <span class="s">&quot;rgb(69,117,180)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="s">&quot;rgb(49,54,149)&quot;</span><span class="o">)</span> <span class="o">]</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Heatmap</span><span class="o">(</span><span class="n">z</span><span class="o">,</span><span class="n">Colorscale</span><span class="o">=</span><span class="n">customColorscale</span><span class="o">,</span><span class="n">Showscale</span><span class="o">=</span><span class="k">true</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="403c0ed9-bee6-4095-b9a6-6a7318870aef" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_403c0ed9bee64095b9a66a7318870aef = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"heatmap","z":[[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51],[3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52],[4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53],[5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54],[6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55],[7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56],[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57],[9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58],[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59],[11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60],[12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61],[13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62],[14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63],[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64],[16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65],[17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66],[18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67],[19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68],[20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69],[21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70],[22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71],[23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72],[24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73],[25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74],[26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75],[27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76],[28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77],[29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78],[30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79],[31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80],[32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81],[33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82],[34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83],[35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84],[36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85],[37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86],[38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87],[39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88],[40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89],[41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90],[42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91],[43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92],[44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93],[45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94],[46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95],[47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96],[48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97],[49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98],[50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99],[51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100]],"colorscale":[[0.0,"rgb(165,0,38)"],[0.11,"rgb(215,48,39)"],[0.22,"rgb(244,109,67)"],[0.33,"rgb(253,174,97)"],[0.44,"rgb(254,224,144)"],[0.55,"rgb(224,243,248)"],[0.66,"rgb(171,217,233)"],[0.77,"rgb(116,173,209)"],[0.88,"rgb(69,117,180)"],[1.0,"rgb(49,54,149)"]],"showscale":true}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('403c0ed9-bee6-4095-b9a6-6a7318870aef', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_403c0ed9bee64095b9a66a7318870aef();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_403c0ed9bee64095b9a66a7318870aef();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Setting-the-Midpoint-of-a-Diverging-Color-scale">Setting the Midpoint of a Diverging Color scale<a class="anchor-link" href="#Setting-the-Midpoint-of-a-Diverging-Color-scale">&#182;</a></h1><p>The following example uses the Marker Cmid attribute to set the mid-point of the color domain by scaling 'Cmin' and/or 'Cmax' to be equidistant to this point. It only has impact when Marker Color sets, and 'Marker Cauto' is True.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">N</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="k">let</span> <span class="nv">colors</span> <span class="o">=</span> <span class="o">[-</span><span class="mi">3</span><span class="o">..</span><span class="mi">10</span><span class="o">]</span> <span class="o">|&gt;</span> <span class="nn">Seq</span><span class="p">.</span><span class="n">cast</span><span class="o">&lt;</span><span class="n">IConvertible</span><span class="o">&gt;</span> <span class="o">|&gt;</span> <span class="nn">Color</span><span class="p">.</span><span class="n">fromColorScaleValues</span>
+<span class="k">let</span> <span class="nv">marker</span> <span class="o">=</span> <span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Size</span><span class="o">=</span> <span class="mi">25</span><span class="o">,</span><span class="n">Colorscale</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">Viridis</span><span class="o">,</span><span class="n">Cmid</span><span class="o">=</span><span class="mi">0</span><span class="o">.,</span><span class="n">Color</span><span class="o">=</span><span class="n">colors</span><span class="o">,</span> <span class="n">Showscale</span><span class="o">=</span><span class="k">true</span><span class="o">)</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Scatter</span><span class="o">([</span><span class="mi">1</span><span class="o">..</span><span class="mi">20</span><span class="o">],[-</span><span class="mi">5</span><span class="o">..</span><span class="mi">15</span><span class="o">],</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Mode</span><span class="p">.</span><span class="n">Markers</span><span class="o">)</span> 
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarker</span><span class="o">(</span><span class="n">marker</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[6]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="2e9438c6-2e97-49fa-9d75-9a6eb89e6a3a" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_2e9438c62e9749fa9d759a6eb89e6a3a = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"scatter","mode":"markers","x":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20],"y":[-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15],"line":{},"marker":{"size":25,"color":[-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10],"colorscale":"Viridis","cmid":0.0,"showscale":true}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('2e9438c6-2e97-49fa-9d75-9a6eb89e6a3a', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_2e9438c62e9749fa9d759a6eb89e6a3a();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_2e9438c62e9749fa9d759a6eb89e6a3a();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The heatmap chart uses Marker Zmid attribute to set the mid-point of the color domain.  <strong>NOT IMPLEMENTED YET</strong></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="c1">// let a = [-10..5]</span>
+<span class="c1">// let b = [-5..10]</span>
+<span class="c1">// let c = [-5..15]</span>
+
+<span class="c1">// let z = [|a;b;c|]</span>
+<span class="c1">// let marker = Marker.init(Size= 25,Colorscale=StyleParam.Colorscale.Viridis,Cmid=0.,Color=colors, Showscale=true)</span>
+
+<span class="c1">// Chart.Heatmap(z,Colorscale=StyleParam.Colorscale.RdBu)</span>
+<span class="c1">// |&gt; Chart.withMarker(marker)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Custom-Contour-Plot-Color-scale">Custom Contour Plot Color scale<a class="anchor-link" href="#Custom-Contour-Plot-Color-scale">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">z</span> <span class="o">=</span>
+    <span class="o">[|</span> <span class="o">[|</span> <span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">10</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">12</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">15</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">20</span><span class="o">.</span><span class="mi">0</span> <span class="o">|]</span>
+       <span class="o">[|</span> <span class="mi">5</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">6</span><span class="o">.</span><span class="mi">25</span><span class="o">;</span> <span class="mi">8</span><span class="o">.</span><span class="mi">125</span><span class="o">;</span> <span class="mi">11</span><span class="o">.</span><span class="mi">25</span><span class="o">;</span> <span class="mi">15</span><span class="o">.</span><span class="mi">625</span> <span class="o">|]</span>
+       <span class="o">[|</span> <span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">3</span><span class="o">.</span><span class="mi">125</span><span class="o">;</span> <span class="mi">5</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">8</span><span class="o">.</span><span class="mi">125</span><span class="o">;</span> <span class="mi">12</span><span class="o">.</span><span class="mi">5</span> <span class="o">|]</span>
+       <span class="o">[|</span> <span class="mi">0</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">25</span><span class="o">;</span> <span class="mi">3</span><span class="o">.</span><span class="mi">125</span><span class="o">;</span> <span class="mi">6</span><span class="o">.</span><span class="mi">25</span><span class="o">;</span> <span class="mi">10</span><span class="o">.</span><span class="mi">625</span> <span class="o">|]</span>
+       <span class="o">[|</span> <span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">5</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">10</span><span class="o">.</span><span class="mi">0</span> <span class="o">|]</span> <span class="o">|]</span>
+
+<span class="c1">//let customColorscale = StyleParam.Colorscale.Custom [(0.0,&quot;#A6CEE3&quot;);(1.0,&quot;#E31A1C&quot;)]</span>
+
+<span class="k">let</span> <span class="nv">customColorscale</span> <span class="o">=</span>
+    <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">Custom</span> <span class="o">[</span> <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="s">&quot;rgb(166,206,227)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">25</span><span class="o">,</span> <span class="s">&quot;rgb(31,120,180)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">45</span><span class="o">,</span> <span class="s">&quot;rgb(178,223,138)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">65</span><span class="o">,</span> <span class="s">&quot;rgb(51,160,44)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">85</span><span class="o">,</span> <span class="s">&quot;rgb(251,154,153)&quot;</span><span class="o">)</span>
+                                   <span class="o">(</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="s">&quot;rgb(227,26,28)&quot;</span><span class="o">)</span> <span class="o">]</span>
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Contour</span><span class="o">(</span><span class="n">z</span><span class="o">,</span><span class="n">Colorscale</span><span class="o">=</span><span class="n">customColorscale</span><span class="o">)</span>
+    <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withSize</span><span class="o">(</span><span class="mi">600</span><span class="o">.,</span><span class="mi">600</span><span class="o">.)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[8]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="e2651198-0fd4-408a-9d44-e282993e064f" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_e26511980fd4408a9d44e282993e064f = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"contour","z":[[10.0,10.625,12.5,15.625,20.0],[5.625,6.25,8.125,11.25,15.625],[2.5,3.125,5.0,8.125,12.5],[0.625,1.25,3.125,6.25,10.625],[0.0,0.625,2.5,5.625,10.0]],"colorscale":[[0.0,"rgb(166,206,227)"],[0.25,"rgb(31,120,180)"],[0.45,"rgb(178,223,138)"],[0.65,"rgb(51,160,44)"],[0.85,"rgb(251,154,153)"],[1.0,"rgb(227,26,28)"]]}];
+            var layout = {"width":600,"height":600};
+            var config = {};
+            Plotly.newPlot('e2651198-0fd4-408a-9d44-e282993e064f', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_e26511980fd4408a9d44e282993e064f();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_e26511980fd4408a9d44e282993e064f();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Custom-Color-bar-Title,-Labels,-and-Ticks">Custom Color bar Title, Labels, and Ticks<a class="anchor-link" href="#Custom-Color-bar-Title,-Labels,-and-Ticks">&#182;</a></h1><p>Like axes, you can customize the color bar ticks, labels, and values with ticks, ticktext, and tickvals.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">FSharp.Data</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.LayoutObjects</span>
+<span class="k">open</span> <span class="nn">Plotly.NET.TraceObjects</span>
+
+<span class="k">type</span> <span class="nc">jsondata</span> <span class="o">=</span> <span class="n">JsonProvider</span><span class="o">&lt;</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/master/custom_heatmap_colorscale.json&quot;</span><span class="o">&gt;</span>
+<span class="k">let</span> <span class="nv">data</span> <span class="o">=</span> <span class="n">jsondata</span><span class="o">.</span><span class="n">Load</span><span class="o">(</span><span class="s">&quot;https://raw.githubusercontent.com/plotly/datasets/master/custom_heatmap_colorscale.json&quot;</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">z</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">Z</span>
+<span class="c1">//let customColorscale = StyleParam.Colorscale.Custom [(0.0,&quot;#A6CEE3&quot;);(1.0,&quot;#E31A1C&quot;)]</span>
+
+<span class="k">let</span> <span class="nv">customColorscale</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">Custom</span> <span class="o">[(</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="s">&quot;rgb(165,0,38)&quot;</span><span class="o">);</span>
+                                                     <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">11</span><span class="o">,</span><span class="s">&quot;rgb(215,48,39)&quot;</span><span class="o">);</span>
+                                                     <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">22</span><span class="o">,</span><span class="s">&quot;rgb(244,109,67)&quot;</span><span class="o">);</span>
+                                                     <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">33</span><span class="o">,</span><span class="s">&quot;rgb(253,174,97)&quot;</span><span class="o">);</span>
+                                                     <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">44</span><span class="o">,</span><span class="s">&quot;rgb(254,224,144)&quot;</span><span class="o">);</span>
+                                                     <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">55</span><span class="o">,</span><span class="s">&quot;rgb(224,243,248)&quot;</span><span class="o">);</span>
+                                                     <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">66</span><span class="o">,</span><span class="s">&quot;rgb(171,217,233)&quot;</span><span class="o">);</span>
+                                                     <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">77</span><span class="o">,</span><span class="s">&quot;rgb(116,173,209)&quot;</span><span class="o">);</span>
+                                                     <span class="o">(</span><span class="mi">0</span><span class="o">.</span><span class="mi">88</span><span class="o">,</span><span class="s">&quot;rgb(69,117,180)&quot;</span><span class="o">);</span>
+                                                      <span class="o">(</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="s">&quot;rgb(49,54,149)&quot;</span><span class="o">);]</span>
+
+<span class="k">let</span> <span class="nv">colorBar</span> <span class="o">=</span> <span class="nn">ColorBar</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Title</span><span class="o">=</span><span class="nn">Title</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="s">&quot;Surface Heat&quot;</span><span class="o">,</span><span class="n">Side</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Side</span><span class="p">.</span><span class="n">Top</span><span class="o">),</span>
+                                <span class="n">TickLabelPosition</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">TickLabelPosition</span><span class="p">.</span><span class="n">Outside</span><span class="o">,</span>
+                                <span class="n">TickMode</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">TickMode</span><span class="p">.</span><span class="n">Array</span><span class="o">,</span>
+                                <span class="n">TickVals</span><span class="o">=[|</span><span class="mi">2</span><span class="o">;</span><span class="mi">50</span><span class="o">;</span><span class="mi">100</span><span class="o">|],</span>
+                                <span class="n">TickText</span><span class="o">=[|</span><span class="s">&quot;Cool&quot;</span><span class="o">;</span><span class="s">&quot;Mild&quot;</span><span class="o">;</span><span class="s">&quot;Hot&quot;</span><span class="o">|])</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Heatmap</span><span class="o">(</span><span class="n">z</span><span class="o">,</span><span class="n">Colorscale</span><span class="o">=</span><span class="n">customColorscale</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withColorBar</span><span class="o">(</span><span class="n">colorBar</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[9]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="c37ea546-2d3b-4671-b638-c546c6077d26" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_c37ea5462d3b4671b638c546c6077d26 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"heatmap","z":[[2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51],[3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52],[4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53],[5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54],[6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55],[7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56],[8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57],[9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58],[10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59],[11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60],[12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61],[13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62],[14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63],[15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64],[16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65],[17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66],[18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67],[19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68],[20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69],[21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70],[22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71],[23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72],[24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73],[25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74],[26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75],[27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76],[28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77],[29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78],[30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79],[31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80],[32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81],[33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82],[34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83],[35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84],[36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85],[37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86],[38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87],[39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88],[40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89],[41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90],[42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91],[43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92],[44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93],[45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94],[46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95],[47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96],[48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97],[49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98],[50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99],[51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100]],"colorscale":[[0.0,"rgb(165,0,38)"],[0.11,"rgb(215,48,39)"],[0.22,"rgb(244,109,67)"],[0.33,"rgb(253,174,97)"],[0.44,"rgb(254,224,144)"],[0.55,"rgb(224,243,248)"],[0.66,"rgb(171,217,233)"],[0.77,"rgb(116,173,209)"],[0.88,"rgb(69,117,180)"],[1.0,"rgb(49,54,149)"]],"colorbar":{"ticklabelposition":{"Case":"Outside"},"tickmode":{"Case":"Array"},"ticktext":["Cool","Mild","Hot"],"tickvals":[2,50,100],"title":{"text":"Surface Heat","side":{"Case":"Top"}}}}];
+            var layout = {};
+            var config = {};
+            Plotly.newPlot('c37ea546-2d3b-4671-b638-c546c6077d26', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_c37ea5462d3b4671b638c546c6077d26();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_c37ea5462d3b4671b638c546c6077d26();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Sharing-a-Color-Axis">Sharing a Color Axis<a class="anchor-link" href="#Sharing-a-Color-Axis">&#182;</a></h1><p>To share colorscale information in multiple subplots, you can use ColorAxis. (<strong>NOT IMPLEMENETED YET</strong>)</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">seq1</span> <span class="o">=</span> <span class="o">[|[|</span><span class="mi">1</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">3</span><span class="o">;</span> <span class="mi">4</span><span class="o">|];</span> <span class="o">[|</span><span class="mi">4</span><span class="o">;</span> <span class="o">-</span><span class="mi">3</span><span class="o">;</span> <span class="o">-</span><span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">|]|]</span>
+<span class="k">let</span> <span class="nv">seq2</span> <span class="o">=</span> <span class="o">[|[|</span><span class="mi">10</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">0</span><span class="o">|];</span> <span class="o">[|</span><span class="mi">4</span><span class="o">;</span> <span class="mi">3</span><span class="o">;</span> <span class="mi">5</span><span class="o">;</span> <span class="mi">6</span><span class="o">|]|]</span>
+<span class="k">let</span> <span class="nv">marker</span> <span class="o">=</span> <span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Size</span><span class="o">=</span> <span class="mi">25</span><span class="o">,</span> <span class="n">Showscale</span><span class="o">=</span><span class="k">false</span><span class="o">);</span>
+
+<span class="k">let</span> <span class="nv">colorAxis</span> <span class="o">=</span> <span class="nn">ColorAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">AutoColorScale</span><span class="o">=</span><span class="k">true</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">heatmap1</span><span class="o">=</span>
+           <span class="nn">Chart</span><span class="p">.</span><span class="n">Heatmap</span><span class="o">(</span><span class="n">data</span><span class="o">=</span><span class="n">seq1</span><span class="o">)</span>
+           <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarker</span><span class="o">(</span><span class="n">marker</span><span class="o">)</span>
+           <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withColorAxis</span><span class="o">(</span><span class="n">colorAxis</span><span class="o">,</span> <span class="n">Id</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">SubPlotId</span><span class="p">.</span><span class="n">ColorAxis</span> <span class="mi">1</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">heatmap2</span><span class="o">=</span>
+           <span class="nn">Chart</span><span class="p">.</span><span class="n">Heatmap</span><span class="o">(</span><span class="n">seq2</span><span class="o">)</span>
+           <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarker</span><span class="o">(</span><span class="n">marker</span><span class="o">)</span>
+           <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withColorAxis</span><span class="o">(</span><span class="n">colorAxis</span><span class="o">,</span> <span class="n">Id</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">SubPlotId</span><span class="p">.</span><span class="n">ColorAxis</span> <span class="mi">1</span><span class="o">)</span>
+
+<span class="o">[|</span><span class="n">heatmap1</span><span class="o">;</span><span class="n">heatmap2</span><span class="o">|]</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">Grid</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">2</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withSize</span><span class="o">(</span><span class="n">Width</span><span class="o">=</span><span class="mi">800</span><span class="o">,</span><span class="n">Height</span><span class="o">=</span><span class="mi">500</span><span class="o">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[10]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="d8efc968-91c9-4029-a9d0-fb7d717d5d28" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_d8efc96891c94029a9d0fb7d717d5d28 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"heatmap","z":[[1,2,3,4],[4,-3,-1,1]],"marker":{"size":25,"showscale":false},"xaxis":"x","yaxis":"y"},{"type":"heatmap","z":[[10,2,1,0],[4,3,5,6]],"marker":{"size":25,"showscale":false},"xaxis":"x2","yaxis":"y2"}];
+            var layout = {"coloraxis":{"autocolorscale":true},"xaxis":{},"yaxis":{},"xaxis2":{},"yaxis2":{},"grid":{"rows":1,"columns":2,"pattern":"independent"},"width":800,"height":500};
+            var config = {};
+            Plotly.newPlot('d8efc968-91c9-4029-a9d0-fb7d717d5d28', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_d8efc96891c94029a9d0fb7d717d5d28();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_d8efc96891c94029a9d0fb7d717d5d28();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Logarithmic-Color-scale">Logarithmic Color scale<a class="anchor-link" href="#Logarithmic-Color-scale">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">z</span><span class="o">=[|</span> <span class="o">[|</span><span class="mi">10</span><span class="o">.;</span> <span class="mi">100</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">1200</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">150</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">2000</span><span class="o">.;|];</span>
+        <span class="o">[|</span><span class="mi">5000</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">60</span><span class="o">.</span><span class="mi">25</span><span class="o">;</span> <span class="mi">8</span><span class="o">.</span><span class="mi">125</span><span class="o">;</span> <span class="mi">100000</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span> <span class="mi">150</span><span class="o">.</span><span class="mi">625</span><span class="o">|];</span>
+        <span class="o">[|</span><span class="mi">2000</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">300</span><span class="o">.</span><span class="mi">125</span><span class="o">;</span> <span class="mi">50</span><span class="o">.;</span> <span class="mi">8</span><span class="o">.</span><span class="mi">125</span><span class="o">;</span> <span class="mi">12</span><span class="o">.</span><span class="mi">5</span><span class="o">|];</span>
+        <span class="o">[|</span><span class="mi">10</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">1</span><span class="o">.</span><span class="mi">25</span><span class="o">;</span> <span class="mi">3</span><span class="o">.</span><span class="mi">125</span><span class="o">;</span> <span class="mi">6000</span><span class="o">.</span><span class="mi">25</span><span class="o">;</span> <span class="mi">100</span><span class="o">.</span><span class="mi">625</span><span class="o">|];</span>
+        <span class="o">[|</span><span class="mi">0</span><span class="o">.;</span> <span class="mi">0</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">2</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span> <span class="mi">50000</span><span class="o">.</span><span class="mi">625</span><span class="o">;</span> <span class="mi">10</span><span class="o">.;|]|]</span>
+
+<span class="k">let</span> <span class="nv">customColorscale</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">Custom</span> <span class="o">[(</span><span class="mi">0</span><span class="o">.,</span><span class="s">&quot;rgb(250, 250, 250)&quot;</span><span class="o">);</span>
+                                                     <span class="o">(</span><span class="mi">1</span><span class="o">./</span><span class="mi">10000</span><span class="o">.,</span><span class="s">&quot;rgb(200, 200, 200)&quot;</span><span class="o">);</span>
+                                                     <span class="o">(</span><span class="mi">1</span><span class="o">./</span><span class="mi">1000</span><span class="o">.,</span><span class="s">&quot;rgb(150, 150, 150)&quot;</span><span class="o">);</span>
+                                                     <span class="o">(</span><span class="mi">1</span><span class="o">./</span><span class="mi">100</span><span class="o">.,</span><span class="s">&quot;rgb(100, 100, 100)&quot;</span><span class="o">);</span>
+                                                     <span class="o">(</span><span class="mi">1</span><span class="o">./</span><span class="mi">10</span><span class="o">.,</span><span class="s">&quot;rgb(50, 50, 50&quot;</span><span class="o">);</span>
+                                                     <span class="o">(</span><span class="mi">1</span><span class="o">.,</span><span class="s">&quot;rgb(0, 0, 0)&quot;</span><span class="o">);</span>
+                                                     <span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">colorBar</span> <span class="o">=</span> <span class="nn">ColorBar</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>   <span class="n">Tick0</span><span class="o">=</span><span class="mi">0</span><span class="o">,</span>
+                                <span class="n">TickMode</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">TickMode</span><span class="p">.</span><span class="n">Array</span><span class="o">,</span>
+                                <span class="n">TickVals</span><span class="o">=[|</span><span class="mi">0</span><span class="o">;</span><span class="mi">1000</span><span class="o">;</span><span class="mi">10000</span><span class="o">;</span><span class="mi">100000</span><span class="o">|])</span>
+
+<span class="nn">Chart</span><span class="p">.</span><span class="n">Heatmap</span><span class="o">(</span><span class="n">z</span><span class="o">,</span><span class="n">Colorscale</span><span class="o">=</span><span class="n">customColorscale</span><span class="o">,</span><span class="n">ColorBar</span><span class="o">=</span><span class="n">colorBar</span><span class="o">)</span>
+<span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withSize</span><span class="o">(</span><span class="mi">800</span><span class="o">.,</span><span class="mi">600</span><span class="o">.)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[11]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="7a835ede-d646-4534-913f-f96dff3cdf70" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_7a835eded6464534913ff96dff3cdf70 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"heatmap","z":[[10.0,100.625,1200.5,150.625,2000.0],[5000.625,60.25,8.125,100000.0,150.625],[2000.5,300.125,50.0,8.125,12.5],[10.625,1.25,3.125,6000.25,100.625],[0.0,0.625,2.5,50000.625,10.0]],"colorscale":[[0.0,"rgb(250, 250, 250)"],[0.0001,"rgb(200, 200, 200)"],[0.001,"rgb(150, 150, 150)"],[0.01,"rgb(100, 100, 100)"],[0.1,"rgb(50, 50, 50"],[1.0,"rgb(0, 0, 0)"]],"colorbar":{"tick0":0,"tickmode":{"Case":"Array"},"tickvals":[0,1000,10000,100000]}}];
+            var layout = {"width":800,"height":600};
+            var config = {};
+            Plotly.newPlot('7a835ede-d646-4534-913f-f96dff3cdf70', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_7a835eded6464534913ff96dff3cdf70();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_7a835eded6464534913ff96dff3cdf70();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}

@@ -1,0 +1,852 @@
+---
+description: How to format axes of 3D Mesh plots in F# with Plotly.
+display_as: 3d_charts
+language: fsharp
+layout: base
+name: 3D Mesh Plots
+order: 9
+page_type: u-guide
+permalink: fsharp/3d-mesh/
+thumbnail: thumbnail/3d-mesh.jpg
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET, 2.0.0-preview.6&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive, 2.0.0-preview.6&quot;</span>
+<span class="k">open</span> <span class="nn">System</span>
+<span class="k">open</span> <span class="nn">Plotly.NET</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-2095.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '2095.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>Plotly.NET, 2.0.0-preview.6</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.6</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Simple-3D-Mesh-example">Simple 3D Mesh example<a class="anchor-link" href="#Simple-3D-Mesh-example">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">System</span>
+<span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+
+<span class="k">let</span> <span class="nv">N</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="k">let</span> <span class="nv">rnd</span> <span class="o">=</span> <span class="nn">System</span><span class="p">.</span><span class="n">Random</span><span class="bp">()</span>
+
+<span class="k">let</span> <span class="nv">mirroredXAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">mirroredLogYAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+<span class="k">let</span> <span class="nv">mirroredZAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">margin</span> <span class="o">=</span><span class="nn">Margin</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Left</span> <span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="n">Bottom</span><span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="n">Top</span> <span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="n">Right</span>  <span class="o">=</span> <span class="mi">20</span><span class="o">.</span><span class="mi">0</span> <span class="o">)</span>
+<span class="k">let</span> <span class="nv">layout</span> <span class="o">=</span> <span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Width</span><span class="o">=</span> <span class="mi">700</span><span class="o">.,</span>  <span class="n">Margin</span><span class="o">=</span><span class="n">margin</span><span class="o">)</span>
+
+
+<span class="k">let</span> <span class="nv">mesh3d</span> <span class="o">=</span>
+        <span class="nn">Trace3d</span><span class="p">.</span><span class="n">initMesh3d</span> <span class="o">(</span><span class="k">fun</span> <span class="n">mesh3d</span> <span class="o">-&gt;</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">x</span> <span class="o">&lt;-</span> <span class="nn">Array</span><span class="p">.</span><span class="n">init</span> <span class="mi">100</span> <span class="o">(</span><span class="k">fun</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="n">rnd</span><span class="o">.</span><span class="n">NextDouble</span><span class="bp">()</span><span class="o">)</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">y</span> <span class="o">&lt;-</span><span class="nn">Array</span><span class="p">.</span><span class="n">init</span> <span class="mi">100</span> <span class="o">(</span><span class="k">fun</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="n">rnd</span><span class="o">.</span><span class="n">NextDouble</span><span class="bp">()</span><span class="o">)</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">z</span> <span class="o">&lt;-</span><span class="nn">Array</span><span class="p">.</span><span class="n">init</span> <span class="mi">100</span> <span class="o">(</span><span class="k">fun</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="n">rnd</span><span class="o">.</span><span class="n">NextDouble</span><span class="bp">()</span><span class="o">)</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">opacity</span><span class="o">&lt;-</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">color</span> <span class="o">&lt;-</span> <span class="s">&quot;lightpink&quot;</span>
+            <span class="n">mesh3d</span>
+            <span class="o">)</span>
+        <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">ofTraceObject</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withX_Axis</span>  <span class="n">mirroredXAxis</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withY_Axis</span>  <span class="n">mirroredLogYAxis</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withZ_Axis</span>  <span class="n">mirroredZAxis</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span> <span class="n">layout</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="n">mesh3d</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="baf4cb3b-7687-4c22-80a0-5069bfb88317" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_baf4cb3b76874c2280a05069bfb88317 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"mesh3d","x":[0.32648601584438514,0.36444862622974844,0.3765615519958369,0.7297705364086527,0.8669564178525268,0.8931219418966779,0.6771860801042924,0.24871716473657507,0.522737212722533,0.9378387028993288,0.7020434326036105,0.1980186333870602,0.6467552365021572,0.08314518727508616,0.6810367641416549,0.3823909956879872,0.07087421327404408,0.7798276309761347,0.045166882707349434,0.6191158656119908,0.5380235177176182,0.18057947008897526,0.9159167077932119,0.5939683982143031,0.6298215480660189,0.4074379766394561,0.1778042061151025,0.52381931549116,0.8240663436353516,0.9791563865631616,0.5133061113363626,0.6004028225319473,0.6183142506602752,0.6118077298681288,0.43763699030393594,0.4309263566652901,0.726680394134801,0.3732830087529882,0.7862824605713983,0.6790118229943383,0.15343065147913557,0.7991601185869239,0.008477681320383065,0.8144999201477039,0.3788288866071165,0.028897555558428892,0.8665659627255825,0.9008276634387801,0.7774781439348488,0.8473983094316899,0.39137562568829193,0.3332638290399983,0.8143451231598599,0.2263117107685244,0.7364357885608617,0.1459065457554099,0.4485319184365365,0.7825931537815338,0.09994898834263394,0.4595184412130706,0.7153177357815754,0.15336676461313234,0.4246508211012235,0.5435808261593714,0.42453259156296613,0.1016406100716631,0.5797043827267849,0.034947506634028395,0.6455081969711502,0.2501104074763648,0.6557106015531862,0.6975912045210559,0.9935451704047364,0.36615505971301116,0.4656852141328553,0.7388633991306943,0.1721017887685922,0.10141678764550797,0.21513951160718664,0.60092399250759,0.5408720139138736,0.27697654267632243,0.7463411715563113,0.9766680342036617,0.5877807608748696,0.18004228229636432,0.7860576993720875,0.3920025398917508,0.8753719413072671,0.29173044454852604,0.9823944382287536,0.9440872403532673,0.27333402041035426,0.3267640193583276,0.9636940872127628,6.388686600322224E-05,0.3745092974857005,0.4648968551610116,0.38996732858473776,0.2771882765354534],"y":[0.4491931728316439,0.8316184560915542,0.2553194664676299,0.527367736458484,0.1916877078785038,0.693784421167236,0.3397186586352618,0.4481900634468487,0.7606264966356692,0.9975723894301673,0.9738047569868177,0.34711513079102857,0.5674536421743471,0.49902499583504395,0.918646427299197,0.438341193105253,0.40702559305682107,0.4479827868975619,0.9558000652845018,0.24449030926660184,0.3155829106995756,0.18770184283503416,0.15957556532676126,0.35377775242262416,0.2677159692476112,0.7116233611999189,0.4242571841107016,0.6667811510464089,0.4024609725002483,0.46562132726685207,0.3643541016449938,0.7072049336075805,0.7114494590607702,0.9379512350717333,0.15173081967594607,0.7092535578223195,0.021657076208692547,0.21897343509782732,0.7849803263251578,0.8939963397076336,0.8403236236611026,0.3378676359252388,0.6313760432560817,0.8777995518770998,0.31792568756170836,0.6352793074377251,0.37663359817892017,0.7743090245753103,0.40811759205913056,0.5253528941075098,0.5930382938091822,0.9265265105881386,0.5090967898765099,0.14547701931813592,0.9616053658358777,0.26149132999660973,0.6720428907647928,0.9015417140450057,0.25965176721087274,0.480064346678585,0.26952723705653436,0.6729375075888528,0.04572909094660035,0.2950051693688171,0.6332182877851735,0.2665998233792371,0.6356656717302583,0.6295024071026138,0.3472941761590979,0.20939286947687755,0.4166841168965605,0.18805215795899377,0.6630024605724041,0.061803725576868154,0.4041666856054993,0.9777152747743368,0.5563257995789526,0.28177601344966147,0.03585206486091579,0.6324366618098862,0.3349897630209987,0.6499481595353913,0.2586635589872783,0.8771080783927385,0.87258303345767,0.4378275910568552,0.19810814373107075,0.5659724397426342,0.9763458692358554,0.8902394896793363,0.03721066705752661,0.12011536216368683,0.9593216678869546,0.30491597964657285,0.6244691026510992,0.16738611607224965,0.29213854497863845,0.33637087388726455,0.2445812640919263,0.05132586418247123],"z":[0.9996136357074666,0.7471311910763062,0.4270148484162124,0.19872472258225304,0.10866877721094935,0.4049861358501884,0.26352405001573453,0.44729306429964166,0.7413103337126367,0.9838900910615409,0.7051655304176573,0.39026687731513143,0.86568964918409,0.6272151054009866,0.1450745836575863,0.619579077521143,0.4142739486015746,0.16862101255386183,0.4224221359111472,0.19539069672831832,0.06849167964816637,0.06969323198762407,0.6531565378667584,0.4570546864797616,0.17218220241935095,0.29656875473287364,0.2287304900720392,0.35808648092583123,0.4373346229257689,0.23678056953324964,0.6855767297956984,0.21995492569168792,0.03719474935773515,0.9845262006784445,0.6328230261024195,0.5878585719446925,0.2229333111191789,0.05993883640502525,0.7684393011817892,0.4675968976074815,0.17430354104112067,0.7508150794314291,0.8246621060299977,0.9924557781743145,0.18507395926167908,0.6469437897423952,0.25442571297959693,0.33210656248596804,0.15984139598898656,0.004890025129956205,0.753112167470675,0.1235175324247766,0.9139487379761174,0.04919056736360796,0.9828341845343048,0.9299204037198426,0.09397465320954781,0.9699601619364508,0.026542520162902084,0.8121000224780757,0.1762556457781492,0.9054375690899032,0.009958441373872777,0.504529764179387,0.2983133612658425,0.48521060472596933,0.3530721279573963,0.8811634485056453,0.9943920792985671,0.5572160117128938,0.39664576640196414,0.35433511219654934,0.4001817113720727,0.9548252383036656,0.02108715568719765,0.31767660021673727,0.24503112595762644,0.6607007596924439,0.27198072721808253,0.5252384126769558,0.04214304175327674,0.8966239275860711,0.1982450849368447,0.4324445977958127,0.4836684020625746,0.5620591973709218,0.30600618771557053,0.9880041819941272,0.0016920161441396997,0.7029026223825768,0.49388391873514464,0.2529731491827281,0.03339631624212317,0.9563392787037135,0.29134125182933235,0.26886597195121736,0.7408566380575563,0.3201323418506106,0.694142416908472,0.6998633545357098],"opacity":0.5,"color":"lightpink"}];
+            var layout = {"scene":{"xaxis":{"showspikes":false,"showbackground":true,"backgroundcolor":"rgb(229, 236, 246)"},"yaxis":{"showspikes":false,"showbackground":true,"backgroundcolor":"rgb(229, 236, 246)"},"zaxis":{"showspikes":false,"showbackground":true,"backgroundcolor":"rgb(229, 236, 246)"}},"width":700.0,"margin":{"l":10.0,"r":20.0,"t":10.0,"b":10.0}};
+            var config = {};
+            Plotly.newPlot('baf4cb3b-7687-4c22-80a0-5069bfb88317', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_baf4cb3b76874c2280a05069bfb88317();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_baf4cb3b76874c2280a05069bfb88317();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="3D-Mesh-example-with-Alphahull">3D Mesh example with Alphahull<a class="anchor-link" href="#3D-Mesh-example-with-Alphahull">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">System</span>
+<span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+
+<span class="k">let</span> <span class="nv">N</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="k">let</span> <span class="nv">rnd</span> <span class="o">=</span> <span class="nn">System</span><span class="p">.</span><span class="n">Random</span><span class="bp">()</span>
+
+<span class="k">let</span> <span class="nv">mirroredXAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">mirroredLogYAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+<span class="k">let</span> <span class="nv">mirroredZAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">margin</span> <span class="o">=</span><span class="nn">Margin</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Left</span> <span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="n">Bottom</span><span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="n">Top</span> <span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="n">Right</span>  <span class="o">=</span> <span class="mi">20</span><span class="o">.</span><span class="mi">0</span> <span class="o">)</span>
+<span class="k">let</span> <span class="nv">layout</span> <span class="o">=</span> <span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Width</span><span class="o">=</span> <span class="mi">700</span><span class="o">.,</span>  <span class="n">Margin</span><span class="o">=</span><span class="n">margin</span><span class="o">)</span>
+
+
+<span class="k">let</span> <span class="nv">mesh3d</span> <span class="o">=</span>
+        <span class="nn">Trace3d</span><span class="p">.</span><span class="n">initMesh3d</span> <span class="o">(</span><span class="k">fun</span> <span class="n">mesh3d</span> <span class="o">-&gt;</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">x</span> <span class="o">&lt;-</span> <span class="nn">Array</span><span class="p">.</span><span class="n">init</span> <span class="mi">100</span> <span class="o">(</span><span class="k">fun</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="n">rnd</span><span class="o">.</span><span class="n">NextDouble</span><span class="bp">()</span><span class="o">)</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">y</span> <span class="o">&lt;-</span><span class="nn">Array</span><span class="p">.</span><span class="n">init</span> <span class="mi">100</span> <span class="o">(</span><span class="k">fun</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="n">rnd</span><span class="o">.</span><span class="n">NextDouble</span><span class="bp">()</span><span class="o">)</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">z</span> <span class="o">&lt;-</span><span class="nn">Array</span><span class="p">.</span><span class="n">init</span> <span class="mi">100</span> <span class="o">(</span><span class="k">fun</span> <span class="o">_</span> <span class="o">-&gt;</span> <span class="n">rnd</span><span class="o">.</span><span class="n">NextDouble</span><span class="bp">()</span><span class="o">)</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">opacity</span><span class="o">&lt;-</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">alphahull</span> <span class="o">&lt;-</span> <span class="mi">5</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">color</span> <span class="o">&lt;-</span> <span class="s">&quot;cyan&quot;</span>
+            <span class="n">mesh3d</span>
+            <span class="o">)</span>
+        <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">ofTraceObject</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withX_Axis</span>  <span class="n">mirroredXAxis</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withY_Axis</span>  <span class="n">mirroredLogYAxis</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withZ_Axis</span>  <span class="n">mirroredZAxis</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span> <span class="n">layout</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="n">mesh3d</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[5]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="6eb8b9b4-48ce-4c93-89ef-6b71811fc85b" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_6eb8b9b448ce4c9389ef6b71811fc85b = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"mesh3d","x":[0.1556497519629308,0.15483284702283928,0.29143865466650515,0.30210797363059033,0.6823073838289396,0.2774113674077258,0.5044071960749138,0.7454331953755734,0.0792256733771533,0.7375950113579608,0.8338235131622401,0.2084600693585631,0.1951910695970017,0.8073437930118962,0.44406426532383275,0.028593150912128926,0.053190125177237264,0.14612572414154454,0.6958269014469474,0.7159230004604548,0.8890003426414916,0.13364179345483043,0.9415150289151422,0.49057923093930783,0.9656098550025419,0.9354051639956447,0.12627161905461531,0.7040066452249916,0.7885292469470432,0.2878825633264531,0.5856572983719676,0.268402233379149,0.8708235313514358,0.8511419109306959,0.2123792186437078,0.895551289383113,0.2546110051938384,0.2018634589397644,0.7782365785810336,0.2155209585165237,0.41395519134307057,0.67917682914025,0.7694721765674055,0.9868683586767262,0.8803474581243226,0.8097896770619739,0.2587033441563618,0.6366569337605764,0.25727573375090756,0.0011363155213819423,0.6662108910578354,0.6732758915393036,0.8059834208367315,0.9689421392832613,0.03348629317874382,0.02200795850810034,0.2133178181076971,0.8008594237271973,0.3364981186280484,0.746902219833295,0.1511397483531105,0.8004005508499222,0.9569039484285302,0.7913431100507002,0.15193771298599323,0.5654212797830912,0.3376365380071274,0.3440491586663058,0.5949645743681884,0.5485129759407197,0.7739821457182905,0.8513266662374729,0.367889145560511,0.4803059429304236,0.3019678091173842,0.20982351350124157,0.3641696168874249,0.954646670238416,0.6102317728149853,0.15582017794056804,0.6767018198392828,0.48961468529403895,0.44673091147408395,0.7873929314256612,0.6216716722686177,0.912381406832664,0.46241881254241746,0.9018813920681744,0.8176556177519521,0.19037126013560746,0.682233471275416,0.4537515814666411,0.865365340311716,0.03133435874773858,0.06438121016341318,0.6135546404931483,0.7222728807117198,0.9781290665167054,0.8349306456907329,0.3149261783412314],"y":[0.47215313905484657,0.9146541854900561,0.04169235939238796,0.7087627578101878,0.22715416980309142,0.8148842248203625,0.30538674597879256,0.3256774779063079,0.6669743301658771,0.8236627796775022,0.6578383416206754,0.2586711478692811,0.19062765091221204,0.18067794068748036,0.07020039999401216,0.6615250630590715,0.3536696393758383,0.16951101700286894,0.16967143778208243,0.23955630615332923,0.1030024672406737,0.435755145938953,0.5263935409143538,0.404593314232581,0.8662795046653038,0.3202305642516495,0.9859613259257569,0.3365547868127724,0.4159247327670105,0.6884131686242358,0.48755063278952177,0.38604055037071955,0.11971602454768308,0.2953055944737539,0.6836670388857214,0.7620476343492267,0.447922325901651,0.7379681536638961,0.5602387616225699,0.8067874474482553,0.6069946608538714,0.13674133463610957,0.23490706190229724,0.9939928380744498,0.532532918514932,0.42356232340613487,0.26312393055442906,0.6846873996242356,0.9611339587537264,0.4028561471043416,0.25988500111731,0.5527618637088508,0.8084576287346229,0.5953743395374037,0.2119237111005577,0.03639799311589356,0.3882606445757023,0.637099045159807,0.8424832531448841,0.9069236055514419,0.8289228988946057,0.9688319591660202,0.9097527451392975,0.9785611615416413,0.33611214688798047,0.2717977912499559,0.13895512332159798,0.8953220564384582,0.4970109018017589,0.3081527656447854,0.2136027371574206,0.6157014857119422,0.609272255380299,0.36288399033382723,0.6325616452994578,0.9662611326045641,0.20084808403665577,0.5324007028399038,0.8720603957176489,0.44271718125916887,0.05710663369722042,0.3012739263015212,0.375420828059046,0.013068585662668844,0.42852816750692585,0.9347887690806709,0.5775829216360966,0.5243416850102793,0.08338188337319619,0.6472690457698279,0.3737869897735245,0.810823280741844,0.895484900519012,0.6533151560711279,0.9778645485536496,0.6381627016878513,0.22698858949681214,0.2563459003606559,0.6578806911864694,0.2607351272649761],"z":[0.2846072000845369,0.3678018741159709,0.18767649782247678,0.6529811931089411,0.189253409946921,0.6441835154053678,0.9434896083285518,0.4455736384007957,0.9628126942379459,0.24566257849599354,0.8355499090792378,0.8558599417357985,0.765038649442158,0.3997660718857153,0.8498169718542216,0.5276489725930844,0.5934111311069742,0.8966841594766286,0.5500329940347155,0.40132337780730953,0.6942148696138593,0.6146134383113186,0.811940173065262,0.849741856031931,0.9343657758712609,0.4027794564155766,0.7202165851929302,0.9559570993091712,0.3850194417801776,0.9943989436116064,0.739272543107752,0.9445021836759998,0.8745200116534345,0.6113252684526729,0.15810998117463196,0.6893047595812496,0.11359742847904443,0.7224396349501049,0.8238151757157478,0.784344652101558,0.9912991607521191,0.13200928323530092,0.5615289907723334,0.8377193048772026,0.8117191366905901,0.5179270480377259,0.045784631299685984,0.4957188286332967,0.8034981842169064,0.45021557596056516,0.04475157058087716,0.3303044300201835,0.7063129063259405,0.2565573133791598,0.5665202576511168,0.6699937617732183,0.5558617010507089,0.33793464179054583,0.7186154172376802,0.7864739535313444,0.9239669302124376,0.9875325090193807,0.06055419662061808,0.9684137506263395,0.5063900353882416,0.891047725403238,0.981339930082364,0.15371338098948514,0.2416560907110833,0.16051221227297197,0.41405154411404,0.8709714961568692,0.07286898376088076,0.7656883419331575,0.41002421705519043,0.5622055863785583,0.05308444753898515,0.9742208681880593,0.03802271934134081,0.4164387278335349,0.35699482511589065,0.22449775655963353,0.15245891509226472,0.9348038658196125,0.9496473730307293,0.4089681130875685,0.23818927735005938,0.6179626982742746,0.04480501080155606,0.4881162194014137,0.1334430585305407,0.7756627866884986,0.0038242177124247967,0.03734122218440344,0.8603777218891204,0.0037666517327384335,0.07145508661468285,0.593115240145994,0.3313292694889611,0.9206714112873522],"opacity":0.5,"alphahull":5,"color":"cyan"}];
+            var layout = {"scene":{"xaxis":{"showspikes":false,"showbackground":true,"backgroundcolor":"rgb(229, 236, 246)"},"yaxis":{"showspikes":false,"showbackground":true,"backgroundcolor":"rgb(229, 236, 246)"},"zaxis":{"showspikes":false,"showbackground":true,"backgroundcolor":"rgb(229, 236, 246)"}},"width":700.0,"margin":{"l":10.0,"r":20.0,"t":10.0,"b":10.0}};
+            var config = {};
+            Plotly.newPlot('6eb8b9b4-48ce-4c93-89ef-6b71811fc85b', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_6eb8b9b448ce4c9389ef6b71811fc85b();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_6eb8b9b448ce4c9389ef6b71811fc85b();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="3D-Mesh-Tetrahedron">3D Mesh Tetrahedron<a class="anchor-link" href="#3D-Mesh-Tetrahedron">&#182;</a></h1><p><em>Summary:</em> In this example we use the i, j and k parameters to specify manually the geometry of the triangles of the mesh.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">System</span>
+<span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+
+<span class="k">let</span> <span class="nv">N</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="k">let</span> <span class="nv">rnd</span> <span class="o">=</span> <span class="nn">System</span><span class="p">.</span><span class="n">Random</span><span class="bp">()</span>
+
+<span class="k">let</span> <span class="nv">mirroredXAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">mirroredLogYAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+<span class="k">let</span> <span class="nv">mirroredZAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">margin</span> <span class="o">=</span><span class="nn">Margin</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Left</span> <span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="n">Bottom</span><span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="n">Top</span> <span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="n">Right</span>  <span class="o">=</span> <span class="mi">20</span><span class="o">.</span><span class="mi">0</span> <span class="o">)</span>
+<span class="k">let</span> <span class="nv">layout</span> <span class="o">=</span> <span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Width</span><span class="o">=</span> <span class="mi">700</span><span class="o">.,</span>  <span class="n">Margin</span><span class="o">=</span><span class="n">margin</span><span class="o">)</span>
+<span class="k">let</span> <span class="nv">customColorscale</span> <span class="o">=</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">Custom</span> <span class="o">[(</span><span class="mi">0</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="s">&quot;gold&quot;</span><span class="o">);(</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span><span class="s">&quot;mediumturquoise&quot;</span><span class="o">);(</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="s">&quot;magenta&quot;</span><span class="o">)]</span>
+<span class="k">let</span> <span class="nv">marker</span> <span class="o">=</span> <span class="nn">Marker</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Colorscale</span><span class="o">=</span><span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">Viridis</span><span class="o">,</span> <span class="n">Showscale</span><span class="o">=</span><span class="k">true</span><span class="o">);</span>
+<span class="n">marker</span><span class="o">?</span><span class="n">color</span> <span class="o">&lt;-</span><span class="n">customColorscale</span><span class="o">;</span>
+
+
+<span class="k">let</span> <span class="nv">mesh3d</span> <span class="o">=</span>
+        <span class="nn">Trace3d</span><span class="p">.</span><span class="n">initMesh3d</span> <span class="o">(</span><span class="k">fun</span> <span class="n">mesh3d</span> <span class="o">-&gt;</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">x</span> <span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">0</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">y</span> <span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">2</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">z</span> <span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">0</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">i</span><span class="o">&lt;-</span> <span class="n">seq</span><span class="o">{</span><span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">j</span><span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">1</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">3</span><span class="o">;</span> <span class="mi">2</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">k</span><span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">2</span><span class="o">;</span> <span class="mi">3</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">3</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">opacity</span><span class="o">&lt;-</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span>
+            <span class="c1">//mesh3d?colors &lt;-customColorscale</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">colorscale</span> <span class="o">&lt;-</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">Custom</span> <span class="o">(</span><span class="n">seq</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">*</span><span class="kt">string</span><span class="o">&gt;</span> <span class="o">{(</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="s">&quot;gold&quot;</span><span class="o">);(</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span><span class="s">&quot;mediumturquoise&quot;</span><span class="o">);(</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="s">&quot;magenta&quot;</span><span class="o">)})</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">intensity</span><span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">0</span><span class="o">.;</span> <span class="mi">0</span><span class="o">.</span><span class="mi">33</span><span class="o">;</span> <span class="mi">0</span><span class="o">.</span><span class="mi">66</span><span class="o">;</span> <span class="mi">1</span><span class="o">.}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">showscale</span>  <span class="o">&lt;-</span> <span class="k">true</span>
+            <span class="n">mesh3d</span>
+            <span class="o">)</span>
+        <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">ofTraceObject</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withX_Axis</span>  <span class="n">mirroredXAxis</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withY_Axis</span>  <span class="n">mirroredLogYAxis</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withZ_Axis</span>  <span class="n">mirroredZAxis</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span> <span class="n">layout</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withMarker</span> <span class="n">marker</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="n">mesh3d</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[7]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="7a549853-6261-4dcb-8539-318dc2f5c5ae" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_7a54985362614dcb8539318dc2f5c5ae = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"mesh3d","x":[0,1,2,0],"y":[0,0,1,2],"z":[0,2,0,1],"i":[0,0,0,1],"j":[1,2,3,2],"k":[2,3,1,3],"opacity":0.5,"colorscale":{"Case":"Custom","Fields":[[{"Item1":1.0,"Item2":"gold"},{"Item1":0.5,"Item2":"mediumturquoise"},{"Item1":1.0,"Item2":"magenta"}]]},"intensity":[0.0,0.33,0.66,1.0],"showscale":true,"marker":{"colorscale":"Viridis","showscale":true,"color":{"Case":"Custom","Fields":[[{"Item1":0.0,"Item2":"gold"},{"Item1":0.5,"Item2":"mediumturquoise"},{"Item1":1.0,"Item2":"magenta"}]]}}}];
+            var layout = {"scene":{"xaxis":{"showspikes":false,"showbackground":true,"backgroundcolor":"rgb(229, 236, 246)"},"yaxis":{"showspikes":false,"showbackground":true,"backgroundcolor":"rgb(229, 236, 246)"},"zaxis":{"showspikes":false,"showbackground":true,"backgroundcolor":"rgb(229, 236, 246)"}},"width":700.0,"margin":{"l":10.0,"r":20.0,"t":10.0,"b":10.0}};
+            var config = {};
+            Plotly.newPlot('7a549853-6261-4dcb-8539-318dc2f5c5ae', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_7a54985362614dcb8539318dc2f5c5ae();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_7a54985362614dcb8539318dc2f5c5ae();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Mesh-Cube">Mesh Cube<a class="anchor-link" href="#Mesh-Cube">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">size</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="k">let</span> <span class="nv">rnd</span> <span class="o">=</span> <span class="nn">System</span><span class="p">.</span><span class="n">Random</span><span class="bp">()</span>
+
+<span class="k">let</span> <span class="nv">linspace</span> <span class="o">(</span><span class="n">min</span><span class="o">,</span><span class="n">max</span><span class="o">,</span><span class="n">n</span><span class="o">)</span> <span class="o">=</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="k">then</span> <span class="n">failwithf</span> <span class="s">&quot;n needs to be larger then 2&quot;</span>
+    <span class="k">let</span> <span class="nv">bw</span> <span class="o">=</span> <span class="kt">float</span> <span class="o">(</span><span class="n">max</span> <span class="o">-</span> <span class="n">min</span><span class="o">)</span> <span class="o">/</span> <span class="o">(</span><span class="kt">float</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">.)</span>
+    <span class="nn">Array</span><span class="p">.</span><span class="n">init</span> <span class="n">n</span> <span class="o">(</span><span class="k">fun</span> <span class="n">i</span> <span class="o">-&gt;</span> <span class="n">min</span> <span class="o">+</span> <span class="o">(</span><span class="n">bw</span> <span class="o">*</span> <span class="kt">float</span> <span class="n">i</span><span class="o">))</span>
+
+<span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="n">linspace</span><span class="o">(-</span><span class="mi">2</span><span class="o">.</span> <span class="o">*</span> <span class="nn">Math</span><span class="p">.</span><span class="n">PI</span><span class="o">,</span> <span class="mi">2</span><span class="o">.</span> <span class="o">*</span> <span class="nn">Math</span><span class="p">.</span><span class="n">PI</span><span class="o">,</span> <span class="n">size</span><span class="o">)</span>
+<span class="k">let</span> <span class="nv">y</span> <span class="o">=</span> <span class="n">linspace</span><span class="o">(-</span><span class="mi">2</span><span class="o">.</span> <span class="o">*</span> <span class="nn">Math</span><span class="p">.</span><span class="n">PI</span><span class="o">,</span> <span class="mi">2</span><span class="o">.</span> <span class="o">*</span> <span class="nn">Math</span><span class="p">.</span><span class="n">PI</span><span class="o">,</span> <span class="n">size</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">f</span> <span class="n">x</span> <span class="n">y</span> <span class="o">=</span> <span class="o">-</span> <span class="o">(</span><span class="mi">5</span><span class="o">.</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="o">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">.</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="o">.</span> <span class="o">+</span> <span class="mi">1</span><span class="o">.)</span> <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">z</span> <span class="o">=</span>
+    <span class="nn">Array</span><span class="p">.</span><span class="n">init</span> <span class="n">size</span> <span class="o">(</span><span class="k">fun</span> <span class="n">i</span> <span class="o">-&gt;</span>
+        <span class="nn">Array</span><span class="p">.</span><span class="n">init</span> <span class="n">size</span> <span class="o">(</span><span class="k">fun</span> <span class="n">j</span> <span class="o">-&gt;</span>
+            <span class="n">f</span> <span class="n">x</span><span class="o">.[</span><span class="n">j</span><span class="o">]</span> <span class="n">y</span><span class="o">.[</span><span class="n">i</span><span class="o">]</span>
+        <span class="o">)</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">mirroredXAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">mirroredLogYAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+<span class="k">let</span> <span class="nv">mirroredZAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">margin</span> <span class="o">=</span><span class="nn">Margin</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Left</span> <span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="n">Bottom</span><span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="n">Top</span> <span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="n">Right</span>  <span class="o">=</span> <span class="mi">20</span><span class="o">.</span><span class="mi">0</span> <span class="o">)</span>
+<span class="k">let</span> <span class="nv">layout</span> <span class="o">=</span> <span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Width</span><span class="o">=</span> <span class="mi">700</span><span class="o">.,</span>  <span class="n">Margin</span><span class="o">=</span><span class="n">margin</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">meshcube3d</span> <span class="o">=</span>
+        <span class="nn">Trace3d</span><span class="p">.</span><span class="n">initMesh3d</span> <span class="o">(</span><span class="k">fun</span> <span class="n">mesh3d</span> <span class="o">-&gt;</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">x</span> <span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">y</span> <span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">0</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">z</span> <span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">i</span><span class="o">&lt;-</span> <span class="n">seq</span><span class="o">{</span><span class="mi">7</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">4</span><span class="o">;</span> <span class="mi">4</span><span class="o">;</span> <span class="mi">6</span><span class="o">;</span> <span class="mi">6</span><span class="o">;</span> <span class="mi">4</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">3</span><span class="o">;</span> <span class="mi">2</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">j</span><span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">3</span><span class="o">;</span> <span class="mi">4</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">5</span><span class="o">;</span> <span class="mi">6</span><span class="o">;</span> <span class="mi">5</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">6</span><span class="o">;</span> <span class="mi">3</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">k</span><span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">0</span><span class="o">;</span> <span class="mi">7</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">3</span><span class="o">;</span> <span class="mi">6</span><span class="o">;</span> <span class="mi">7</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">5</span><span class="o">;</span> <span class="mi">5</span><span class="o">;</span> <span class="mi">7</span><span class="o">;</span> <span class="mi">6</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">opacity</span><span class="o">&lt;-</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">colorscale</span> <span class="o">&lt;-</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">Custom</span> <span class="o">(</span><span class="n">seq</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">*</span><span class="kt">string</span><span class="o">&gt;</span> <span class="o">{(</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="s">&quot;gold&quot;</span><span class="o">);(</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span><span class="s">&quot;mediumturquoise&quot;</span><span class="o">);(</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="s">&quot;magenta&quot;</span><span class="o">)})</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">intensity</span><span class="o">&lt;-</span> <span class="n">seq</span><span class="o">{</span> <span class="mi">0</span><span class="o">.</span><span class="mi">1</span> <span class="o">;</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">1</span><span class="o">;</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">2</span><span class="o">;</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">3</span><span class="o">;</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">4</span><span class="o">;</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">6</span><span class="o">;</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">8</span> <span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">showscale</span>  <span class="o">&lt;-</span> <span class="k">true</span>
+            <span class="c1">//mesh3d?Intensityscr &lt;-&quot;cell&quot;</span>
+            <span class="n">mesh3d</span>
+            <span class="o">)</span>
+        <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">ofTraceObject</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withX_Axis</span>  <span class="n">mirroredXAxis</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withY_Axis</span>  <span class="n">mirroredLogYAxis</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withZ_Axis</span>  <span class="n">mirroredZAxis</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span> <span class="n">layout</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="n">meshcube3d</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[9]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="c4cda55c-2a83-49b4-b563-5dc0268029b4" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_c4cda55c2a8349b4b5635dc0268029b4 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"mesh3d","x":[0,0,1,1,0,0,1,1],"y":[0,1,1,0,0,1,1,0],"z":[0,0,0,1,1,1,1,1],"i":[7,0,0,0,4,4,6,6,4,0,3,2],"j":[3,4,1,2,5,6,5,2,0,1,6,3],"k":[0,7,2,3,6,7,1,1,5,5,7,6],"opacity":0.5,"colorscale":{"Case":"Custom","Fields":[[{"Item1":1.0,"Item2":"gold"},{"Item1":0.5,"Item2":"mediumturquoise"},{"Item1":1.0,"Item2":"magenta"}]]},"intensity":[0.1,0.1,0.2,0.3,0.4,0.5,0.6,0.8],"showscale":true}];
+            var layout = {"scene":{"xaxis":{"showspikes":false,"showbackground":true,"backgroundcolor":"rgb(229, 236, 246)"},"yaxis":{"showspikes":false,"showbackground":true,"backgroundcolor":"rgb(229, 236, 246)"},"zaxis":{"showspikes":false,"showbackground":true,"backgroundcolor":"rgb(229, 236, 246)"}},"width":700.0,"margin":{"l":10.0,"r":20.0,"t":10.0,"b":10.0}};
+            var config = {};
+            Plotly.newPlot('c4cda55c-2a83-49b4-b563-5dc0268029b4', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_c4cda55c2a8349b4b5635dc0268029b4();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_c4cda55c2a8349b4b5635dc0268029b4();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Intensity-values-defined-on-vertices-or-cells">Intensity values defined on vertices or cells<a class="anchor-link" href="#Intensity-values-defined-on-vertices-or-cells">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">let</span> <span class="nv">size</span> <span class="o">=</span> <span class="mi">100</span>
+<span class="k">let</span> <span class="nv">rnd</span> <span class="o">=</span> <span class="nn">System</span><span class="p">.</span><span class="n">Random</span><span class="bp">()</span>
+
+<span class="k">let</span> <span class="nv">linspace</span> <span class="o">(</span><span class="n">min</span><span class="o">,</span><span class="n">max</span><span class="o">,</span><span class="n">n</span><span class="o">)</span> <span class="o">=</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="k">then</span> <span class="n">failwithf</span> <span class="s">&quot;n needs to be larger then 2&quot;</span>
+    <span class="k">let</span> <span class="nv">bw</span> <span class="o">=</span> <span class="kt">float</span> <span class="o">(</span><span class="n">max</span> <span class="o">-</span> <span class="n">min</span><span class="o">)</span> <span class="o">/</span> <span class="o">(</span><span class="kt">float</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="o">.)</span>
+    <span class="nn">Array</span><span class="p">.</span><span class="n">init</span> <span class="n">n</span> <span class="o">(</span><span class="k">fun</span> <span class="n">i</span> <span class="o">-&gt;</span> <span class="n">min</span> <span class="o">+</span> <span class="o">(</span><span class="n">bw</span> <span class="o">*</span> <span class="kt">float</span> <span class="n">i</span><span class="o">))</span>
+
+<span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="n">linspace</span><span class="o">(-</span><span class="mi">2</span><span class="o">.</span> <span class="o">*</span> <span class="nn">Math</span><span class="p">.</span><span class="n">PI</span><span class="o">,</span> <span class="mi">2</span><span class="o">.</span> <span class="o">*</span> <span class="nn">Math</span><span class="p">.</span><span class="n">PI</span><span class="o">,</span> <span class="n">size</span><span class="o">)</span>
+<span class="k">let</span> <span class="nv">y</span> <span class="o">=</span> <span class="n">linspace</span><span class="o">(-</span><span class="mi">2</span><span class="o">.</span> <span class="o">*</span> <span class="nn">Math</span><span class="p">.</span><span class="n">PI</span><span class="o">,</span> <span class="mi">2</span><span class="o">.</span> <span class="o">*</span> <span class="nn">Math</span><span class="p">.</span><span class="n">PI</span><span class="o">,</span> <span class="n">size</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">f</span> <span class="n">x</span> <span class="n">y</span> <span class="o">=</span> <span class="o">-</span> <span class="o">(</span><span class="mi">5</span><span class="o">.</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="o">(</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="o">.</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="o">.</span> <span class="o">+</span> <span class="mi">1</span><span class="o">.)</span> <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">z</span> <span class="o">=</span>
+    <span class="nn">Array</span><span class="p">.</span><span class="n">init</span> <span class="n">size</span> <span class="o">(</span><span class="k">fun</span> <span class="n">i</span> <span class="o">-&gt;</span>
+        <span class="nn">Array</span><span class="p">.</span><span class="n">init</span> <span class="n">size</span> <span class="o">(</span><span class="k">fun</span> <span class="n">j</span> <span class="o">-&gt;</span>
+            <span class="n">f</span> <span class="n">x</span><span class="o">.[</span><span class="n">j</span><span class="o">]</span> <span class="n">y</span><span class="o">.[</span><span class="n">i</span><span class="o">]</span>
+        <span class="o">)</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">mirroredXAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">mirroredLogYAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+<span class="k">let</span> <span class="nv">mirroredZAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">margin</span> <span class="o">=</span><span class="nn">Margin</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Left</span> <span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="n">Bottom</span><span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="n">Top</span> <span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="n">Right</span>  <span class="o">=</span> <span class="mi">20</span><span class="o">.</span><span class="mi">0</span> <span class="o">)</span>
+<span class="k">let</span> <span class="nv">layout</span> <span class="o">=</span> <span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Width</span><span class="o">=</span> <span class="mi">700</span><span class="o">.,</span>  <span class="n">Margin</span><span class="o">=</span><span class="n">margin</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">meshcube3d</span> <span class="o">=</span>
+        <span class="nn">Trace3d</span><span class="p">.</span><span class="n">initMesh3d</span> <span class="o">(</span><span class="k">fun</span> <span class="n">mesh3d</span> <span class="o">-&gt;</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">x</span> <span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">y</span> <span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">0</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">z</span> <span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">i</span><span class="o">&lt;-</span> <span class="n">seq</span><span class="o">{</span><span class="mi">7</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">4</span><span class="o">;</span> <span class="mi">4</span><span class="o">;</span> <span class="mi">6</span><span class="o">;</span> <span class="mi">6</span><span class="o">;</span> <span class="mi">4</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">3</span><span class="o">;</span> <span class="mi">2</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">j</span><span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">3</span><span class="o">;</span> <span class="mi">4</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">5</span><span class="o">;</span> <span class="mi">6</span><span class="o">;</span> <span class="mi">5</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">0</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">6</span><span class="o">;</span> <span class="mi">3</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">k</span><span class="o">&lt;-</span><span class="n">seq</span><span class="o">{</span><span class="mi">0</span><span class="o">;</span> <span class="mi">7</span><span class="o">;</span> <span class="mi">2</span><span class="o">;</span> <span class="mi">3</span><span class="o">;</span> <span class="mi">6</span><span class="o">;</span> <span class="mi">7</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">1</span><span class="o">;</span> <span class="mi">5</span><span class="o">;</span> <span class="mi">5</span><span class="o">;</span> <span class="mi">7</span><span class="o">;</span> <span class="mi">6</span><span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">opacity</span><span class="o">&lt;-</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">colorscale</span> <span class="o">&lt;-</span> <span class="nn">StyleParam</span><span class="p">.</span><span class="nn">Colorscale</span><span class="p">.</span><span class="n">Custom</span> <span class="o">(</span><span class="n">seq</span><span class="o">&lt;</span><span class="kt">float</span><span class="o">*</span><span class="kt">string</span><span class="o">&gt;</span> <span class="o">{(</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="s">&quot;gold&quot;</span><span class="o">);(</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">,</span><span class="s">&quot;mediumturquoise&quot;</span><span class="o">);(</span><span class="mi">1</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="s">&quot;magenta&quot;</span><span class="o">)})</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">intensity</span><span class="o">&lt;-</span> <span class="n">seq</span><span class="o">{</span> <span class="mi">0</span><span class="o">.</span><span class="mi">1</span> <span class="o">;</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">1</span><span class="o">;</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">2</span><span class="o">;</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">3</span><span class="o">;</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">4</span><span class="o">;</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">5</span><span class="o">;</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">6</span><span class="o">;</span>  <span class="mi">0</span><span class="o">.</span><span class="mi">8</span> <span class="o">}</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">showscale</span>  <span class="o">&lt;-</span> <span class="k">true</span>
+           <span class="c1">// mesh3d?Intensityscr &lt;-&quot;cell&quot;</span>
+            <span class="n">mesh3d</span><span class="o">?</span><span class="n">intensitymode</span> <span class="o">&lt;-</span><span class="s">&quot;cell&quot;</span>
+            <span class="n">mesh3d</span>
+            <span class="o">)</span>
+        <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">ofTraceObject</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withX_Axis</span>  <span class="n">mirroredXAxis</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withY_Axis</span>  <span class="n">mirroredLogYAxis</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withZ_Axis</span>  <span class="n">mirroredZAxis</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span> <span class="n">layout</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="n">meshcube3d</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[11]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="51df1874-ffd1-4a5d-8fe8-aff48e8b1174" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_51df1874ffd14a5d8fe8aff48e8b1174 = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"mesh3d","x":[0,0,1,1,0,0,1,1],"y":[0,1,1,0,0,1,1,0],"z":[0,0,0,1,1,1,1,1],"i":[7,0,0,0,4,4,6,6,4,0,3,2],"j":[3,4,1,2,5,6,5,2,0,1,6,3],"k":[0,7,2,3,6,7,1,1,5,5,7,6],"opacity":0.5,"colorscale":{"Case":"Custom","Fields":[[{"Item1":1.0,"Item2":"gold"},{"Item1":0.5,"Item2":"mediumturquoise"},{"Item1":1.0,"Item2":"magenta"}]]},"intensity":[0.1,0.1,0.2,0.3,0.4,0.5,0.6,0.8],"showscale":true,"intensitymode":"cell"}];
+            var layout = {"scene":{"xaxis":{"showspikes":false,"showbackground":true,"backgroundcolor":"rgb(229, 236, 246)"},"yaxis":{"showspikes":false,"showbackground":true,"backgroundcolor":"rgb(229, 236, 246)"},"zaxis":{"showspikes":false,"showbackground":true,"backgroundcolor":"rgb(229, 236, 246)"}},"width":700.0,"margin":{"l":10.0,"r":20.0,"t":10.0,"b":10.0}};
+            var config = {};
+            Plotly.newPlot('51df1874-ffd1-4a5d-8fe8-aff48e8b1174', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_51df1874ffd14a5d8fe8aff48e8b1174();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_51df1874ffd14a5d8fe8aff48e8b1174();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}

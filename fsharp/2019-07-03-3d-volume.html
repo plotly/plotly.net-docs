@@ -1,0 +1,328 @@
+---
+description: How to make 3D Volume plots in F# with Plotly.
+display_as: 3d_charts
+language: fsharp
+layout: base
+name: 3D Volume Plots
+order: 11
+page_type: u-guide
+permalink: fsharp/3d-volume-plots/
+thumbnail: thumbnail/3d-volume-plots.jpg
+---
+
+{% raw %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.2/require.js"></script>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET, 2.0.0-preview.6&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: Plotly.NET.Interactive, 2.0.0-preview.6&quot;</span>
+<span class="o">#</span><span class="n">r</span> <span class="s">&quot;nuget: FSharp.Data&quot;</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+
+<div>
+    <div id='dotnet-interactive-this-cell-2816.Microsoft.DotNet.Interactive.Http.HttpPort' style='display: none'>
+        The below script needs to be able to find the current output cell; this is an easy method to get it.
+    </div>
+    <script type='text/javascript'>
+async function probeAddresses(probingAddresses) {
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(function () {
+                reject(new Error('timeout'))
+            }, ms)
+            promise.then(resolve, reject)
+        })
+    }
+
+    if (Array.isArray(probingAddresses)) {
+        for (let i = 0; i < probingAddresses.length; i++) {
+
+            let rootUrl = probingAddresses[i];
+
+            if (!rootUrl.endsWith('/')) {
+                rootUrl = `${rootUrl}/`;
+            }
+
+            try {
+                let response = await timeout(1000, fetch(`${rootUrl}discovery`, {
+                    method: 'POST',
+                    cache: 'no-cache',
+                    mode: 'cors',
+                    timeout: 1000,
+                    headers: {
+                        'Content-Type': 'text/plain'
+                    },
+                    body: probingAddresses[i]
+                }));
+
+                if (response.status == 200) {
+                    return rootUrl;
+                }
+            }
+            catch (e) { }
+        }
+    }
+}
+
+function loadDotnetInteractiveApi() {
+    probeAddresses(["http://192.168.0.3:1000/", "http://127.0.0.1:1000/"])
+        .then((root) => {
+        // use probing to find host url and api resources
+        // load interactive helpers and language services
+        let dotnetInteractiveRequire = require.config({
+        context: '2816.Microsoft.DotNet.Interactive.Http.HttpPort',
+                paths:
+            {
+                'dotnet-interactive': `${root}resources`
+                }
+        }) || require;
+
+            window.dotnetInteractiveRequire = dotnetInteractiveRequire;
+
+            window.configureRequireFromExtension = function(extensionName, extensionCacheBuster) {
+                let paths = {};
+                paths[extensionName] = `${root}extensions/${extensionName}/resources/`;
+                
+                let internalRequire = require.config({
+                    context: extensionCacheBuster,
+                    paths: paths,
+                    urlArgs: `cacheBuster=${extensionCacheBuster}`
+                    }) || require;
+
+                return internalRequire
+            };
+        
+            dotnetInteractiveRequire([
+                    'dotnet-interactive/dotnet-interactive'
+                ],
+                function (dotnet) {
+                    dotnet.init(window);
+                },
+                function (error) {
+                    console.log(error);
+                }
+            );
+        })
+        .catch(error => {console.log(error);});
+    }
+
+// ensure `require` is available globally
+if ((typeof(require) !==  typeof(Function)) || (typeof(require.config) !== typeof(Function))) {
+    let require_script = document.createElement('script');
+    require_script.setAttribute('src', 'https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js');
+    require_script.setAttribute('type', 'text/javascript');
+    
+    
+    require_script.onload = function() {
+        loadDotnetInteractiveApi();
+    };
+
+    document.getElementsByTagName('head')[0].appendChild(require_script);
+}
+else {
+    loadDotnetInteractiveApi();
+}
+
+    </script>
+</div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_html rendered_html output_subarea ">
+<div><div></div><div></div><div><strong>Installed Packages</strong><ul><li><span>FSharp.Data, 4.2.4</span></li><li><span>Plotly.NET, 2.0.0-preview.6</span></li><li><span>Plotly.NET.Interactive, 2.0.0-preview.6</span></li></ul></div></div>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Loading extensions from <code>Plotly.NET.Interactive.dll</code></p>
+
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+<div class="output_markdown rendered_html output_subarea ">
+<p>Added Kernel Extension including formatters for Plotly.NET charts.</p>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h1 id="Simple-volume-plot-with-go.Volume">Simple volume plot with go.Volume<a class="anchor-link" href="#Simple-volume-plot-with-go.Volume">&#182;</a></h1>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="k">open</span> <span class="nn">System</span>
+<span class="k">open</span> <span class="nn">Plotly.NET</span>
+
+
+<span class="k">let</span> <span class="nv">N</span> <span class="o">=</span> <span class="mi">50</span>
+<span class="k">let</span> <span class="nv">rnd</span> <span class="o">=</span> <span class="nn">System</span><span class="p">.</span><span class="n">Random</span><span class="bp">()</span>
+
+<span class="k">let</span> <span class="nv">mirroredXAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">mirroredLogYAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+<span class="k">let</span> <span class="nv">mirroredZAxis</span> <span class="o">=</span>
+    <span class="nn">Axis</span><span class="p">.</span><span class="nn">LinearAxis</span><span class="p">.</span><span class="n">init</span><span class="o">(</span>
+        <span class="n">Showspikes</span> <span class="o">=</span> <span class="k">false</span><span class="o">,</span>
+        <span class="n">Backgroundcolor</span> <span class="o">=</span><span class="s">&quot;rgb(229, 236, 246)&quot;</span><span class="o">,</span>
+        <span class="n">Showbackground</span><span class="o">=</span><span class="k">true</span>
+    <span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">margin</span> <span class="o">=</span><span class="nn">Margin</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Left</span> <span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="n">Bottom</span><span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span><span class="n">Top</span> <span class="o">=</span><span class="mi">10</span><span class="o">.</span><span class="mi">0</span><span class="o">,</span> <span class="n">Right</span>  <span class="o">=</span> <span class="mi">20</span><span class="o">.</span><span class="mi">0</span> <span class="o">)</span>
+<span class="k">let</span> <span class="nv">layout</span> <span class="o">=</span> <span class="nn">Layout</span><span class="p">.</span><span class="n">init</span><span class="o">(</span><span class="n">Width</span><span class="o">=</span> <span class="mi">700</span><span class="o">.,</span>  <span class="n">Margin</span><span class="o">=</span><span class="n">margin</span><span class="o">)</span>
+
+<span class="k">let</span> <span class="nv">x</span> <span class="o">=</span> <span class="o">[-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">y</span> <span class="o">=[-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">z</span> <span class="o">=[-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;-</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666667</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">2</span><span class="o">.</span><span class="mi">666666666666666</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">;</span><span class="mi">8</span><span class="o">.</span><span class="mi">0</span><span class="o">]</span>
+<span class="k">let</span> <span class="nv">value</span> <span class="o">=[</span><span class="mi">0</span><span class="o">.</span><span class="mi">00015530955861889912</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720335</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720164</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">00015530955861889912</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720335</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537837</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537603</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720335</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720164</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537603</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">0058657420885372515</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720164</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">00015530955861889912</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720335</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720164</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">00015530955861889912</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720335</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537837</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537603</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720335</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537837</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005967638441171089</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">00596763844117072</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537837</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537603</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005967638441170904</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005967638441170535</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537603</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720335</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537837</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537603</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720335</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720164</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537603</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">0058657420885372515</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720164</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537603</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005967638441170904</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005967638441170535</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537603</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">0058657420885372515</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005967638441170535</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005967638441170165</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">0058657420885372515</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720164</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537603</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">0058657420885372515</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720164</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">00015530955861889912</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720335</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720164</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">00015530955861889912</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720335</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537837</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537603</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720335</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720164</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">005865742088537603</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">0058657420885372515</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720164</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">00015530955861889912</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720335</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">004994853639720164</span><span class="o">;</span><span class="mi">0</span><span class="o">.</span><span class="mi">00015530955861889912</span><span class="o">]</span>
+
+<span class="k">let</span> <span class="nv">findAllIndices</span> <span class="n">predicate</span> <span class="o">=</span>
+    <span class="nn">Array</span><span class="p">.</span><span class="n">indexed</span>
+    <span class="o">&gt;&gt;</span> <span class="nn">Array</span><span class="p">.</span><span class="n">filter</span> <span class="o">(</span><span class="n">snd</span> <span class="o">&gt;&gt;</span> <span class="n">predicate</span><span class="o">)</span>
+    <span class="o">&gt;&gt;</span> <span class="nn">Array</span><span class="p">.</span><span class="n">map</span> <span class="n">fst</span>
+
+
+<span class="k">let</span> <span class="nv">volume3d</span> <span class="o">=</span>
+        <span class="nn">Trace3d</span><span class="p">.</span><span class="n">initVolume</span> <span class="o">(</span><span class="k">fun</span> <span class="n">volume3d</span> <span class="o">-&gt;</span>
+            <span class="n">volume3d</span><span class="o">?</span><span class="n">x</span> <span class="o">&lt;-</span> <span class="n">x</span>
+            <span class="n">volume3d</span><span class="o">?</span><span class="n">y</span> <span class="o">&lt;-</span><span class="n">y</span>
+            <span class="n">volume3d</span><span class="o">?</span><span class="n">z</span> <span class="o">&lt;-</span><span class="n">z</span>
+            <span class="n">volume3d</span><span class="o">?</span><span class="n">value</span> <span class="o">&lt;-</span><span class="n">x</span>
+            <span class="n">volume3d</span><span class="o">?</span><span class="n">isomin</span> <span class="o">&lt;-</span><span class="mi">0</span><span class="o">.</span><span class="mi">1</span>
+            <span class="n">volume3d</span><span class="o">?</span><span class="n">isomax</span> <span class="o">&lt;-</span><span class="mi">0</span><span class="o">.</span><span class="mi">8</span>
+            <span class="n">volume3d</span><span class="o">?</span><span class="n">opacity</span><span class="o">&lt;-</span><span class="mi">0</span><span class="o">.</span><span class="mi">5</span>
+            <span class="n">volume3d</span><span class="o">?</span><span class="n">color</span> <span class="o">&lt;-</span> <span class="s">&quot;lightpink&quot;</span>
+            <span class="n">volume3d</span>
+            <span class="o">)</span>
+        <span class="o">|&gt;</span> <span class="nn">GenericChart</span><span class="p">.</span><span class="n">ofTraceObject</span>
+        <span class="o">|&gt;</span> <span class="nn">Chart</span><span class="p">.</span><span class="n">withLayout</span> <span class="n">layout</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-fsharp"><pre><span></span><span class="n">volume3d</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div id="b64734be-a4be-4db8-85f0-dafcfbfc130d" style="width: 600px; height: 600px;"><!-- Plotly chart will be drawn inside this DIV --></div>
+<script type="text/javascript">
+
+            var renderPlotly_b64734bea4be4db885f0dafcfbfc130d = function() {
+            var fsharpPlotlyRequire = requirejs.config({context:'fsharp-plotly',paths:{plotly:'https://cdn.plot.ly/plotly-latest.min'}}) || require;
+            fsharpPlotlyRequire(['plotly'], function(Plotly) {
+
+            var data = [{"type":"volume","x":[-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0],"y":[-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0],"z":[-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0],"value":[-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-8.0,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,-2.666666666666667,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,2.666666666666666,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0,8.0],"isomin":0.1,"isomax":0.8,"opacity":0.5,"color":"lightpink"}];
+            var layout = {"width":700.0,"margin":{"l":10.0,"r":20.0,"t":10.0,"b":10.0}};
+            var config = {};
+            Plotly.newPlot('b64734be-a4be-4db8-85f0-dafcfbfc130d', data, layout, config);
+});
+            };
+            if ((typeof(requirejs) !==  typeof(Function)) || (typeof(requirejs.config) !== typeof(Function))) {
+                var script = document.createElement("script");
+                script.setAttribute("src", "https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js");
+                script.onload = function(){
+                    renderPlotly_b64734bea4be4db885f0dafcfbfc130d();
+                };
+                document.getElementsByTagName("head")[0].appendChild(script);
+            }
+            else {
+                renderPlotly_b64734bea4be4db885f0dafcfbfc130d();
+            }
+</script>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+ 
+
+
+{% endraw %}
