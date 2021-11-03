@@ -37,7 +37,6 @@ jupyter:
 #r "nuget: Plotly.NET.Interactive,2.0.0-preview.8"
 #r "nuget: FSharp.Data"
 #r "nuget:Deedle"
-#r "nuget:Newtonsoft.Json"
 ```
 
 A Choropleth Map is a map composed of colored polygons. It is used to represent spatial variations of a quantity. This page documents how to build tile-map choropleth maps, but you can also build outline choropleth maps using our non-Mapbox trace types.
@@ -188,7 +187,7 @@ Chart.ChoroplethMapbox(
 open Plotly.NET
 open Newtonsoft.Json
 
-let token = "pk.eyJ1IjoibWFoZXNocHVubmEiLCJhIjoiY2t0NXB4eXA0MGFzYjJxcXN3b2xpNzc2ZSJ9.xliv67HWVdNd_tfmfgMXmA" //# you will need your own token
+let token = File.ReadAllText("mapbox_token") //# you will need your own token
 
 let data = 
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv"
