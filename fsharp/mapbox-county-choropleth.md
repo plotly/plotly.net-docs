@@ -42,7 +42,7 @@ jupyter:
 A Choropleth Map is a map composed of colored polygons. It is used to represent spatial variations of a quantity. This page documents how to build tile-map choropleth maps, but you can also build outline choropleth maps using our non-Mapbox trace types.
 
 # Mapbox Access Tokens and Base Map Configuration
-To plot on Mapbox maps with Plotly you may need a Mapbox account and a public <a href="url" target="https://www.mapbox.com/studio">Mapbox Access Token</a>
+To plot on Mapbox maps with Plotly you may need a Mapbox account and a public <a href="https://www.mapbox.com/studio">Mapbox Access Token</a>
 
 
 # Introduction: main parameters for choropleth tile maps
@@ -79,7 +79,7 @@ Here we load unemployment data by county, also indexed by FIPS code.
 open Deedle
 open FSharp.Data
 
-let data = 
+let data =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",",schema="fips=string,unemp=float")
 
@@ -107,21 +107,21 @@ open FSharp.Data
 open Deedle
 open Plotly.NET.LayoutObjects
 
-let data = 
+let data =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",",schema="fips=string,unemp=float")
-    
-let geoJson = 
+
+let geoJson =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
-    |> JsonConvert.DeserializeObject 
-    
-let locations: string [] = 
+    |> JsonConvert.DeserializeObject
+
+let locations: string [] =
     data
     |> Frame.getCol "fips"
     |> Series.values
     |> Array.ofSeq
 
-let z: int [] = 
+let z: int [] =
     data
     |> Frame.getCol "unemp"
     |> Series.values
@@ -129,7 +129,7 @@ let z: int [] =
 
 Chart.ChoroplethMapbox(z=z,geoJson=geoJson,locations=locations,FeatureIdKey="id",Colorscale=StyleParam.Colorscale.Viridis,ZMin=0.,ZMax=12.)
 |> Chart.withMapbox(
-        Mapbox.init(Style=StyleParam.MapboxStyle.CartoPositron,Zoom=3.,Center=(-95.7129,37.0902)) 
+        Mapbox.init(Style=StyleParam.MapboxStyle.CartoPositron,Zoom=3.,Center=(-95.7129,37.0902))
     )
 
 ```
@@ -146,21 +146,21 @@ open FSharp.Data
 open Deedle
 open Newtonsoft.Json
 
-let data = 
+let data =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/election.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",")
 
-let geoJson = 
+let geoJson =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/election.geojson"
-    |> JsonConvert.DeserializeObject 
+    |> JsonConvert.DeserializeObject
 
-let locationsGeoJSON: string [] = 
+let locationsGeoJSON: string [] =
     data
     |> Frame.getCol "district"
     |> Series.values
     |> Array.ofSeq
 
-let zGeoJSON: int [] = 
+let zGeoJSON: int [] =
     data
     |> Frame.getCol "Bergeron"
     |> Series.values
@@ -168,13 +168,13 @@ let zGeoJSON: int [] =
 
 Chart.ChoroplethMapbox(
     locations = locationsGeoJSON,
-    z = zGeoJSON,    
+    z = zGeoJSON,
     geoJson = geoJson,
     Colorscale= StyleParam.Colorscale.Cividis,
     FeatureIdKey="properties.district")
- 
+
 |> Chart.withMapbox(
-        Mapbox.init(Style=StyleParam.MapboxStyle.CartoPositron,Zoom=9.,Center=(-73.7073,45.5517)) 
+        Mapbox.init(Style=StyleParam.MapboxStyle.CartoPositron,Zoom=9.,Center=(-73.7073,45.5517))
     )
 |> Chart.withColorBarStyle(Title.init(Text="Bergeron Votes"))
 |> Chart.withTitle(title="2013 Montreal Election")
@@ -189,17 +189,17 @@ open Newtonsoft.Json
 
 let token = "pk.eyJ1IjoibWFoZXNocHVubmEiLCJhIjoiY2t0NXB4eXA0MGFzYjJxcXN3b2xpNzc2ZSJ9.xliv67HWVdNd_tfmfgMXmA" //# you will need your own token
 
-let data = 
+let data =
     Http.RequestString "https://raw.githubusercontent.com/plotly/datasets/master/fips-unemp-16.csv"
     |> fun csv -> Frame.ReadCsvString(csv,true,separators=",",schema="fips=string,unemp=float")
 
-let locations: string [] = 
+let locations: string [] =
     data
     |> Frame.getCol "fips"
     |> Series.values
     |> Array.ofSeq
 
-let z: int [] = 
+let z: int [] =
     data
     |> Frame.getCol "unemp"
     |> Series.values
@@ -207,7 +207,7 @@ let z: int [] =
 
 Chart.ChoroplethMapbox(z=z,geoJson=geoJson,locations=locations,FeatureIdKey="id",Colorscale=StyleParam.Colorscale.Viridis,ZMin=0.,ZMax=12.)
 |> Chart.withMapbox(
-        Mapbox.init(Style=StyleParam.MapboxStyle.MapboxLight,Zoom=3.,Center=(-95.7129,37.0902),AccessToken=token) 
+        Mapbox.init(Style=StyleParam.MapboxStyle.MapboxLight,Zoom=3.,Center=(-95.7129,37.0902),AccessToken=token)
     )
 
 ```

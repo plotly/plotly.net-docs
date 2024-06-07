@@ -39,7 +39,7 @@ jupyter:
 ```
 
 # Mapbox Access Token and Base Map Configuration
-To plot on Mapbox maps with Plotly you may need a Mapbox account and a public <a href="url" target="https://www.mapbox.com/studio">Mapbox Access Token</a>.
+To plot on Mapbox maps with Plotly you may need a Mapbox account and a public <a href="https://www.mapbox.com/studio">Mapbox Access Token</a>.
 
 
 # Stamen Terrain base map (no token needed): density mapbox with Plotly.NET
