@@ -39,7 +39,7 @@ jupyter:
 ```
 
 # Mapbox Access Token and Base Map Configuration
-To plot on Mapbox maps with Plotly you may need a Mapbox account and a public <a href="url" target="https://www.mapbox.com/studio">Mapbox Access Token</a>.
+To plot on Mapbox maps with Plotly you may need a Mapbox account and a public <a href="https://www.mapbox.com/studio">Mapbox Access Token</a>.
 
 
 # Lines on Mapbox maps
@@ -52,7 +52,7 @@ open Plotly.NET.LayoutObjects
 
 let data = CsvFile.Load("https://raw.githubusercontent.com/plotly/datasets/master/us-cities-top-1k.csv")
 
-let getData state = data.Rows 
+let getData state = data.Rows
                         |> Seq.filter (fun row -> row.GetColumn("State") = state)
                         |> Seq.map (fun row -> row.GetColumn("lon"),row.GetColumn("lat"))
 
@@ -74,9 +74,9 @@ let ohioData = getData "Ohio"
 This example uses Chart.ScatterMapbox and sets the mode attribute to a combination of markers and line.
 
 ```fsharp dotnet_interactive={"language": "fsharp"}
-[ 
+[
     Chart.ScatterMapbox(longitudes = [ 10; 20; 30 ], latitudes = [ 10; 20; 30 ], mode = StyleParam.Mode.Lines_Markers)
-    Chart.ScatterMapbox(longitudes = [ -50; -60; 40 ], latitudes = [ 30; 10; -20 ], mode = StyleParam.Mode.Lines_Markers) 
+    Chart.ScatterMapbox(longitudes = [ -50; -60; 40 ], latitudes = [ 30; 10; -20 ], mode = StyleParam.Mode.Lines_Markers)
 ]
 
 |> Chart.combine

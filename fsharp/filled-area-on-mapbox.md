@@ -38,7 +38,7 @@ jupyter:
 ```
 
 # Mapbox Access Token and Base Map Configuration
-To plot on Mapbox maps with Plotly you may need a Mapbox account and a public <a href="url" target="https://www.mapbox.com/studio">Mapbox Access Token</a>.
+To plot on Mapbox maps with Plotly you may need a Mapbox account and a public <a href="https://www.mapbox.com/studio">Mapbox Access Token</a>.
 
 There are three different ways to show a filled area in a Mapbox map:
 
